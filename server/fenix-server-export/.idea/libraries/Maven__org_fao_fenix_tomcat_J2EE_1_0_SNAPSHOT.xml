@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.fao.fenix:tomcat-J2EE:1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/fao/fenix/tomcat-J2EE/1.0-SNAPSHOT/tomcat-J2EE-1.0-20140515.093722-5.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/fao/fenix/tomcat-J2EE/1.0-SNAPSHOT/tomcat-J2EE-1.0-20140515.093722-5-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/fao/fenix/tomcat-J2EE/1.0-SNAPSHOT/tomcat-J2EE-1.0-20140515.093722-5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

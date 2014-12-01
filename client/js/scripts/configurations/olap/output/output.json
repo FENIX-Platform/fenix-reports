@@ -1,0 +1,6 @@
+{
+	plugin : "OlapOutput",
+	config:{
+		extension: "xls"
+	}
+}

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.fao.fenix:fenix-cross-domain:1.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/fao/fenix/fenix-cross-domain/1.1/fenix-cross-domain-1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/fao/fenix/fenix-cross-domain/1.1/fenix-cross-domain-1.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/fao/fenix/fenix-cross-domain/1.1/fenix-cross-domain-1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

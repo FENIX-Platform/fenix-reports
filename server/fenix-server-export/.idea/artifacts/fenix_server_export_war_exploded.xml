@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="fenix-server-export:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/fenix_server_export_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="fenix-server-export/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="fenix-server-export" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

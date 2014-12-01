@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="amis-services:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="cstat.war">
+      <element id="artifact" artifact-name="amis-services:war exploded" />
+    </root>
+  </artifact>
+</component>
