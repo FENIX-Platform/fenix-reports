@@ -9,9 +9,9 @@ import java.util.TreeMap;
  */
 public interface Input {
 
-    public void init(JsonNode dsdNode, JsonNode dataNode);
+    public void setConfigParameters(JsonNode inputNode, JsonNode dataNode, JsonNode metaDataNode, String name);
 
-    public void setConfigParameters(JsonNode input);
+    public String getInputName();
 
     public TreeMap<?,?> getDataObject();
 

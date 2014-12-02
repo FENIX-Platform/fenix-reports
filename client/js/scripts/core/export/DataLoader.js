@@ -1,38 +1,40 @@
-define(['jquery', 'olapInput', 'olapOutput', 'olapData', 'olapMetadata'], 
+define(['jquery', 'text!olapInput', 'text!olapOutput', 'text!olapData', 'text!olapMetadata'], 
 	function($, Input, Output,Data,Metadata){
 
-	function DataLoader(){}
+		'use strict'
 
-	DataLoader.prototype.getInput = function(Input){
-		if(Input){
-			return Input;
+		function DataLoader(){}
+
+		DataLoader.prototype.getInput = function(){
+			if(Input){
+				return Input;
+			}
+
 		}
 
-	}
+		DataLoader.prototype.getOutput = function(){
+			if(Output){
+				return Output;
+			}
 
-	DataLoader.prototype.getOutput = function(Output){
-		if(Output){
-			return Output;
 		}
 
-	}
 
+		DataLoader.prototype.getData = function(){
+			if(Data){
+				return Data;
+			}
 
-	DataLoader.prototype.getData = function(Data){
-		if(Data){
-			return Data;
 		}
 
-	}
 
+		DataLoader.prototype.getMetaData = function(){
+			if(Metadata){
+				return Metadata;
+			}
 
-	DataLoader.prototype.getMetaData = function(Metadata){
-		if(Metadata){
-			return Metadata;
 		}
 
-	}
-
-	return DataLoader;
+		return DataLoader;
 
 })

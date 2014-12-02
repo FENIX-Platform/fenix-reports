@@ -1,24 +1,59 @@
-define(['jquery', 'text!form/form.html', 'text!config/olap/data/data.json'], function($, Form){
+define(['jquery', 'text!form/form.html', 'loaderData', 'configurator'], 
+	function($, Form, DataLoader, Configurator){
 	
+		var dataLoader, configurator;
 
-	function ExportModule(){}
 
-	ExportModule.prototype.init = function(){
-		console.log('ExportModule.init()')
-		var that = this;
+		function ExportModule(){
+			dataLoader = new DataLoader;
+			configurator = new Configurator;
 
-		$("#exportBtn").on("click", function(event){
-			event.preventDefault();
-			that.createForm();
+		}
 
-		})
 
-	}
+		ExportModule.prototype.init = function(){
+			console.log('ExportModule.init()')
+			var that = this;
 
-	ExportModule.prototype.createForm = function(){
-		$("#toAppendForm").append(Form);
+		
 
-	}
+			$("#exportBtn").on("click", function(event){
+				event.preventDefault();
+				that.createForm();
+
+			})
+
+		}
+
+		ExportModule.prototype.createForm = function(){
+
+			$('#toAppendForm').append(Form)
+			this.fillFields();
+			
+			document.getElementById('submitButton').click(function(e){
+	            e.preventDefault();
+	            e.stopImmediatePropagation();
+	        });
+			
+
+		}
+
+		ExportModule.prototype.fillFields = function(){
+
+debugger;
+			document.getElementById('inputConfiguration').value = dataLoader.getInput();
+			document.getElementById('outputConfiguration').value = dataLoader.getOutput();
+			document.getElementById('data').value = dataLoader.getData();
+			document.getElementById('metadata').value = dataLoader.getMetaData();
+
+			var url = configurator.getUrlExport()
+
+			debugger;
+
+			document.getElementById('fx-exportForm').setAttribute('action',url)
+
+
+		}
 
 	return ExportModule;
 })

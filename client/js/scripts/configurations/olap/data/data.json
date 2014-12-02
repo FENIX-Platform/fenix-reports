@@ -1,3 +1,791 @@
 {
-	
+   "data":{
+      "cols":[
+
+      ],
+      "data":{
+         "<span class=\"ordre\">002</span>Albania||<span class=\"ordre\">1</span>Production (tonnes)||<span class=\"ordre\">010</span>Beer of barley":{
+            "2008":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  33000,
+                  "tonnes",
+                  " "
+               ],
+               "value":""
+            },
+            "2009":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  24900,
+                  "tonnes",
+                  " "
+               ],
+               "value":""
+            },
+            "2010":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  45000,
+                  "tonnes",
+                  "*"
+               ],
+               "value":""
+            },
+            "2011":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  57500,
+                  "tonnes",
+                  "*"
+               ],
+               "value":""
+            },
+            "2012":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  55000,
+                  "tonnes",
+                  "*"
+               ],
+               "value":""
+            }
+         },
+         "<span class=\"ordre\">002</span>Albania||<span class=\"ordre\">1</span>Production (tonnes)||<span class=\"ordre\">072</span>Cotton lint":{
+            "2008":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  190,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2009":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  220,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2010":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  230,
+                  "tonnes",
+                  "Im"
+               ],
+               "value":""
+            },
+            "2011":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  230,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2012":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  230,
+                  "tonnes",
+                  "T"
+               ],
+               "value":""
+            }
+         },
+         "<span class=\"ordre\">002</span>Albania||<span class=\"ordre\">1</span>Production (tonnes)||<span class=\"ordre\">076</span>Cottonseed":{
+            "2008":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  466,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2009":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  640,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2010":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  570,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2011":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  546,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2012":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  540,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            }
+         },
+         "<span class=\"ordre\">002</span>Albania||<span class=\"ordre\">1</span>Production (tonnes)||<span class=\"ordre\">162</span>Margarine, short":{
+            "2008":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  0,
+                  "tonnes",
+                  "T"
+               ],
+               "value":""
+            },
+            "2009":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  0,
+                  "tonnes",
+                  "T"
+               ],
+               "value":""
+            },
+            "2010":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  0,
+                  "tonnes",
+                  "T"
+               ],
+               "value":""
+            },
+            "2011":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  0,
+                  "tonnes",
+                  "T"
+               ],
+               "value":""
+            },
+            "2012":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  0,
+                  "tonnes",
+                  "T"
+               ],
+               "value":""
+            }
+         },
+         "<span class=\"ordre\">002</span>Albania||<span class=\"ordre\">1</span>Production (tonnes)||<span class=\"ordre\">164</span>Molasses":{
+            "2008":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  1560,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2009":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  1560,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2010":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  1560,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2011":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  1560,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2012":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  1560,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            }
+         },
+         "<span class=\"ordre\">002</span>Albania||<span class=\"ordre\">1</span>Production (tonnes)||<span class=\"ordre\">173</span>Oil, cottonseed":{
+            "2008":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  59.5578,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2009":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  88.842,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2010":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  77.061,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2011":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  73.0218,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2012":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  72.012,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            }
+         },
+         "<span class=\"ordre\">003</span>Algeria||<span class=\"ordre\">1</span>Production (tonnes)||<span class=\"ordre\">010</span>Beer of barley":{
+            "2008":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  141325,
+                  "tonnes",
+                  "Im"
+               ],
+               "value":""
+            },
+            "2009":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  140000,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2010":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  141000,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2011":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  143000,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2012":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  145000,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            }
+         },
+         "<span class=\"ordre\">003</span>Algeria||<span class=\"ordre\">1</span>Production (tonnes)||<span class=\"ordre\">072</span>Cotton lint":{
+            "2008":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  13.65,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2009":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  14,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2010":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  21.7,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2011":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  24.5,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2012":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  24.5,
+                  "tonnes",
+                  "T"
+               ],
+               "value":""
+            }
+         },
+         "<span class=\"ordre\">003</span>Algeria||<span class=\"ordre\">1</span>Production (tonnes)||<span class=\"ordre\">076</span>Cottonseed":{
+            "2008":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  25.35,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2009":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  26,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2010":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  40.3,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2011":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  45.5,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2012":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  49,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            }
+         },
+         "<span class=\"ordre\">003</span>Algeria||<span class=\"ordre\">1</span>Production (tonnes)||<span class=\"ordre\">162</span>Margarine, short":{
+            "2008":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  18550,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2009":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  18550,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2010":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  10450,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2011":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  10450,
+                  "tonnes",
+                  "F"
+               ],
+               "value":""
+            },
+            "2012":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  10450,
+                  "tonnes",
+                  "T"
+               ],
+               "value":""
+            }
+         },
+         "<span class=\"ordre\">003</span>Algeria||<span class=\"ordre\">1</span>Production (tonnes)||<span class=\"ordre\">164</span>Molasses":{
+            "2008":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  0,
+                  "tonnes",
+                  "M"
+               ],
+               "value":""
+            },
+            "2009":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  0,
+                  "tonnes",
+                  "M"
+               ],
+               "value":""
+            },
+            "2010":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  0,
+                  "tonnes",
+                  "M"
+               ],
+               "value":""
+            },
+            "2011":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  0,
+                  "tonnes",
+                  "M"
+               ],
+               "value":""
+            },
+            "2012":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  0,
+                  "tonnes",
+                  "M"
+               ],
+               "value":""
+            }
+         },
+         "<span class=\"ordre\">003</span>Algeria||<span class=\"ordre\">1</span>Production (tonnes)||<span class=\"ordre\">175</span>Oil, groundnut":{
+            "2008":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  22738.2,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2009":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  22318.7,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2010":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  13754.8,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2011":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  19747.8,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2012":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  19667,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            }
+         },
+         "<span class=\"ordre\">004</span>American Samoa||<span class=\"ordre\">1</span>Production (tonnes)||<span class=\"ordre\">172</span>Oil, coconut (copra)":{
+            "2008":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  71.5,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2009":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  71.5,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2010":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  71.5,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2011":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  71.5,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            },
+            "2012":{
+               "format":"",
+               "label":"Sum of Value",
+               "push":"",
+               "sum":[
+                  71.5,
+                  "tonnes",
+                  "C"
+               ],
+               "value":""
+            }
+         }
+      },
+      "header":[
+         "2008",
+         "2009",
+         "2010",
+         "2011",
+         "2012"
+      ],
+      "swFlag":true,
+      "swUnit":true
+   },
+   "flags":{
+      "data":[
+         {
+            "title":"",
+            "label":"Official data"
+         },
+         {
+            "title":"*",
+            "label":"Unofficial figure"
+         },
+         {
+            "title":"C",
+            "label":"Calculated"
+         },
+         {
+            "title":"F",
+            "label":"FAO estimate"
+         },
+         {
+            "title":"Im",
+            "label":"FAO data based on imputation methodology"
+         },
+         {
+            "title":"M",
+            "label":"Data not available"
+         },
+         {
+            "title":"T",
+            "label":"Trend"
+         }
+      ]
+   }
 }

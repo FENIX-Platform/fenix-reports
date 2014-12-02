@@ -1,45 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
-    <context-param>
-        <param-name>url</param-name>
-        <param-value>jdbc:postgresql://localhost/amis-cbs-v2</param-value>
-    </context-param>
-    <context-param>
-        <param-name>usr</param-name>
-        <param-value>fenix</param-value>
-    </context-param>
-    <context-param>
-        <param-name>psw</param-name>
-        <param-value>Qwaszx</param-value>
-    </context-param>
 
-    <!-- Production Values
-
- <context-param>
-        <param-name>url</param-name>
-        <param-value>jdbc:postgresql://exlprfaostat1.ext.fao.org/amis-cbs-v3</param-value>
-    </context-param>
-    <context-param>
-        <param-name>usr</param-name>
-        <param-value>fenix</param-value>
-    </context-param>
-    <context-param>
-        <param-name>psw</param-name>
-        <param-value>Qwaszx</param-value>
-    </context-param>
-
-    -->
-
-    <!-- Servlet -->
     <servlet>
-        <servlet-name>HelloServlet</servlet-name>
-        <servlet-class>org.fao.amis.export.excel.entryPoint.WriteExcelDemo</servlet-class>
+        <servlet-name>FenixExport</servlet-name>
+        <servlet-class>org.fao.fenix.export.core.ServletFenixExport</servlet-class>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>HelloServlet</servlet-name>
-        <url-pattern>/dataset/national/export</url-pattern>
+        <servlet-name>FenixExport</servlet-name>
+        <url-pattern>/fenix/export</url-pattern>
     </servlet-mapping>
 
 

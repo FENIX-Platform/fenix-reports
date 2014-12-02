@@ -1,6 +1,6 @@
 {
-	plugin : "OlapOutput",
-	config:{
-		extension: "xls"
+	"plugin" : "outputOlap",
+	"config":{
+		"extension": "xls"
 	}
 }

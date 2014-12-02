@@ -10,19 +10,29 @@ import java.util.TreeMap;
  */
 public class InputOlap implements Input {
 
-    JsonNode dataNode;
+    private JsonNode dataNode;
 
-    @Override
+    private String inputName;
+
+
     public void init(JsonNode dsdNode, JsonNode dataNode) {
         this.dataNode = dataNode;
 
     }
 
     @Override
-    public void setConfigParameters(JsonNode input) {
+    public void setConfigParameters(JsonNode inputNode, JsonNode dataNode, JsonNode metaDataNode, String key){
 
+        this.inputName = key;
         // body blank for now
 
+
+
+    }
+
+    @Override
+    public String getInputName() {
+        return this.inputName;
     }
 
     @Override

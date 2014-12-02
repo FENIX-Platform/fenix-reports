@@ -77,6 +77,7 @@
                 </dependency>
             </dependencies>
         </profile>
+
     </profiles>
 
 	<distributionManagement>
@@ -85,8 +86,6 @@
 			<name>FAO projects-releases</name>
 			<url>http://10.5.67.135/artifactory/libs-release-local</url>
 		</repository>
-
-
 	</distributionManagement>
 
 
@@ -148,16 +147,6 @@
             <version>3.10.1</version>
         </dependency>
 
-
-        <!-- J2EE -->
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
-            <scope>provided</scope>
-        </dependency>
-
-
         <!-- Log4j -->
         <dependency>
             <groupId>log4j</groupId>
@@ -165,7 +154,7 @@
             <version>1.2.17</version>
         </dependency>
 
-
+        <!-- Velocity -->
         <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity</artifactId>

@@ -1,5 +1,6 @@
 package org.fao.fenix.export.core.utils.parser;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -9,6 +10,8 @@ import java.io.IOException;
  * Created by fabrizio on 12/1/14.
  */
 public class JSONParser {
+
+    private static final Logger LOGGER = org.apache.log4j.Logger.getLogger(JSONParser.class);
 
     private static JSONParser jsonParser;
 
@@ -26,6 +29,7 @@ public class JSONParser {
 
     public JsonNode requestParamsToJSON(String parameter) {
 
+        LOGGER.warn("start request params to JSON");
 
         JsonNode result = null;
 
@@ -33,7 +37,8 @@ public class JSONParser {
 
         try {
             result =  mapper.readTree(parameter.getBytes());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
 
