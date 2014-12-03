@@ -2,7 +2,7 @@ var olapData = ""
 
 // Place third party dependencies in the lib folder
 requirejs.config({
-    "baseUrl":              "js/scripts/libs",
+    "baseUrl":              "js/tests/libs",
     "paths": {
         jquery            :  "jquery",
         loaderData        :  "../core/export/DataLoader",
@@ -18,7 +18,7 @@ requirejs.config({
         gridData          :  "../configurations/grid/data/data.json",
         gridInput         :  "../configurations/grid/input/input.json",
         gridMetadata      :  "../configurations/grid/metadata/metadata.json",
-        gridOutput        :  "../configurations/grid/output/output.json",
+        gridOutput        :  "../configurations/grid/output/output.json"
       
     },
     "shim": {

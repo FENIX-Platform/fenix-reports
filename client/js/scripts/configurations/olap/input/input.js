@@ -1,4 +1,0 @@
-{
-	plugin: "olapInput",
-	config: "default" 
-}

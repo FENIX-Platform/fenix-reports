@@ -40,7 +40,6 @@ define(['jquery', 'text!form/form.html', 'loaderData', 'configurator'],
 
 		ExportModule.prototype.fillFields = function(){
 
-debugger;
 			document.getElementById('inputConfiguration').value = dataLoader.getInput();
 			document.getElementById('outputConfiguration').value = dataLoader.getOutput();
 			document.getElementById('data').value = dataLoader.getData();
@@ -48,7 +47,6 @@ debugger;
 
 			var url = configurator.getUrlExport()
 
-			debugger;
 
 			document.getElementById('fx-exportForm').setAttribute('action',url)
 
