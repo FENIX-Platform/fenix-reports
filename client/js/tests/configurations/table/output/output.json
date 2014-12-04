@@ -1,0 +1,59 @@
+{
+    "plugin" : "outputTable",
+    "config":{
+        "title" : "Generic Table export",
+        "extension": "xls",
+        "visualization": {
+            "columns":[
+                {
+                    "id":1,
+                    "representationType":"domain",
+                    "formatDate":"",
+                    "formatValue":""
+                },
+                {
+                    "id":2,
+                    "representationType":"domain",
+                    "formatDate":"",
+                    "formatValue":""
+                },
+                {
+                    "id":3,
+                    "representationType":"domain",
+                    "formatDate":"",
+                    "formatValue":""
+                },
+                {
+                    "id":4,
+                    "representationType":"domain",
+                    "formatDate":"",
+                    "formatValue":"###,###.###"
+                },
+                {
+                    "id":5,
+                    "representationType":"domain",
+                    "formatDate":"",
+                    "formatValue":""
+                },
+                {
+                    "id":6,
+                    "representationType":"domain",
+                    "formatDate":"",
+                    "formatValue":""
+                },
+                {
+                    "id":7,
+                    "representationType":"domain",
+                    "formatDate":"",
+                    "formatValue":""
+                },
+                {
+                    "id":8,
+                    "representationType":"domain",
+                    "formatDate":"",
+                    "formatValue":""
+                }
+            ]
+        }
+    }
+}
