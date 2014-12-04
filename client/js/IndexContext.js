@@ -3,6 +3,8 @@
  */
 define(["export"], function( Export ) {
 
+    'use strict'
+
     var exportModule;
 
     function IndexContext(){

@@ -15,11 +15,10 @@ requirejs.config({
         olapInput         :  "../configurations/olap/input/input.json",
         olapMetadata      :  "../configurations/olap/metadata/metadata.json",
         olapOutput        :  "../configurations/olap/output/output.json",
-        gridData          :  "../configurations/grid/data/data.json",
-        gridInput         :  "../configurations/grid/input/input.json",
-        gridMetadata      :  "../configurations/grid/metadata/metadata.json",
-        gridOutput        :  "../configurations/grid/output/output.json"
-      
+        tableData          :  "../configurations/table/data/data.json",
+        tableInput         :  "../configurations/table/input/input.json",
+        tableMetadata      :  "../configurations/table/metadata/metadata.json",
+        tableOutput        :  "../configurations/table/output/output.json"
     },
     "shim": {
         "bootstrap": {

@@ -23,9 +23,6 @@ public class ServletFenixExport extends HttpServlet {
         String metadata = request.getParameter("metadata");
         GeneralController dispatcher = new GeneralController(input,output,data,metadata);
         dispatcher.init(response);
-
-
-
     }
 
 

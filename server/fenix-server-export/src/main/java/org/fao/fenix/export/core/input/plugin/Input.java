@@ -7,14 +7,35 @@ import java.util.TreeMap;
 /**
  * Created by fabrizio on 12/1/14.
  */
-public interface Input {
+public abstract class Input {
 
-    public void setConfigParameters(JsonNode inputNode, JsonNode dataNode, JsonNode metaDataNode, String name);
+    private JsonNode inputNode, dataNode, metadataNode;
 
-    public String getInputName();
+    private String name;
 
-    public TreeMap<?,?> getDataObject();
+    public void setConfigParameters(JsonNode inputNode, JsonNode dataNode, JsonNode metaDataNode, String name){
+        this.name = name;
+        this.inputNode = inputNode;
+        this.dataNode  =dataNode;
+        this.metadataNode = metaDataNode;
+    }
 
+    public String getInputName(){
+        return this.name;
+    }
 
+    public JsonNode getInputNode(){
+        return this.inputNode;
+    }
+
+    public JsonNode getDataNode(){
+        return this.dataNode;
+    }
+
+    public JsonNode getMetadataNode(){
+        return  this.metadataNode;
+    }
+
+    public  abstract TreeMap<?, ?> getDataObject() ;
 
 }

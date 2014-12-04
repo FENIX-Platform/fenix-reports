@@ -1,4 +1,3 @@
 {
-	"plugin": "inputOlap",
-	"config": "default" 
+	"plugin": "inputOlap"
 }

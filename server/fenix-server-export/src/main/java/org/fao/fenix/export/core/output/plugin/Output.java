@@ -5,9 +5,18 @@ import org.codehaus.jackson.JsonNode;
 /**
  * Created by fabrizio on 12/1/14.
  */
-public interface Output {
+public abstract class Output {
 
-    public void init(JsonNode output);
+    private JsonNode output;
 
-    public String getExportFormat();
+    public void init(JsonNode output){
+        this.output = output;
+    }
+
+    public JsonNode getOutput() {
+        return this.output;
+    }
+
+
+    public abstract String getExportFormat();
 }

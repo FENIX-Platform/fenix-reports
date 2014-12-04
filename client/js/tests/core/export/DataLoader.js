@@ -1,4 +1,4 @@
-define(['jquery', 'text!olapInput', 'text!olapOutput', 'text!olapData', 'text!olapMetadata'], 
+define(['jquery', 'text!tableInput', 'text!tableOutput', 'text!tableData', 'text!tableMetadata'],
 	function($, Input, Output,Data,Metadata){
 
 		'use strict'
@@ -21,6 +21,7 @@ define(['jquery', 'text!olapInput', 'text!olapOutput', 'text!olapData', 'text!ol
 
 
 		DataLoader.prototype.getData = function(){
+            debugger;
 			if(Data){
 				return Data;
 			}

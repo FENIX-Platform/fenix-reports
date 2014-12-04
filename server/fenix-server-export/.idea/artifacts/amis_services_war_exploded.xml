@@ -2,10 +2,10 @@
   <artifact type="exploded-war" name="amis-services:war exploded">
     <output-path>$PROJECT_DIR$/target/fenix-export-1.0-SNAPSHOT</output-path>
     <root id="root">
-      <element id="javaee-facet-resources" facet="amis-services/web/Web" />
+      <element id="javaee-facet-resources" facet="fenix-export/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
-          <element id="module-output" name="amis-services" />
+          <element id="module-output" name="fenix-export" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />

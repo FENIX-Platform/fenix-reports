@@ -31,12 +31,13 @@ public class OutputFactory {
         try {
 
             String key = jsonNodeOutput.path("plugin").asText();
-            String outputPluginsURL = ConfiguratorURL.getInstance().getInputProperties();
+            String outputPluginsURL = ConfiguratorURL.getInstance().getOutputProperties();
             String classOutputPlugin = PropertiesReader.getInstance().getPropertyValue(outputPluginsURL, key);
 
             Class outputClass = Class.forName(classOutputPlugin);
             outputClass.toString();
             outputChosen = (Output)outputClass.newInstance();
+            outputChosen.init(jsonNodeOutput);
         }
         catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -53,7 +54,7 @@ public class OutputFactory {
 
     }
 
-    public Output getInputChosen(){
+    public Output getOutputChosen(){
         return this.outputChosen;
     }
 }

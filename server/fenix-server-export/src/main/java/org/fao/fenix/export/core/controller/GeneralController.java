@@ -1,33 +1,38 @@
 package org.fao.fenix.export.core.controller;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.codehaus.jackson.JsonNode;
+import org.fao.fenix.export.core.exportHandler.communication.HandlerAdapter;
+import org.fao.fenix.export.core.exportHandler.factory.HandlerFactory;
 import org.fao.fenix.export.core.input.factory.InputFactory;
 import org.fao.fenix.export.core.input.plugin.Input;
 import org.fao.fenix.export.core.output.factory.OutputFactory;
 import org.fao.fenix.export.core.output.plugin.Output;
 import org.fao.fenix.export.core.utils.parser.JSONParser;
-import org.fao.fenix.export.plugins.olapPivot.OlapPivot;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * Created by fabrizio on 12/1/14.
  */
 public class GeneralController {
 
-    private String input,output,data,metadata;
+    private String input, output, data, metadata;
 
     private static final Logger LOGGER = org.apache.log4j.Logger.getLogger(GeneralController.class);
 
     private InputFactory inputFactory;
-
     private OutputFactory outputFactory;
+
+    private HandlerFactory handlerFactory;
+    private HandlerAdapter handlerExport;
+
+    private Workbook workbook;
 
     private JSONParser jsonParser;
 
-    public GeneralController(String input, String output, String data, String metadata){
+    public GeneralController(String input, String output, String data, String metadata) {
         this.input = input;
         this.output = output;
         this.data = data;
@@ -35,7 +40,7 @@ public class GeneralController {
     }
 
 
-    public void init (HttpServletResponse response){
+    public Workbook init(HttpServletResponse response) {
         LOGGER.warn("Genreal controller.init");
 
         this.jsonParser = JSONParser.getInstance();
@@ -47,20 +52,16 @@ public class GeneralController {
 
         this.inputFactory = InputFactory.getInstance();
         Input inputChosen = inputFactory.init(inputJSONNode, dataJSONNode, metadataJSONNode);
+
         this.outputFactory = OutputFactory.getInstance();
         Output outputChosen = outputFactory.init(outputJSONNode);
 
-        if(inputChosen.getInputName() == "inputOlap"){
-            try {
-                OlapPivot olapPivot = new OlapPivot();
-                String data = dataJSONNode.get("data").asText();
-                String flags = dataJSONNode.get("flags").asText();
-                olapPivot.init(data,flags);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        this.handlerFactory = HandlerFactory.getInstance();
+        handlerExport = this.handlerFactory.init(inputChosen);
 
+        workbook = handlerExport.createExport(inputChosen,outputChosen,response);
+
+        return workbook;
 
     }
 }

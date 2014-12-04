@@ -8,6 +8,7 @@ public class ConfiguratorURL {
     // Map between configuration and class names
     private static final String INPUT_PROPERTIES = "plugins/input/inputPlugins.properties";
     private static final String OUTPUT_PROPERTIES = "plugins/output/outputPlugins.properties";
+    private static final String HANDLERS_PROPERTIES = "plugins/handlers/handlers.properties";
 
     private static ConfiguratorURL configuratorURL;
 
@@ -30,4 +31,9 @@ public class ConfiguratorURL {
     public static String getOutputProperties() {
         return OUTPUT_PROPERTIES;
     }
+
+    public static String getHandlersProperties() {
+        return HANDLERS_PROPERTIES;
+    }
+
 }

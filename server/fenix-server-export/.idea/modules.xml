@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/amis-services.iml" filepath="$PROJECT_DIR$/amis-services.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fenix-export.iml" filepath="$PROJECT_DIR$/fenix-export.iml" />
     </modules>
   </component>
 </project>

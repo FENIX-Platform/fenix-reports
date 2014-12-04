@@ -1,5 +1,7 @@
 define(['jquery', 'text!form/form.html', 'loaderData', 'configurator'], 
 	function($, Form, DataLoader, Configurator){
+
+        'use strict'
 	
 		var dataLoader, configurator;
 
@@ -41,6 +43,7 @@ define(['jquery', 'text!form/form.html', 'loaderData', 'configurator'],
 		ExportModule.prototype.fillFields = function(){
 
 			document.getElementById('inputConfiguration').value = dataLoader.getInput();
+            debugger;
 			document.getElementById('outputConfiguration').value = dataLoader.getOutput();
 			document.getElementById('data').value = dataLoader.getData();
 			document.getElementById('metadata').value = dataLoader.getMetaData();

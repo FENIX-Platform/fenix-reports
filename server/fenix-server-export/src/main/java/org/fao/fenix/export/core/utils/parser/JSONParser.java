@@ -41,6 +41,10 @@ public class JSONParser {
         catch (IOException e) {
             e.printStackTrace();
         }
+        // TODO if I want to pass Array of Array as data
+        if(result== null){
+
+        }
 
         return result;
 

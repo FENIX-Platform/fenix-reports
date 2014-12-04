@@ -33,12 +33,10 @@ public class InputFactory {
 
             String key = jsonNodeInput.path("plugin").asText();
 
-
             String inputPluginsURL = ConfiguratorURL.getInstance().getInputProperties();
             String classInputPlugins = PropertiesReader.getInstance().getPropertyValue(inputPluginsURL, key);
 
             Class inputClass = Class.forName(classInputPlugins);
-            inputClass.toString();
             inputChosen = (Input)inputClass.newInstance();
             inputChosen.setConfigParameters(jsonNodeInput, jsonNodeData, jsonNodeMetadata, key);
         } catch (ClassNotFoundException e) {

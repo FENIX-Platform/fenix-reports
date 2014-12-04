@@ -23,10 +23,12 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="amis-services" />
+        <module name="fenix-export" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="amis-services" target="1.7" />
+      <module name="fenix-export" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>
