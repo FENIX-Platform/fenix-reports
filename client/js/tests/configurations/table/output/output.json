@@ -1,8 +1,10 @@
 {
     "plugin" : "outputTable",
     "config":{
+        "fileName": "tableFenixExport",
         "title" : "Generic Table export",
-        "extension": "xls",
+        "extension": "xlsx",
+        "sheetName": "mySheet",
         "visualization": {
             "columns":[
                 {
@@ -50,7 +52,7 @@
                 {
                     "id":8,
                     "representationType":"domain",
-                    "formatDate":"",
+                    "formatDate":"dd-MM-yyyy",
                     "formatValue":""
                 }
             ]
