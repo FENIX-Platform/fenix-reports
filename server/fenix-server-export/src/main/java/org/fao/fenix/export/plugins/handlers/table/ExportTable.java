@@ -178,7 +178,7 @@ public class ExportTable {
         Map<String, CellStyle> styles = excelStyle.createStyles(wb);
 
         // TO DO:
-        Sheet sheet = (!sheetName.equals(null) && !sheetName.equals("")) ? wb.createSheet(sheetName) : wb.createSheet("sheet");
+        Sheet sheet = (!sheetName.equals(null) && !sheetName.equals("")) ? wb.createSheet(sheetName) : wb.createSheet("Sheet");
 
         int rowCounter = 0;
         int startColumn = 0;

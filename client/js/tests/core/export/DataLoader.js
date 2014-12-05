@@ -1,4 +1,4 @@
-define(['jquery', 'text!tableInput', 'text!tableOutput', 'text!tableData', 'text!tableMetadata'],
+define(['jquery', 'text!olapInput', 'text!olapOutput', 'text!olapData', 'text!olapMetadata'],
 	function($, Input, Output,Data,Metadata){
 
 		'use strict'

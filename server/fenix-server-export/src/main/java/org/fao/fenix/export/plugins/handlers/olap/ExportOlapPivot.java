@@ -1,16 +1,18 @@
 package org.fao.fenix.export.plugins.handlers.olap;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellRangeAddress;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -29,14 +31,22 @@ public class ExportOlapPivot {
     private static final Logger LOGGER = org.apache.log4j.Logger.getLogger(ExportOlapPivot.class);
 
 
-    public Workbook init(String data, String flags, HttpServletResponse response) throws IOException {
+    public Workbook init(String data, String flags, HttpServletResponse response, JsonNode outputConfigNode) throws IOException {
         String patternStr = "<span class=\"ordre\">.*</span><table class=\"innerCol\"><th>(.*)</th><th>(.*)</th></table>";
         Pattern pattern = Pattern.compile(patternStr);
 
+        String title = outputConfigNode.get("config").get("title").asText();
+        String extension = outputConfigNode.get("config").get("extension").asText();
+        String sheetName = outputConfigNode.get("config").get("sheetName").asText();
+
 
         // Input
-        HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet("sheet1");
+        Workbook wb = null;
+        wb = (extension.equals("xls")) ? new HSSFWorkbook() : new XSSFWorkbook();
+
+        Sheet sheet = (!sheetName.equals(null) && !sheetName.equals("")) ? wb.createSheet(sheetName) : wb.createSheet("Sheet");
+
+
   
         /*BEGIN JACKSON*/
 
@@ -66,7 +76,7 @@ public class ExportOlapPivot {
             head = entry.getKey().split("\\|\\|");
 
             if (i == 0) {
-                HSSFRow row = sheet.createRow(0);
+                Row row = sheet.createRow(0);
                 int iii = 0;
 
 
@@ -104,7 +114,7 @@ public class ExportOlapPivot {
             }
 
 
-            HSSFRow row = sheet.createRow(i + 1);
+            Row row = sheet.createRow(i + 1);
             boolean stop = true;
             int j = 0;
             int jj = 0;
@@ -182,7 +192,7 @@ public class ExportOlapPivot {
         }
 
 
-        HSSFRow row = sheet.createRow(++i);
+        Row row = sheet.createRow(++i);
 
         for (final JsonNode objNode : nodeFlags.get("data")) {
             row = sheet.createRow(i++);
@@ -202,16 +212,45 @@ public class ExportOlapPivot {
 
         LOGGER.warn("new!");
 
-        FileOutputStream out = new FileOutputStream(new File("fenixExport.xls"));
-        wb.write(out);
-        out.close();
+        String configFileName = outputConfigNode.get("config").get("fileName").asText();
 
-        response.setContentType("application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment; filename=fenixExport.xls");
+        String fileName = (!configFileName.equals("null") && !configFileName.equals("")) ? configFileName : "fenixExport";
 
-        wb.write(response.getOutputStream());
-        response.getOutputStream().close();
+        fileName = fileName + "." + extension;
 
+        if (wb instanceof HSSFWorkbook) {
+            FileOutputStream out = null;
+            try {
+                out = new FileOutputStream(new File(fileName));
+                wb.write(out);
+                out.close();
+                response.setContentType("application/vnd.ms-excel");
+                response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+                wb.write(response.getOutputStream());
+                response.getOutputStream().close();
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (wb instanceof XSSFWorkbook) {
+            FileOutputStream out = null;
+            try {
+                out = new FileOutputStream(new File(fileName));
+                wb.write(out);
+                out.close();
+                response.setContentType("application/vnd.ms-excel");
+                response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+                response.setContentType("application/vnd.openxml");
+                wb.write(response.getOutputStream());
+                response.getOutputStream().close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return wb;
     }
 

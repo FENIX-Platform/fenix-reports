@@ -23,11 +23,12 @@ public class AdapterOlapPivot implements HandlerAdapter {
     public Workbook createExport(Input input, Output output, HttpServletResponse response) {
         olapPivot = new ExportOlapPivot();
 
+        JsonNode outputConf = output.getOutput();
         JsonNode dataNode = input.getDataNode();
         String data = dataNode.get("data").toString();
         String flags = dataNode.get("flags").toString();
         try {
-            workbook= olapPivot.init(data, flags, response);
+            workbook= olapPivot.init(data, flags, response, outputConf);
         } catch (IOException e) {
             e.printStackTrace();
         }
