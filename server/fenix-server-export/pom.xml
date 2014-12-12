@@ -10,7 +10,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <resteasy.version>3.0.6.Final</resteasy.version>
-        <jackson.version>1.9.13</jackson.version>
+        <jackson.version>2.4.3</jackson.version>
+        <orient.version>1.7.8</orient.version>
     </properties>
 
 	<build>
@@ -21,6 +22,7 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
+                <version>2.3.2</version>
 			</plugin>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
@@ -30,12 +32,14 @@
                     </archive>
                     <warName>cstat</warName>
                 </configuration>
+                <version>2.1.1</version>
             </plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<skipTests>true</skipTests>
 				</configuration>
+                <version>2.10</version>
 			</plugin>
 		</plugins>
 	</build>
@@ -95,8 +99,6 @@
             <url>http://repository.codehaus.org/org/codehaus</url>
         </repository>
     </repositories>
-
-
 	<dependencies>
 
         <!-- J2EE -->
@@ -114,10 +116,38 @@
             <version>1.1</version>
         </dependency>
 
+        <!-- FENIX metadata standards -->
+        <dependency>
+            <groupId>org.fao.fenix</groupId>
+            <artifactId>fenix-commons-search</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.orientechnologies</groupId>
+            <artifactId>orientdb-object</artifactId>
+            <version>${orient.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.orientechnologies</groupId>
+            <artifactId>orientdb-client</artifactId>
+            <version>${orient.version}</version>
+        </dependency>
+
+
         <!-- Jackson custom configuration support -->
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
 

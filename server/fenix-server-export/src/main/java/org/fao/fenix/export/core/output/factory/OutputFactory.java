@@ -1,20 +1,22 @@
 package org.fao.fenix.export.core.output.factory;
 
 import org.codehaus.jackson.JsonNode;
+import org.fao.fenix.export.core.dto.PluginConfig;
 import org.fao.fenix.export.core.output.plugin.Output;
+import org.fao.fenix.export.core.output.plugin.Output2;
 import org.fao.fenix.export.core.utils.configuration.ConfiguratorURL;
 import org.fao.fenix.export.core.utils.reader.PropertiesReader;
 
-/**
- * Created by fabrizio on 12/1/14.
- */
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 public class OutputFactory {
 
     private static OutputFactory outputFactory;
 
-    private OutputFactory(){}
 
-    public static OutputFactory getInstance() {
+    public static OutputFactory getInstance() throws Exception {
 
         if (outputFactory == null)
         {
@@ -23,6 +25,30 @@ public class OutputFactory {
 
         return outputFactory;
     }
+
+
+    private Map<String, Class<Output2>> pluginsClass = new HashMap<>();
+
+    private OutputFactory() throws Exception {
+        String inputPluginsURL = ConfiguratorURL.getInstance().getOutputProperties();
+        Properties pluginsClassName = PropertiesReader.getInstance().getProperties(inputPluginsURL);
+
+        for (Map.Entry<Object, Object> entry : pluginsClassName.entrySet())
+            pluginsClass.put((String)entry.getKey(), (Class<Output2>)Class.forName((String)entry.getValue()));
+    }
+
+
+
+
+    //logic
+    public Output2 getPlugin(PluginConfig config) throws Exception {
+        Output2 plugin = pluginsClass.get(config.getPlugin()).newInstance();
+        plugin.init(config.getConfig());
+        return plugin;
+    }
+
+
+    // OLD--------------------
 
     private Output outputChosen;
 

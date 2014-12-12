@@ -1,0 +1,49 @@
+{
+    "resource" : {
+        "metadata" : {
+            "uid" : "test1",
+            "version" : "1.0",
+
+            "dsd" : {
+                "columns" : [
+                    {
+                        "id" : "col1",
+                        "dataType" : "code"
+                    },
+                    {
+                        "id" : "col2",
+                        "dataType" : "year"
+                    }
+                ]
+            }
+        },
+
+        "data" : [
+            [1,2,3],
+            [4,5,6],
+            [7,8,9]
+        ]
+    },
+
+    "input" : {
+        "plugin" : "p1",
+        "config" : {
+            "a" : "1",
+            "b" : 2,
+            "c" : [
+                1,2,3
+            ]
+        }
+    },
+
+    "output" : {
+        "plugin" : "p1",
+        "config" : {
+            "a" : "1",
+            "b" : 2,
+            "c" : [
+                1,2,3
+            ]
+        }
+    }
+}

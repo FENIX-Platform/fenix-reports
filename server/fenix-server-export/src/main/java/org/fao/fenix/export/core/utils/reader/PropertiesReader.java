@@ -24,14 +24,18 @@ public class PropertiesReader {
     }
 
     public String getPropertyValue(String urlProperties, String key){
-
-        Properties prop =  new Properties();
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(urlProperties);
         try {
-           prop.load(inputStream);
+            return getProperties(urlProperties).getProperty(key);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return prop.getProperty(key);
+        return null;
+    }
+    public Properties getProperties(String urlProperties) throws IOException {
+
+        Properties prop =  new Properties();
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(urlProperties);
+        prop.load(inputStream);
+        return prop;
     }
 }

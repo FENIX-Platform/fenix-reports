@@ -39,23 +39,16 @@ public class ExportOlapPivot {
         String extension = outputConfigNode.get("config").get("extension").asText();
         String sheetName = outputConfigNode.get("config").get("sheetName").asText();
 
-
         // Input
         Workbook wb = null;
         wb = (extension.equals("xls")) ? new HSSFWorkbook() : new XSSFWorkbook();
-
         Sheet sheet = (!sheetName.equals(null) && !sheetName.equals("")) ? wb.createSheet(sheetName) : wb.createSheet("Sheet");
 
-
-  
         /*BEGIN JACKSON*/
 
         ObjectMapper mapper = new ObjectMapper();
-
         JsonNode nodeData = mapper.readTree(new String(data.getBytes(), Charset.forName("UTF-8")).replaceAll("\\?", ""));
-
         ObjectMapper mapperFlag = new ObjectMapper();
-
         JsonNode nodeFlags = mapperFlag.readTree(new String(flags.getBytes(), Charset.forName("UTF-8")).replaceAll("\\?", ""));
 
         int i = 0;
@@ -72,23 +65,17 @@ public class ExportOlapPivot {
         while (nodeIterator.hasNext()) {
 
             Map.Entry<String, JsonNode> entry = (Map.Entry<String, JsonNode>) nodeIterator.next();
-
             head = entry.getKey().split("\\|\\|");
 
             if (i == 0) {
                 Row row = sheet.createRow(0);
                 int iii = 0;
-
-
                 for (final JsonNode objNode : nodeData.get("cols")) {
                     row.createCell((short) iii).setCellValue(objNode.asText());
                     iii++;
                 }
 
-
                 for (final JsonNode objNode : nodeData.get("header")) {
-
-
                     String[] tpheadcell = objNode.asText().split("\\|\\|");
                     String retHeadTmp = "";
                     for (String k : tpheadcell) {
@@ -112,8 +99,6 @@ public class ExportOlapPivot {
                 }
 
             }
-
-
             Row row = sheet.createRow(i + 1);
             boolean stop = true;
             int j = 0;
@@ -126,7 +111,6 @@ public class ExportOlapPivot {
                     if (stop
                             && i > 0
                             && Oldhead[j].replaceAll("<span class=\"ordre\">.*</span>", "").equals(ret1)) {
-
                         sheet.addMergedRegion(new CellRangeAddress(i, i + 1, jj, jj));
                         if (matcher.find()) {
 
@@ -134,21 +118,17 @@ public class ExportOlapPivot {
                             sheet.addMergedRegion(new CellRangeAddress(i, i + 1, jj, jj));
                         }
 
-
                     } else {
 
 
                         if (matcher.find()) {
-
                             row.createCell((short) jj).setCellValue(matcher.group(1));
                             jj++;
                             row.createCell((short) jj).setCellValue(matcher.group(2));
                         } else {
-
                             row.createCell((short) jj).setCellValue(ret1);
                         }
                         stop = false;
-
                     }
 
                 } catch (Exception ex) {
@@ -210,7 +190,6 @@ public class ExportOlapPivot {
         row.createCell((short) 0).setCellValue("Date :");
         row.createCell((short) 1).setCellValue(dateHour);
 
-        LOGGER.warn("new!");
 
         String configFileName = outputConfigNode.get("config").get("fileName").asText();
 
@@ -253,7 +232,5 @@ public class ExportOlapPivot {
         }
         return wb;
     }
-
-
 
 }

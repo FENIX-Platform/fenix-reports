@@ -5,10 +5,8 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
+import java.io.InputStream;
 
-/**
- * Created by fabrizio on 12/1/14.
- */
 public class JSONParser {
 
     private static final Logger LOGGER = org.apache.log4j.Logger.getLogger(JSONParser.class);
@@ -29,8 +27,6 @@ public class JSONParser {
 
     public JsonNode requestParamsToJSON(String parameter) {
 
-        LOGGER.warn("start request params to JSON");
-
         JsonNode result = null;
 
         ObjectMapper mapper = new ObjectMapper();
@@ -49,5 +45,15 @@ public class JSONParser {
         return result;
 
     }
+
+    public static <T> T toObject(String content, Class<T> objectClass) throws Exception {
+        return new ObjectMapper().readValue(content, objectClass);
+    }
+
+    public static <T> T toObject(InputStream content, Class<T> objectClass) throws Exception {
+        return new ObjectMapper().readValue(content, objectClass);
+    }
+
+
 
 }

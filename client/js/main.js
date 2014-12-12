@@ -5,6 +5,7 @@ requirejs.config({
     "baseUrl":              "js/tests/libs",
     "paths": {
         jquery            :  "jquery",
+        downloader        :  "jquery.fileDownloader",
         loaderData        :  "../core/export/DataLoader",
         export            :  "../core/export/ExportModule",
         form              :  "../core/viewForm", 
@@ -15,16 +16,21 @@ requirejs.config({
         olapInput         :  "../configurations/olap/input/input.json",
         olapMetadata      :  "../configurations/olap/metadata/metadata.json",
         olapOutput        :  "../configurations/olap/output/output.json",
-        tableData          :  "../configurations/table/data/data.json",
-        tableInput         :  "../configurations/table/input/input.json",
-        tableMetadata      :  "../configurations/table/metadata/metadata.json",
-        tableOutput        :  "../configurations/table/output/output.json"
+        tableData         :  "../configurations/table/data/data.json",
+        tableInput        :  "../configurations/table/input/input.json",
+        tableMetadata     :  "../configurations/table/metadata/metadata.json",
+        tableOutput       :  "../configurations/table/output/output.json",
+        tablePayload      :  "../configurations/table/entireJSON/payload.json"
     },
     "shim": {
         "bootstrap": {
             deps: ["jquery"]
-          }
-      }
+        },
+        "jquery.fileDownloader":{
+            deps:["jquery"]
+        }
+    }
+
 });
 
 

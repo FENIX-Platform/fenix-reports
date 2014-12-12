@@ -1,4 +1,4 @@
-package org.fao.fenix.export.core;
+package org.fao.fenix.export.services;
 
 import org.apache.log4j.Logger;
 import org.fao.fenix.export.core.controller.GeneralController;
@@ -10,12 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet
+@WebServlet(urlPatterns = "/fenix/export")
 public class ServletFenixExport extends HttpServlet {
 
     private static final Logger LOGGER = org.apache.log4j.Logger.getLogger(ServletFenixExport.class);
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        LOGGER.warn("after response header");
 
         String input = request.getParameter("input");
         String output = request.getParameter("output");

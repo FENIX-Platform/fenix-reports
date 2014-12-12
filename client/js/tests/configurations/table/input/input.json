@@ -1,5 +1,6 @@
 
 {
-    "plugin": "inputGrid"
+    "plugin": "inputGrid",
+    "config":{}
 
 }

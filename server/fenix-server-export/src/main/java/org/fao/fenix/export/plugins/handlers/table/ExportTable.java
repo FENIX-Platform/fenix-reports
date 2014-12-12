@@ -46,6 +46,8 @@ public class ExportTable {
 
         dataNode = input.getDataNode();
         metadataNode = input.getMetadataNode();
+
+
         inputConfigNode = input.getInputNode();
         outputConfigNode = output.getOutput();
 
