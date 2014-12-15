@@ -7,7 +7,6 @@ public class CoreOutput {
     private CoreOutputHeader header;
     private BufferedInputStream content;
 
-
     public CoreOutputHeader getHeader() {
         return header;
     }

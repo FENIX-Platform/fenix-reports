@@ -6,9 +6,7 @@ import org.codehaus.jackson.JsonNode;
 import org.fao.fenix.export.core.exportHandler.communication.HandlerAdapter;
 import org.fao.fenix.export.core.exportHandler.factory.HandlerFactory;
 import org.fao.fenix.export.core.input.factory.InputFactory;
-import org.fao.fenix.export.core.input.plugin.Input;
 import org.fao.fenix.export.core.output.factory.OutputFactory;
-import org.fao.fenix.export.core.output.plugin.Output;
 import org.fao.fenix.export.core.utils.parser.JSONParser;
 
 import javax.servlet.http.HttpServletResponse;
@@ -49,7 +47,7 @@ public class GeneralController {
         JsonNode outputJSONNode = this.jsonParser.requestParamsToJSON(this.output);
         JsonNode dataJSONNode = this.jsonParser.requestParamsToJSON(this.data);
         JsonNode metadataJSONNode = this.jsonParser.requestParamsToJSON(this.metadata);
-
+/*
         this.inputFactory = InputFactory.getInstance();
         Input inputChosen = inputFactory.init(inputJSONNode, dataJSONNode, metadataJSONNode);
 
@@ -60,7 +58,7 @@ public class GeneralController {
         handlerExport = this.handlerFactory.init(inputChosen);
 
         workbook = handlerExport.createExport(inputChosen,outputChosen,response);
-
+*/
         return workbook;
 
     }

@@ -10,10 +10,11 @@ import java.util.Map;
 public class InputTable2 extends Input2 {
 
     Resource resource;
+    Map<String, Object> config;
 
     @Override
     public void init(Map<String, Object> config, Resource resource) {
-        this.resource = resource;
+        this.resource = resource; this.config = config;
     }
 
     @Override

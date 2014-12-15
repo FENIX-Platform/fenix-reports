@@ -1,5 +1,6 @@
 package org.fao.fenix.export.core.input.factory;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
 import org.fao.fenix.commons.msd.dto.data.dataset.Resource;
 import org.fao.fenix.export.core.dto.PluginConfig;
@@ -16,6 +17,9 @@ import java.util.Properties;
  * Created by fabrizio on 12/1/14.
  */
 public class InputFactory {
+
+    private static final Logger LOGGER = Logger.getLogger(InputFactory.class);
+
 
 
     private static InputFactory inputFactory;
@@ -46,8 +50,13 @@ public class InputFactory {
 
     //logic
     public Input2 getPlugin(PluginConfig config, Resource resource) throws Exception {
+        LOGGER.warn("start");
         Input2 plugin = pluginsClass.get(config.getPlugin()).newInstance();
+        LOGGER.warn("plugin created");
+
         plugin.init(config.getConfig(), resource);
+        LOGGER.warn("plugin initialized");
+
         return plugin;
     }
 

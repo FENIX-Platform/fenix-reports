@@ -1,5 +1,6 @@
 package org.fao.fenix.export.core.controller;
 
+import org.apache.log4j.Logger;
 import org.fao.fenix.export.core.dto.CoreConfig;
 import org.fao.fenix.export.core.dto.CoreOutput;
 import org.fao.fenix.export.core.dto.CoreOutputHeader;
@@ -13,13 +14,18 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 
-
 public class GeneralController2 {
+
+    private static final Logger LOGGER = Logger.getLogger(GeneralController2.class);
+
+
     private Input2 inputPlugin;
     private Output2 outputPlugin;
 
     //INIT
     public GeneralController2(CoreConfig config) throws Exception {
+        LOGGER.warn("start creation of input and output plugins");
+        LOGGER.warn("inputPlugin creation");
         inputPlugin = InputFactory.getInstance().getPlugin(config.getInput(), config.getResource());
         outputPlugin = OutputFactory.getInstance().getPlugin(config.getOutput());
     }
@@ -31,6 +37,9 @@ public class GeneralController2 {
         if (output==null) {
             output = outputPlugin.getFile(inputPlugin.getResource());
         }
+
+        // TODO
+
         return output;
     }
 
@@ -47,8 +56,6 @@ public class GeneralController2 {
     public CoreOutputHeader getHeader() throws Exception {
         return flow().getHeader();
     }
-
-
 
 
     private void copy(BufferedInputStream input, OutputStream output) throws IOException {

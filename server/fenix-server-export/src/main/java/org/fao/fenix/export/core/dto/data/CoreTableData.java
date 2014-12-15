@@ -21,12 +21,12 @@ public class CoreTableData extends CoreData<Object[]> {
 
     @Override
     public MeIdentification getMetadata() {
-        return null;
+        return this.metadata;
     }
 
     @Override
     public Iterator<Object[]> getData() {
-        return null;
+        return this.data;
     }
 
     public void setMetadata(MeIdentification metadata) {

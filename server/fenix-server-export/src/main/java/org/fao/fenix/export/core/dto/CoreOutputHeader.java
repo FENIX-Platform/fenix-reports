@@ -6,8 +6,6 @@ public class CoreOutputHeader {
     private CoreOutputType type;
     private Integer size;
 
-
-
     public String getName() {
         return name;
     }

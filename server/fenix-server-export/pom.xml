@@ -12,6 +12,8 @@
         <resteasy.version>3.0.6.Final</resteasy.version>
         <jackson.version>2.4.3</jackson.version>
         <orient.version>1.7.8</orient.version>
+        <crossdomain.version>1.1</crossdomain.version>
+        <apachepoi.version>3.10.1</apachepoi.version>
     </properties>
 
 	<build>
@@ -113,7 +115,7 @@
         <dependency>
             <groupId>org.fao.fenix</groupId>
             <artifactId>fenix-cross-domain</artifactId>
-            <version>1.1</version>
+            <version>${crossdomain.version}</version>
         </dependency>
 
         <!-- FENIX metadata standards -->
@@ -174,7 +176,7 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.10.1</version>
+            <version>${apachepoi.version}</version>
         </dependency>
 
         <!-- Log4j -->
