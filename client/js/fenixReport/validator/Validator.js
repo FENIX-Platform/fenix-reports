@@ -1,45 +1,3 @@
-define(['jquery', 'text!olapInput', 'text!olapOutput', 'text!olapData', 'text!olapMetadata'],
-	function($, Input, Output,Data,Metadata){
-
-		'use strict'
-
-		function DataLoader(){}
-
-		DataLoader.prototype.getInput = function(){
-			if(Input){
-				return Input;
-			}
-
-		}
-
-		DataLoader.prototype.getOutput = function(){
-			if(Output){
-				return Output;
-			}
-
-		}
-
-
-		DataLoader.prototype.getData = function(){
-            debugger;
-			if(Data){
-				return Data;
-			}
-
-		}
-
-
-		DataLoader.prototype.getMetaData = function(){
-			if(Metadata){
-				return Metadata;
-			}
-
-		}
-
-		return DataLoader;
-
-})
-
 /**
  * Created by fabrizio on 12/15/14.
  */
@@ -60,7 +18,7 @@ define(['jquery'], function($){
 
     function Validator(){}
 
-    Validator.prototype.checkAll = function(resource, url){
+    Validator.prototype.checkAll = function(resource,input, output, url){
 
         var outputCondition = output && output!=null && output!='';
         var inputCondition =  input && input!=null && input!='';
@@ -103,15 +61,7 @@ define(['jquery'], function($){
 
     }
 
-    Validator.prototype.checkEveryField = function(resource, url){
-
-        var outputCondition = output && output!=null && output!='';
-        var inputCondition =  input && input!=null && input!='';
-        var inputPluginCondition = input['plugin'] && input['plugin']!=null && input['plugin']!='';
-        var outputPluginCondition= output['plugin'] && output['plugin']!=null && output['plugin']!='';
-        var dataCondition  = resource['data'] && resource['data']!=null && resource['data']!='';
-        var metadataCondition = resource['metadata'] && resource['metadata']!=null && resource['metadata']!='';
-        var urlCondition =  url && url!=null && url!='';
+    Validator.prototype.checkPayload = function(resource, url){
 
         var outputCondition = resource['output'] && resource['output']!=null && resource['output']!='';
         var inputCondition =  resource['input'] && resource['input']!=null && resource['input']!='';
@@ -119,8 +69,7 @@ define(['jquery'], function($){
         var outputPluginCondition= resource['output']['plugin'] && resource['output']['plugin']!=null && resource['output']['plugin']!='';
         var dataCondition  = resource['data'] && resource['data']!=null && resource['data']!='';
         var metadataCondition = resource['metadata'] && resource['metadata']!=null && resource['metadata']!='';
-        var urlCondition =  resource['url'] && resource['url']!=null && resource['url']!='';
-
+        var urlCondition =  url && url!=null && url!='';
 
         switch (false){
 

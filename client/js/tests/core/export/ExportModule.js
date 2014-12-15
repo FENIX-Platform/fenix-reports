@@ -1,9 +1,9 @@
-define(['jquery', 'text!form/form.html', 'loaderData', 'configurator'],
+define(['jquery', 'text!form/form.html', 'loaderData', 'configurator'], 
 	function($, Form, DataLoader, Configurator){
 
         'use strict'
 	
-		var dataLoader, configurator, downloader;
+		var dataLoader, configurator;
 
 
 		function ExportModule(){
@@ -29,43 +29,21 @@ define(['jquery', 'text!form/form.html', 'loaderData', 'configurator'],
 
 		ExportModule.prototype.createForm = function(){
 
-            /*
-
 			$('#toAppendForm').append(Form)
 			this.fillFields();
-
+			
 			document.getElementById('submitButton').click(function(e){
 	            e.preventDefault();
 	            e.stopImmediatePropagation();
 	        });
-	        */
+			
 
-            var jsonObj = dataLoader.getPayload()
-            var url = configurator.getUrlExport()
-            debugger;
-            $.ajax({
-                url: url,
-                crossDomain: true,
-
-                dataType: "json",
-                type: 'POST',
-                data: jsonObj,
-                contentType: 'application/json',
-                mimeType: 'application/json',
-                success: function(data) {
-
-                    alert('Hi');
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    alert("error occurred");
-                }
-
-            })
-        }
+		}
 
 		ExportModule.prototype.fillFields = function(){
 
 			document.getElementById('inputConfiguration').value = dataLoader.getInput();
+            debugger;
 			document.getElementById('outputConfiguration').value = dataLoader.getOutput();
 			document.getElementById('data').value = dataLoader.getData();
 			document.getElementById('metadata').value = dataLoader.getMetaData();
@@ -75,9 +53,8 @@ define(['jquery', 'text!form/form.html', 'loaderData', 'configurator'],
 
 			document.getElementById('fx-exportForm').setAttribute('action',url)
 
+
 		}
-
-
 
 	return ExportModule;
 })
