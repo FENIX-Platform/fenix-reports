@@ -18,8 +18,8 @@ import java.util.Properties;
  */
 public class InputFactory {
 
-    private static final Logger LOGGER = Logger.getLogger(InputFactory.class);
 
+    private static final Logger LOGGER = Logger.getLogger(InputFactory.class);
 
 
     private static InputFactory inputFactory;
@@ -35,7 +35,9 @@ public class InputFactory {
         return inputFactory;
     }
 
+
     private Map<String, Class<Input2>> pluginsClass = new HashMap<>();
+
 
     private InputFactory() throws Exception {
         String inputPluginsURL = ConfiguratorURL.getInstance().getInputProperties();
@@ -44,8 +46,6 @@ public class InputFactory {
         for (Map.Entry<Object, Object> entry : pluginsClassName.entrySet())
             pluginsClass.put((String)entry.getKey(), (Class<Input2>)Class.forName((String)entry.getValue()));
     }
-
-
 
 
     //logic

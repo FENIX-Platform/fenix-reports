@@ -2,15 +2,12 @@ package org.fao.fenix.export.core.controller;
 
 import org.apache.log4j.Logger;
 import org.fao.fenix.export.core.dto.CoreConfig;
-import org.fao.fenix.export.core.dto.CoreOutput;
 import org.fao.fenix.export.core.dto.CoreOutputHeader;
 import org.fao.fenix.export.core.input.factory.InputFactory;
 import org.fao.fenix.export.core.input.plugin.Input2;
 import org.fao.fenix.export.core.output.factory.OutputFactory;
 import org.fao.fenix.export.core.output.plugin.Output2;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 
 
@@ -27,42 +24,32 @@ public class GeneralController2 {
         LOGGER.warn("start creation of input and output plugins");
         LOGGER.warn("inputPlugin creation");
         inputPlugin = InputFactory.getInstance().getPlugin(config.getInput(), config.getResource());
+        LOGGER.warn(config.getOutput());
         outputPlugin = OutputFactory.getInstance().getPlugin(config.getOutput());
     }
 
 
     //Business
-    CoreOutput output;
-    public CoreOutput flow() throws Exception {
-        if (output==null) {
-            output = outputPlugin.getFile(inputPlugin.getResource());
+    boolean processed = false;
+    public void process() throws Exception {
+        if (!processed) {
+            outputPlugin.process(inputPlugin.getResource());
+            processed = true;
         }
-
-        // TODO
-
-        return output;
     }
 
     //Produce output data
-    public CoreOutput produce() throws Exception {
-        return flow();
-    }
-
-    public void produce(OutputStream outputStream) throws Exception {
-        copy(flow().getContent(), outputStream);
+    public void write(OutputStream outputStream) throws Exception {
+        process();
+        outputPlugin.write(outputStream);
     }
 
     //Utils
     public CoreOutputHeader getHeader() throws Exception {
-        return flow().getHeader();
+        process();
+        return outputPlugin.getHeader();
     }
 
 
-    private void copy(BufferedInputStream input, OutputStream output) throws IOException {
-        byte[] buffer = new byte[1024];
-        for (int c = input.read(buffer); c>0; c = input.read(buffer))
-            output.write(buffer,0,c);
-        input.close();
-        output.close();
-    }
+
 }

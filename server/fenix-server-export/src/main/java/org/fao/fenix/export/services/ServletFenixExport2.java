@@ -42,7 +42,7 @@ public class ServletFenixExport2 extends HttpServlet {
       //      response.setHeader("Content-Type", outputHeader.getType().getContentType());
       //      response.setHeader("Size", String.valueOf(outputHeader.getSize()));
             //Produce output
-            core.produce(response.getOutputStream());
+            core.write(response.getOutputStream());
         } catch (Exception e) {
             throw new ServletException("Output data producing error.", e);
         }

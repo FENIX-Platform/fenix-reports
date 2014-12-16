@@ -1,8 +1,6 @@
 package org.fao.fenix.export.core.output.factory;
 
-import org.codehaus.jackson.JsonNode;
 import org.fao.fenix.export.core.dto.PluginConfig;
-import org.fao.fenix.export.core.output.plugin.Output;
 import org.fao.fenix.export.core.output.plugin.Output2;
 import org.fao.fenix.export.core.utils.configuration.ConfiguratorURL;
 import org.fao.fenix.export.core.utils.reader.PropertiesReader;
@@ -38,8 +36,6 @@ public class OutputFactory {
     }
 
 
-
-
     //logic
     public Output2 getPlugin(PluginConfig config) throws Exception {
         Output2 plugin = pluginsClass.get(config.getPlugin()).newInstance();
@@ -49,7 +45,7 @@ public class OutputFactory {
 
 
     // OLD--------------------
-
+/*
     private Output outputChosen;
 
     public Output init(JsonNode jsonNodeOutput){
@@ -82,5 +78,5 @@ public class OutputFactory {
 
     public Output getOutputChosen(){
         return this.outputChosen;
-    }
+    } */
 }
