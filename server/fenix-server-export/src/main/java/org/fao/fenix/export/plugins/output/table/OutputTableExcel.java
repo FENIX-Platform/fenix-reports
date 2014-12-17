@@ -13,6 +13,7 @@ import org.fao.fenix.export.core.output.plugin.Output2;
 import org.fao.fenix.export.plugins.output.table.utilsMetadata.DatatypeFormatter;
 
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -60,6 +61,7 @@ public class OutputTableExcel extends Output2 {
         Sheet sh = ( sheetName != null && sheetName!= "")? wb.createSheet(sheetName) : wb.createSheet();
         int rowCounter = 0;
         rowCounter = createHeaders(sh,(ArrayList)collection,rowCounter, config.get("lang"));
+        rowCounter = createBody(sh,(ArrayList)collection,data ,rowCounter);
         //TODO
 /*        for(int rownum = 0; rownum < 1000; rownum++){
             Row row = sh.createRow(rownum);
@@ -108,7 +110,7 @@ public class OutputTableExcel extends Output2 {
 
     }
 
-    private int createBody(Sheet sheet,ArrayList<DSDColumn> columns, Iterator<Object> data, int rowCounter) throws NoSuchMethodException {
+    private int createBody(Sheet sheet,ArrayList<DSDColumn> columns, Iterator<Object[]> data, int rowCounter) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
         Class formatterClass = formatterValue.getClass();
 
@@ -119,6 +121,7 @@ public class OutputTableExcel extends Output2 {
             Row row = sheet.createRow(rowCounter);
 
 
+            ArrayList listColumns = ((ArrayList)(config.get("columns")));
             for(int i =0; i< rowData.length; i++){
 
                 String dataType = columns.get(i).getDataType().toString();
@@ -127,23 +130,18 @@ public class OutputTableExcel extends Output2 {
 
                 Class[] paramString =new Class[]{columns.get(i).getClass(), String.class, LinkedHashMap.class};
                 Method method = formatterClass.getMethod("getRight" + dataTypeMethod + "Format", paramString);
-        //        Object resultMethod = method.invoke(formatterValue, columns.get(i), data, (config.get("columns"));
+                LOGGER.warn(formatterValue.getClass().toString());
+                LOGGER.warn(data.getClass().toString());
+                LOGGER.warn( ((LinkedHashMap)listColumns.get(i)).getClass().toString());
 
-             //   row.createCell(i).setCellValue(formatterValue);
-
-
-
-
-
-
-
-
+                Object resultMethod = method.invoke(formatterValue, columns.get(i), rowData[i].toString(), ((LinkedHashMap)listColumns.get(i)));
+                row.createCell(i).setCellValue(resultMethod.toString());
             }
         }
 
 
 
-        return 0;
+        return rowCounter;
     }
 
     private void createFooters(){

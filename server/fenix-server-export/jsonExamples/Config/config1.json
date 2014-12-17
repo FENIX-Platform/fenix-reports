@@ -1,11 +1,9 @@
 {
-    "resource" : {
-        "metadata" : {
-            "uid": "",
+    "resource": {
+        "metadata": {
+            "uid": "test1",
+            "version": "1.0",
             "dsd": {
-                "contextSystem": "",
-                "datasource": "",
-                "aggregationRules": "",
                 "columns": [
                     {
                         "subject": {
@@ -17,8 +15,7 @@
                             }
                         },
                         "dataType": "code",
-                        "values":
-                        {
+                        "values": {
                             "codes": [
                                 {
                                     "codeList": {
@@ -336,7 +333,7 @@
                             "from": null,
                             "to": null
                         },
-                        "timeList": [] ,
+                        "timeList": [],
 
                         "columnLink": null,
 
@@ -374,7 +371,7 @@
                             "from": null,
                             "to": null
                         },
-                        "timeList": [] ,
+                        "timeList": [],
 
                         "columnLink": null,
 
@@ -416,7 +413,7 @@
                             "from": null,
                             "to": null
                         },
-                        "timeList": [] ,
+                        "timeList": [],
 
                         "columnLink": null,
 
@@ -458,7 +455,7 @@
                             "from": null,
                             "to": null
                         },
-                        "timeList": [] ,
+                        "timeList": [],
 
                         "columnLink": null,
 
@@ -489,7 +486,7 @@
                         },
                         "dataType": "string",
                         "values": {
-                            "codes":[]
+                            "codes": []
                         },
                         "domain": {
                             "codes": []
@@ -500,7 +497,7 @@
                             "from": null,
                             "to": null
                         },
-                        "timeList": [] ,
+                        "timeList": [],
 
                         "columnLink": null,
 
@@ -531,7 +528,7 @@
                         },
                         "dataType": "string",
                         "values": {
-                            "codes":[]
+                            "codes": []
                         },
                         "domain": {
                             "codes": []
@@ -542,7 +539,7 @@
                             "from": null,
                             "to": null
                         },
-                        "timeList": [] ,
+                        "timeList": [],
 
                         "columnLink": null,
 
@@ -573,7 +570,7 @@
                         },
                         "dataType": "date",
                         "values": {
-                            "codes":[]
+                            "codes": []
                         },
                         "domain": {
                             "codes": []
@@ -584,7 +581,7 @@
                             "from": null,
                             "to": null
                         },
-                        "timeList": [] ,
+                        "timeList": [],
 
                         "columnLink": null,
 
@@ -629,65 +626,65 @@
         ]
     },
 
-    "input" : {
-        "plugin" : "inputTable",
-        "configInput" : {
-            "extension" : "xls",
-            "b" : 2,
-            "c" : [
-                1,2,3
+    "input": {
+        "plugin": "inputTable",
+        "configInput": {
+            "extension": "xls",
+            "b": 2,
+            "c": [
+                1, 2, 3
             ]
         }
     },
 
-    "output" : {
-        "plugin" : "outputTable",
-        "configOutput":{
-            "lang" : "EN",
+    "output": {
+        "plugin": "outputTable",
+        "configOutput": {
+            "lang": "EN",
             "fileName": "tableFenixExport",
-            "title" : "Generic Table export",
+            "title": "Generic Table export",
             "extension": "xlsx",
             "sheetName": "mySheet",
-            "columns":[
+            "columns": [
                 {
-                    "formatDate":"",
-                    "formatCode":"",
-                    "formatValue":""
+                    "formatDate": "",
+                    "formatCode": "",
+                    "formatValue": ""
                 },
                 {
-                    "formatDate":"",
-                    "formatCode":"",
-                    "formatValue":""
+                    "formatDate": "",
+                    "formatCode": "",
+                    "formatValue": ""
                 },
                 {
-                    "formatDate":"",
-                    "formatCode":"",
-                    "formatValue":""
+                    "formatDate": "",
+                    "formatCode": "",
+                    "formatValue": ""
                 },
                 {
-                    "formatDate":"",
-                    "formatCode":"",
-                    "formatValue":"###,###.###"
+                    "formatDate": "",
+                    "formatCode": "",
+                    "formatValue": "###,###.###"
                 },
                 {
-                    "formatDate":"",
-                    "formatCode":"",
-                    "formatValue":""
+                    "formatDate": "",
+                    "formatCode": "",
+                    "formatValue": ""
                 },
                 {
-                    "formatDate":"",
-                    "formatCode":"",
-                    "formatValue":""
+                    "formatDate": "",
+                    "formatCode": "",
+                    "formatValue": ""
                 },
                 {
-                    "formatDate":"",
-                    "formatCode":"",
-                    "formatValue":""
+                    "formatDate": "",
+                    "formatCode": "",
+                    "formatValue": ""
                 },
                 {
-                    "formatDate":"dd-MM-yyyy",
-                    "formatCode":"",
-                    "formatValue":""
+                    "formatDate": "dd-MM-yyyy",
+                    "formatCode": "",
+                    "formatValue": ""
                 }
             ]
         }
