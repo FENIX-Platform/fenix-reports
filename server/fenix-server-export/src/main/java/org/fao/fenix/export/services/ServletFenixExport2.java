@@ -3,6 +3,7 @@ package org.fao.fenix.export.services;
 import org.apache.log4j.Logger;
 import org.fao.fenix.export.core.controller.GeneralController2;
 import org.fao.fenix.export.core.dto.CoreConfig;
+import org.fao.fenix.export.core.dto.CoreOutputHeader;
 import org.fao.fenix.export.core.utils.parser.JSONParser;
 
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 
 @WebServlet(urlPatterns = "/fenix/export2")
 public class ServletFenixExport2 extends HttpServlet {
@@ -23,7 +25,7 @@ public class ServletFenixExport2 extends HttpServlet {
 
         CoreConfig config = null;
         try {
-            config = JSONParser.toObject(request.getInputStream(), CoreConfig.class);
+            config = JSONParser.toObject(request.getParameter("payload"), CoreConfig.class);
         } catch (Exception e) {
             throw new ServletException("Configuration parsing exception.", e);
         }
@@ -37,12 +39,23 @@ public class ServletFenixExport2 extends HttpServlet {
 
         try {
             //Create header
-      //      CoreOutputHeader outputHeader = core.getHeader();
-      //      response.setHeader("file", outputHeader.getName());
-      //      response.setHeader("Content-Type", outputHeader.getType().getContentType());
-      //      response.setHeader("Size", String.valueOf(outputHeader.getSize()));
+           CoreOutputHeader outputHeader = core.getHeader();
+
+
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment; filename=test.xlsx");
+            response.setContentType("application/vnd.openxml");
+            /*
+
+           response.setHeader("Content-Disposition", "attachment; filename=\"" + outputHeader.getName());
+           response.setContentLength(outputHeader.getSize());
+           response.setContentType(outputHeader.getType().getContentType());
+           //response.setHeader("Size", String.valueOf(outputHeader.getSize()));
+
+            */
             //Produce output
-            core.write(response.getOutputStream());
+            OutputStream outputStream = response.getOutputStream();
+            core.write(outputStream);
         } catch (Exception e) {
             throw new ServletException("Output data producing error.", e);
         }

@@ -24,7 +24,7 @@ public class DatatypeFormatter {
 
 
     public void init(Object language) {
-        this.language = (language != null && language != "")? language.toString(): "EN";
+        this.language = (language != null && !language.equals(""))? language.toString(): "EN";
     }
 
 
@@ -34,7 +34,7 @@ public class DatatypeFormatter {
 
         if (!data.equals(null)) {
             Object outputFormatValue = format.get("formatValue");
-            String formatValue = (outputFormatValue != null && outputFormatValue.toString()!= "")? outputFormatValue.toString() : "###,###.###";
+            String formatValue = (outputFormatValue != null && !outputFormatValue.toString().equals(""))? outputFormatValue.toString() : "###,###.###";
             DecimalFormat df = new DecimalFormat(formatValue );
             result = Double.parseDouble(df.format(Double.parseDouble(data)));
         }
@@ -43,7 +43,7 @@ public class DatatypeFormatter {
     }
 
 
-    public String getRightStringFormat(DSDColumn column, String data, LinkedHashMap format) {
+    public String getRightTextFormat(DSDColumn column, String data, LinkedHashMap format) {
         return data;
     }
 
@@ -62,15 +62,24 @@ public class DatatypeFormatter {
                 Iterator<OjCode> codesIt = codeListIt.next().getCodes().iterator();
                 while (codesIt.hasNext() && notFound) {
                     OjCode ojCode = codesIt.next();
-                    if (ojCode.getCode() == data) {
+                    if (ojCode.getCode().equals(data)) {
                         label = chooseRightLabel(ojCode);
                         notFound = false;
                     }
                 }
             }
-            result = formatRightValue(format.get("formatCode").toString(), data, label);
+            Object outputFormatValue = format.get("formatCode");
+            String formatValue = outputFormatValue != null && !outputFormatValue.toString().equals("")? outputFormatValue.toString() : "$label";
+            result = formatRightValue(formatValue, data, label);
         }
         return result;
+    }
+
+
+    public String getRightCustomCodeodeFormat(DSDColumn column, String data, LinkedHashMap format) {
+
+        //TODO
+        return getRightCodeFormat(column,data,format);
     }
 
 
@@ -97,9 +106,10 @@ public class DatatypeFormatter {
 
 
     private String formatRightValue(String formatCode, String data, String  label) {
-        String result = label;
-        //TODO
-
+        String result = null;
+        if(formatCode.equals("$label")) {
+            result =  label;
+        }
         return result;
     }
 
@@ -111,7 +121,7 @@ public class DatatypeFormatter {
     }
 
 
-    public Boolean getRightBooleanFormat(DSDColumn column, String data, LinkedHashMap format) {
+    public Boolean getRightBoolFormat(DSDColumn column, String data, LinkedHashMap format) {
         Boolean result = null;
 
         if (!data.equals(null)) {
@@ -134,7 +144,7 @@ public class DatatypeFormatter {
         if (!data.equals(null)) {
             Object formatDateObj = format.get("formatDate");
 
-            String formatDateRequested = (formatDateObj != null && formatDateObj.toString() != "")? formatDateObj.toString(): "dd/MM/yyyy";
+            String formatDateRequested = (formatDateObj != null && !formatDateObj.toString().equals(""))? formatDateObj.toString(): "dd/MM/yyyy";
 
 
             SimpleDateFormat formatDate;
@@ -224,5 +234,11 @@ public class DatatypeFormatter {
         }
 
         return result;
+    }
+
+
+    public String getRightEnumerationformat(DSDColumn column, String data, LinkedHashMap format){
+        // TODO
+        return null;
     }
 }

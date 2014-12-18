@@ -2,7 +2,8 @@ package org.fao.fenix.export.core.dto;
 
 public enum CoreOutputType {
 
-    excel ("application/excel"); //TODO find right content type
+     xlsx ("application/vnd.openxml"),
+     xls("application/vnd.ms-excel");
 
     private String contentType;
 

@@ -8,6 +8,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.fao.fenix.commons.msd.dto.full.DSDColumn;
 import org.fao.fenix.commons.msd.dto.full.DSDDataset;
 import org.fao.fenix.export.core.dto.CoreOutputHeader;
+import org.fao.fenix.export.core.dto.CoreOutputType;
 import org.fao.fenix.export.core.dto.data.CoreData;
 import org.fao.fenix.export.core.output.plugin.Output2;
 import org.fao.fenix.export.plugins.output.table.utilsMetadata.DatatypeFormatter;
@@ -39,13 +40,18 @@ public class OutputTableExcel extends Output2 {
 
     @Override
     public CoreOutputHeader getHeader() throws Exception {
-        return null; //TODO
+
+        CoreOutputHeader coreOutputHeader = new CoreOutputHeader();
+        coreOutputHeader.setName("provaName");
+        coreOutputHeader.setSize(100);
+        coreOutputHeader.setType(CoreOutputType.xlsx);
+        return coreOutputHeader; //TODO
     }
 
     @Override
     public void write(OutputStream outputStream) throws Exception {
         wb.write(outputStream);
-        outputStream.close();
+   //     outputStream.close();
         wb.dispose();
     }
 
@@ -53,38 +59,17 @@ public class OutputTableExcel extends Output2 {
 
     private SXSSFWorkbook createExcel(Collection<DSDColumn> collection, Iterator<Object[]> data) throws Exception {
 
-        SXSSFWorkbook wb = new SXSSFWorkbook(100);
-        String sheetName  =((String)config.get("sheetName"));
         formatterValue = new DatatypeFormatter();
         formatterValue.init(config.get("lang"));
+
+        SXSSFWorkbook wb = new SXSSFWorkbook(100);
+        String sheetName  =((String)config.get("sheetName"));
 
         Sheet sh = ( sheetName != null && sheetName!= "")? wb.createSheet(sheetName) : wb.createSheet();
         int rowCounter = 0;
         rowCounter = createHeaders(sh,(ArrayList)collection,rowCounter, config.get("lang"));
         rowCounter = createBody(sh,(ArrayList)collection,data ,rowCounter);
-        //TODO
-/*        for(int rownum = 0; rownum < 1000; rownum++){
-            Row row = sh.createRow(rownum);
-            for(int cellnum = 0; cellnum < 10; cellnum++){
-                Cell cell = row.createCell(cellnum);
-                String address = new CellReference(cell).formatAsString();
-                cell.setCellValue(address);
-            }
 
-        }
-
-        // Rows with rownum < 900 are flushed and not accessible
-        for(int rownum = 0; rownum < 900; rownum++){
-            if (sh.getRow(rownum)!=null)
-                System.out.println("errore alla riga: "+rownum);
-        }
-
-        // ther last 100 rows are still in memory
-        for(int rownum = 900; rownum < 1000; rownum++){
-            if (sh.getRow(rownum)==null)
-                System.out.println("errore alla riga: "+rownum);
-        }
-*/
         return wb;
     }
 
