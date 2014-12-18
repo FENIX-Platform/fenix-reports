@@ -1,61 +1,52 @@
 {
     "plugin" : "outputTable",
     "config":{
+	"lang" : "EN",
         "fileName": "tableFenixExport",
         "title" : "Generic Table export",
         "extension": "xlsx",
         "sheetName": "mySheet",
-        "visualization": {
-            "columns":[
+        "columns":[
                 {
-                    "id":1,
-                    "representationType":"domain",
                     "formatDate":"",
+                    "formatCode":"",
                     "formatValue":""
                 },
                 {
-                    "id":2,
-                    "representationType":"domain",
                     "formatDate":"",
+                    "formatCode":"",
                     "formatValue":""
                 },
                 {
-                    "id":3,
-                    "representationType":"domain",
                     "formatDate":"",
+                    "formatCode":"",
                     "formatValue":""
                 },
                 {
-                    "id":4,
-                    "representationType":"domain",
                     "formatDate":"",
+                    "formatCode":"",
                     "formatValue":"###,###.###"
                 },
                 {
-                    "id":5,
-                    "representationType":"domain",
                     "formatDate":"",
+                    "formatCode":"",
                     "formatValue":""
                 },
                 {
-                    "id":6,
-                    "representationType":"domain",
                     "formatDate":"",
+                    "formatCode":"",
                     "formatValue":""
                 },
                 {
-                    "id":7,
-                    "representationType":"domain",
                     "formatDate":"",
+                    "formatCode":"",
                     "formatValue":""
                 },
                 {
-                    "id":8,
-                    "representationType":"domain",
                     "formatDate":"dd-MM-yyyy",
+                    "formatCode":"",
                     "formatValue":""
                 }
             ]
         }
-    }
 }

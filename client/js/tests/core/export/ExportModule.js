@@ -1,4 +1,4 @@
-define(['jquery', 'text!form/form.html', 'loaderData', 'configurator'], 
+define(['jquery', 'text!form/form.html', 'loaderData', 'configurator'],
 	function($, Form, DataLoader, Configurator){
 
         'use strict'
@@ -36,6 +36,8 @@ define(['jquery', 'text!form/form.html', 'loaderData', 'configurator'],
 	            e.preventDefault();
 	            e.stopImmediatePropagation();
 	        });
+
+
 			
 
 		}
@@ -43,7 +45,6 @@ define(['jquery', 'text!form/form.html', 'loaderData', 'configurator'],
 		ExportModule.prototype.fillFields = function(){
 
 			document.getElementById('inputConfiguration').value = dataLoader.getInput();
-            debugger;
 			document.getElementById('outputConfiguration').value = dataLoader.getOutput();
 			document.getElementById('data').value = dataLoader.getData();
 			document.getElementById('metadata').value = dataLoader.getMetaData();

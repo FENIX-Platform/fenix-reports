@@ -1,12 +1,18 @@
-define(['jquery', 'validator'], function ($, Validator) {
+define(['jquery', 'validator', 'text!fenixForm/formExport.html', 'jquery.fileDownloader'],
+    function ($, Validator, Form) {
 
-    var validator
+    var validator, formFenixDOM
 
     'use strict'
 
 
     function FenixReports() {
         validator = new Validator
+
+       $('#toAppendForm').append(Form)
+
+       // formFenixDOM = new DOMParser().parseFromString(Form, "text/xml");
+
     }
 
 
@@ -18,6 +24,10 @@ define(['jquery', 'validator'], function ($, Validator) {
         payload['output'] = input;
         payload['resource'] = resource;
 
+
+
+
+
         $.ajax({
             url: url,
             crossDomain: true,
@@ -27,9 +37,8 @@ define(['jquery', 'validator'], function ($, Validator) {
             data: JSON.stringify(payload),
             contentType: 'application/json',
             mimeType: 'application/json',
-            success: function (data) {
-
-                alert('Hi');
+            success: function() {
+                window.location = url;
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 alert("error occurred");
@@ -41,30 +50,59 @@ define(['jquery', 'validator'], function ($, Validator) {
 
     FenixReports.prototype.exportDataPayload = function (payload, url) {
 
+        this.onSubmitForm();
+
         validator.checkPayload(payload, url)
 
-        console.log('qqqqq')
+        debugger;
 
-        $.ajax({
-            url: url,
-            crossDomain: true,
+        document.getElementById('formStandardExportFenix').action = url
+        document.getElementById('payloadExportStandardFenix').value =JSON.stringify(payload);
 
-            dataType: "json",
-            type: 'POST',
-            data: JSON.stringify(payload),
-            contentType: 'application/json',
-            mimeType: 'application/json',
-            success: function (data) {
 
-                alert('Hi');
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert("error occurred");
-            }
-        })
 
+
+
+        /*
+
+                $.ajax({
+                    url: url,
+                    crossDomain: true,
+                    type: 'POST',
+                    data: JSON.stringify(payload),
+                    contentType: 'application/json',
+                    success: function (data) {
+
+                        alert('Hi');
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("error occurred");
+                        console.log(jqXHR)
+                        console.log(textStatus)
+                        console.log(errorThrown)
+                        debugger;
+
+
+                    }
+                })
+        */
         console.log('asdasdas')
     }
+
+
+  FenixReports.prototype.onSubmitForm = function () {
+
+      $(document).on("submit", "form.fileDownloadForm", function (e) {
+          $.fileDownload($(this).prop('action'), {
+              preparingMessageHtml: "We are preparing your report, please wait...",
+              failMessageHtml: "There was a problem generating your report, please try again.",
+              httpMethod: "POST",
+              data: $(this).serialize()
+          });
+          e.preventDefault(); //otherwise a normal form submit would occur
+      });
+
+  }
 
 
     return FenixReports;

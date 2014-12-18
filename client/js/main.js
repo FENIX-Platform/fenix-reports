@@ -7,10 +7,11 @@ requirejs.config({
         jquery            :  "jquery",
         loaderData        :  "../core/export/DataLoader",
         export            :  "../core/export/ExportModule",
-        form              :  "../core/viewForm", 
+        form              :  "../core/viewForm",
         config            :  "../configurations",
         validator         :  "../../fenixReport/validator/Validator",
         fenixExport       :  "../../fenixReport/FenixReports",
+        fenixForm         :  "../../fenixReport/form",
         services          :  "../configurations/services",
         configurator      :  "../configurations/services/configurator/Configurator",
         olapData          :  "../configurations/olap/data/data.json",
@@ -25,7 +26,10 @@ requirejs.config({
     "shim": {
         "bootstrap": {
             deps: ["jquery"]
-          }
+          },
+        "jquery.fileDownloader":{
+            deps:["jquery"]
+        }
       }
 });
 
