@@ -28,7 +28,7 @@ public class DatatypeFormatter {
     }
 
 
-    public Double getRightNumberFormat(DSDColumn column, String data, LinkedHashMap format) {
+    public Double getRightNumberFormat(DSDColumn column, Double data, LinkedHashMap format) {
 
         Double result = null;
 
@@ -36,7 +36,7 @@ public class DatatypeFormatter {
             Object outputFormatValue = format.get("formatValue");
             String formatValue = (outputFormatValue != null && !outputFormatValue.toString().equals(""))? outputFormatValue.toString() : "###,###.###";
             DecimalFormat df = new DecimalFormat(formatValue );
-            result = Double.parseDouble(df.format(Double.parseDouble(data)));
+            result = Double.parseDouble(df.format(data));
         }
         return result;
 
@@ -114,10 +114,8 @@ public class DatatypeFormatter {
     }
 
 
-    public String getRightLabelFormat(DSDColumn column, String data, LinkedHashMap format) {
-
-        // TODO
-        return data;
+    public String getRightLabelFormat(DSDColumn column, Map<String,Object> data, LinkedHashMap format) {
+        return data.get(language).toString();
     }
 
 
@@ -132,7 +130,7 @@ public class DatatypeFormatter {
     }
 
 
-    public Double getRightPercentageFormat(DSDColumn column, String data, LinkedHashMap format) {
+    public Double getRightPercentageFormat(DSDColumn column, Double data, LinkedHashMap format) {
         return getRightNumberFormat(column, data, format);
     }
 
@@ -237,8 +235,8 @@ public class DatatypeFormatter {
     }
 
 
-    public String getRightEnumerationformat(DSDColumn column, String data, LinkedHashMap format){
-        // TODO
-        return null;
+    public Double getRightEnumerationformat(DSDColumn column, Double data, LinkedHashMap format){
+
+        return getRightNumberFormat(column,data,format);
     }
 }

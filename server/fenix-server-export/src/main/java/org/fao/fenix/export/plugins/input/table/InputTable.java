@@ -1,19 +1,24 @@
 package org.fao.fenix.export.plugins.input.table;
 
+import org.fao.fenix.commons.msd.dto.data.dataset.Resource;
+import org.fao.fenix.export.core.dto.data.CoreData;
+import org.fao.fenix.export.core.dto.data.CoreTableData;
 import org.fao.fenix.export.core.input.plugin.Input;
 
-import java.util.TreeMap;
+import java.util.Map;
 
-/**
- * Created by fabrizio on 12/3/14.
- */
 public class InputTable extends Input {
 
+    Resource resource;
+    Map<String, Object> config;
 
     @Override
-    public TreeMap<?, ?> getDataObject() {
-        // TODO
+    public void init(Map<String, Object> config, Resource resource) {
+        this.resource = resource; this.config = config;
+    }
 
-        return null;
+    @Override
+    public CoreData getResource() {
+        return new CoreTableData(resource.getMetadata(), resource.getData().iterator());
     }
 }

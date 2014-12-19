@@ -1,22 +1,19 @@
 package org.fao.fenix.export.core.output.plugin;
 
-import org.codehaus.jackson.JsonNode;
+import org.fao.fenix.export.core.dto.CoreOutputHeader;
+import org.fao.fenix.export.core.dto.data.CoreData;
 
-/**
- * Created by fabrizio on 12/1/14.
- */
+import java.io.OutputStream;
+import java.util.Map;
+
 public abstract class Output {
 
-    private JsonNode output;
+    public abstract void init(Map<String,Object> config);
 
-    public void init(JsonNode output){
-        this.output = output;
-    }
+    public abstract void process(CoreData resource) throws Exception;
 
-    public JsonNode getOutput() {
-        return this.output;
-    }
+    public abstract CoreOutputHeader getHeader() throws Exception;
 
+    public abstract void write(OutputStream outputStream) throws Exception;
 
-    public abstract String getExportFormat();
 }

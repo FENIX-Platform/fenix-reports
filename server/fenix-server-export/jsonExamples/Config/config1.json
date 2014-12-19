@@ -2,634 +2,80 @@
     "resource": {
         "metadata": {
             "uid": "test1",
-            "version": "1.0",
+            "version": "1",
+
             "dsd": {
                 "columns": [
                     {
-                        "subject": {
-                            "link": "",
-                            "uid": "",
-                            "title": {
-                                "EN": "",
-                                "FR": ""
-                            }
-                        },
+                        "id": "col1",
                         "dataType": "code",
+                        "key": true,
                         "values": {
                             "codes": [
                                 {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
+                                    "codes": [
+                                        {
+                                            "code": "1",
+                                            "label": {
+                                                "EN": "Algeria"
+                                            }
+                                        },
+                                        {
+                                            "code": "2",
+                                            "label": {
+                                                "EN": "Angola"
+                                            }
+                                        },
+                                        {
+                                            "code": "3",
+                                            "label": {
+                                                "EN": "Angola"
+                                            }
                                         }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "1",
-                                        "title": {
-                                            "EN": "One",
-                                            "FR": ""
-                                        }
-                                    }
-                                },
-                                {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
-                                        }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "2",
-                                        "title": {
-                                            "EN": "Two",
-                                            "FR": ""
-                                        }
-                                    }
-                                },
-                                {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
-                                        }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "3",
-                                        "title": {
-                                            "EN": "Three",
-                                            "FR": ""
-                                        }
-                                    }
-                                },
-                                {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
-                                        }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "4",
-                                        "title": {
-                                            "EN": "Four",
-                                            "FR": ""
-                                        }
-                                    }
-                                },
-                                {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
-                                        }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "5",
-                                        "title": {
-                                            "EN": "Five",
-                                            "FR": ""
-                                        }
-                                    }
-                                },
-                                {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
-                                        }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "6",
-                                        "title": {
-                                            "EN": "Six",
-                                            "FR": ""
-                                        }
-                                    }
-                                },
-                                {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
-                                        }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "7",
-                                        "title": {
-                                            "EN": "Seven",
-                                            "FR": ""
-                                        }
-                                    }
-                                },
-                                {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
-                                        }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "8",
-                                        "title": {
-                                            "EN": "Eight",
-                                            "FR": ""
-                                        }
-                                    }
+                                    ]
                                 }
                             ]
                         },
-                        "domain": {
-                            "codes": [
-                                {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
-                                        }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "1",
-                                        "title": {
-                                            "EN": "One",
-                                            "FR": ""
-                                        }
-                                    }
-                                },
-                                {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
-                                        }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "2",
-                                        "title": {
-                                            "EN": "Two",
-                                            "FR": ""
-                                        }
-                                    }
-                                },
-                                {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
-                                        }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "3",
-                                        "title": {
-                                            "EN": "Three",
-                                            "FR": ""
-                                        }
-                                    }
-                                },
-                                {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
-                                        }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "4",
-                                        "title": {
-                                            "EN": "Four",
-                                            "FR": ""
-                                        }
-                                    }
-                                },
-                                {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
-                                        }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "5",
-                                        "title": {
-                                            "EN": "Five",
-                                            "FR": ""
-                                        }
-                                    }
-                                },
-                                {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
-                                        }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "6",
-                                        "title": {
-                                            "EN": "Six",
-                                            "FR": ""
-                                        }
-                                    }
-                                },
-                                {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
-                                        }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "7",
-                                        "title": {
-                                            "EN": "Seven",
-                                            "FR": ""
-                                        }
-                                    }
-                                },
-                                {
-                                    "codeList": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "title": {
-                                            "EN": "",
-                                            "FR": ""
-                                        }
-                                    },
-                                    "code": {
-                                        "codeList": "",
-                                        "version": "",
-                                        "code": "8",
-                                        "title": {
-                                            "EN": "Eight",
-                                            "FR": ""
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-
-                        "enumeration": null,
-                        "period": {
-                            "from": null,
-                            "to": null
-                        },
-                        "timeList": [],
-
-                        "columnLink": null,
-
-                        "key": true,
-
-                        "transposed": false,
-
-                        "virtual": false,
-
-                        "id": "1",
                         "title": {
-                            "EN": "First Column",
-                            "FR": ""
-                        },
-                        "supplemental": {
-                            "EN": "",
+                            "EN": "NAtions",
                             "FR": ""
                         }
                     },
                     {
-                        "subject": {
-                            "link": "",
-                            "uid": "",
-                            "title": {
-                                "EN": "",
-                                "FR": ""
-                            }
-                        },
-                        "dataType": "string",
-                        "values": {},
-                        "domain": {},
-
-                        "enumeration": null,
-                        "period": {
-                            "from": null,
-                            "to": null
-                        },
-                        "timeList": [],
-
-                        "columnLink": null,
-
+                        "id": "col2",
+                        "dataType": "year",
                         "key": true,
-
-                        "transposed": false,
-
-                        "virtual": false,
-
-                        "id": "2",
                         "title": {
-                            "EN": "Country",
-                            "FR": ""
-                        },
-                        "supplemental": {
-                            "EN": "",
+                            "EN": "date",
                             "FR": ""
                         }
+
                     },
                     {
-                        "subject": {
-                            "link": "",
-                            "uid": "",
-                            "title": {
-                                "EN": "",
-                                "FR": ""
-                            }
-                        },
-                        "dataType": "string",
-                        "values": {
-                            "codes": []
-                        },
-                        "domain": {
-                            "codes": []
-                        },
-
-                        "enumeration": null,
-                        "period": {
-                            "from": null,
-                            "to": null
-                        },
-                        "timeList": [],
-
-                        "columnLink": null,
-
-                        "key": true,
-
-                        "transposed": false,
-
-                        "virtual": false,
-
-                        "id": "3",
-                        "title": {
-                            "EN": "UM",
-                            "FR": ""
-                        },
-                        "supplemental": {
-                            "EN": "",
-                            "FR": ""
-                        }
-                    },
-                    {
-                        "subject": {
-                            "link": "",
-                            "uid": "",
-                            "title": {
-                                "EN": "value",
-                                "FR": ""
-                            }
-                        },
+                        "id": "col2",
                         "dataType": "number",
-                        "values": {
-                            "codes": []
-                        },
-                        "domain": {
-                            "codes": []
-                        },
-
-                        "enumeration": null,
-                        "period": {
-                            "from": null,
-                            "to": null
-                        },
-                        "timeList": [],
-
-                        "columnLink": null,
-
                         "key": true,
-
-                        "transposed": false,
-
-                        "virtual": false,
-
-                        "id": "4",
                         "title": {
-                            "EN": "Value",
-                            "FR": ""
-                        },
-                        "supplemental": {
-                            "EN": "",
+                            "EN": "value",
                             "FR": ""
                         }
-                    },
-                    {
-                        "subject": {
-                            "link": "",
-                            "uid": "",
-                            "title": {
-                                "EN": "",
-                                "FR": ""
-                            }
-                        },
-                        "dataType": "string",
-                        "values": {
-                            "codes": []
-                        },
-                        "domain": {
-                            "codes": []
-                        },
 
-                        "enumeration": null,
-                        "period": {
-                            "from": null,
-                            "to": null
-                        },
-                        "timeList": [],
-
-                        "columnLink": null,
-
-                        "key": true,
-
-                        "transposed": false,
-
-                        "virtual": false,
-
-                        "id": "5",
-                        "title": {
-                            "EN": "Flags",
-                            "FR": ""
-                        },
-                        "supplemental": {
-                            "EN": "",
-                            "FR": ""
-                        }
-                    },
-                    {
-                        "subject": {
-                            "link": "",
-                            "uid": "",
-                            "title": {
-                                "EN": "",
-                                "FR": ""
-                            }
-                        },
-                        "dataType": "string",
-                        "values": {
-                            "codes": []
-                        },
-                        "domain": {
-                            "codes": []
-                        },
-
-                        "enumeration": null,
-                        "period": {
-                            "from": null,
-                            "to": null
-                        },
-                        "timeList": [],
-
-                        "columnLink": null,
-
-                        "key": true,
-
-                        "transposed": false,
-
-                        "virtual": false,
-
-                        "id": "6",
-                        "title": {
-                            "EN": "Notes",
-                            "FR": ""
-                        },
-                        "supplemental": {
-                            "EN": "",
-                            "FR": ""
-                        }
-                    },
-                    {
-                        "subject": {
-                            "link": "",
-                            "uid": "",
-                            "title": {
-                                "EN": "",
-                                "FR": ""
-                            }
-                        },
-                        "dataType": "date",
-                        "values": {
-                            "codes": []
-                        },
-                        "domain": {
-                            "codes": []
-                        },
-
-                        "enumeration": null,
-                        "period": {
-                            "from": null,
-                            "to": null
-                        },
-                        "timeList": [],
-
-                        "columnLink": null,
-
-                        "key": true,
-
-                        "transposed": false,
-
-                        "virtual": false,
-
-                        "id": "7",
-                        "title": {
-                            "EN": "input Date",
-                            "FR": ""
-                        },
-                        "supplemental": {
-                            "EN": "",
-                            "FR": ""
-                        }
                     }
                 ]
             }
         },
 
         "data": [
-
-            ["5", "England", "Tonnes", 300, "G,H", "Note1", 20140624],
-
-            ["6", "France", "Tonnes", 300, "G,H", "Note1", 20140624],
-
-            ["5", "Russia", "Tonnes", 300, "G,H", "Note1", 20140624],
-
-            ["5", "Iceland", "Tonnes", 300, "G,H", "Note1", 20140624],
-
-            ["6", "Spain", "Tonnes", 300, "G,H", "Note1", 20140624],
-
-            ["6", "France", "Tonnes", 300, "G,H", "Note1", 20140624],
-
-            ["5", "Luxembourg", "Tonnes", 300, "G,H", "Note1", 20140624],
-
-            ["5", "England", "Tonnes", 300, "G,H", "Note1", 20140624]
-
+            ["1", 2001, 13,{"EN":"labelEN", "FR": "labelFR"}, "c1"],
+            ["2", 2003, 6,{"EN":"labelEN", "FR": "labelFR"},"c2"],
+            ["3", 2006, 9,{"EN":"labelEN", "FR": "labelFR"},"c1"]
         ]
     },
 
     "input": {
         "plugin": "inputTable",
-        "configInput": {
-            "extension": "xls",
+        "config": {
+            "a": "1",
             "b": 2,
             "c": [
                 1, 2, 3
@@ -639,54 +85,25 @@
 
     "output": {
         "plugin": "outputTable",
-        "configOutput": {
-            "lang": "EN",
-            "fileName": "tableFenixExport",
-            "title": "Generic Table export",
-            "extension": "xlsx",
-            "sheetName": "mySheet",
+        "config": {
             "columns": [
                 {
                     "formatDate": "",
-                    "formatCode": "",
-                    "formatValue": ""
+                    "formatValue": "",
+                    "formatCode": ""
                 },
                 {
                     "formatDate": "",
-                    "formatCode": "",
-                    "formatValue": ""
+                    "formatValue": "",
+                    "formatCode": ""
                 },
                 {
                     "formatDate": "",
-                    "formatCode": "",
-                    "formatValue": ""
-                },
-                {
-                    "formatDate": "",
-                    "formatCode": "",
-                    "formatValue": "###,###.###"
-                },
-                {
-                    "formatDate": "",
-                    "formatCode": "",
-                    "formatValue": ""
-                },
-                {
-                    "formatDate": "",
-                    "formatCode": "",
-                    "formatValue": ""
-                },
-                {
-                    "formatDate": "",
-                    "formatCode": "",
-                    "formatValue": ""
-                },
-                {
-                    "formatDate": "dd-MM-yyyy",
-                    "formatCode": "",
-                    "formatValue": ""
+                    "formatValue": "",
+                    "formatCode": ""
                 }
             ]
+
         }
     }
 }
