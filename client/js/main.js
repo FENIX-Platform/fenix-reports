@@ -1,35 +1,16 @@
-var olapData = ""
-
-// Place third party dependencies in the lib folder
 requirejs.config({
-    "baseUrl":              "js/tests/libs",
+    "baseUrl":              "js/libs",
     "paths": {
         jquery            :  "jquery",
-        loaderData        :  "../core/export/DataLoader",
-        export            :  "../core/export/ExportModule",
-        form              :  "../core/viewForm",
-        config            :  "../configurations",
-        validator         :  "../../fenixReport/validator/Validator",
-        fenixExport       :  "../../fenixReport/FenixReports",
-        fenixForm         :  "../../fenixReport/form",
-        services          :  "../configurations/services",
-        configurator      :  "../configurations/services/configurator/Configurator",
-        olapData          :  "../configurations/olap/data/data.json",
-        olapInput         :  "../configurations/olap/input/input.json",
-        olapMetadata      :  "../configurations/olap/metadata/metadata.json",
-        olapOutput        :  "../configurations/olap/output/output.json",
-        tableData          :  "../configurations/table/data/data.json",
-        tableInput         :  "../configurations/table/input/input.json",
-        tableMetadata      :  "../configurations/table/metadata/metadata.json",
-        tableOutput        :  "../configurations/table/output/output.json"
+        testEnv           :  "../scripts/fenixReports/test",
+        testfakeClient    :  "../scripts/fenixReports/test/fakeHost/FakeHost",
+        validator         :  "../scripts/fenixReports/core/validator/Validator",
+        fenixExport       :  "../scripts/fenixReports/core/FenixReports"
     },
     "shim": {
         "bootstrap": {
             deps: ["jquery"]
-          },
-        "jquery.fileDownloader":{
-            deps:["jquery"]
-        }
+          }
       }
 });
 
