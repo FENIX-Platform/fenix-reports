@@ -7,7 +7,7 @@ define(['jquery','fenixExport', 'text!testEnv/payload/config1.json'], function($
 
     function FakeHost(){
         fenixExport = new FenixExport;
-        payload = Payload;
+        payload = JSON.parse(Payload);
     }
 
 
@@ -17,6 +17,8 @@ define(['jquery','fenixExport', 'text!testEnv/payload/config1.json'], function($
         console.log('fakeHost.init')
 
         var url = "http://localhost:8080/fenix/export2"
+
+        console.log(payload)
 
 
         $('#btn').on('click', function(e){

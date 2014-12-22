@@ -1,27 +1,35 @@
+// Place third party dependencies in the lib folder
 requirejs.config({
-    "baseUrl":              "js/libs",
+    "baseUrl":              "js/scripts/libs",
     "paths": {
         jquery            :  "jquery",
-        testEnv           :  "../scripts/fenixReports/test",
-        testfakeClient    :  "../scripts/fenixReports/test/fakeHost/FakeHost",
-        validator         :  "../scripts/fenixReports/core/validator/Validator",
-        fenixExport       :  "../scripts/fenixReports/core/FenixReports"
+        testEnv           :  "../fenixReports/test",
+        validator         :  "../fenixReports/core/validator/Validator",
+        fenixExport       :  "../fenixReports/core/FenixReports",
+        testfakeClient    :  "../fenixReports/test/fakeHost/FakeHost"
     },
     "shim": {
         "bootstrap": {
             deps: ["jquery"]
-          }
-      }
+        }
+    }
 });
 
 
 require(["../../IndexContext", "domReady!", "bootstrap"], function(IndexContext) {
     console.log("index.js() - require() on domReady!");
 
-   var indexContext = new IndexContext;
+    var indexContext = new IndexContext;
     indexContext.init();
 
 });
+
+
+
+
+
+
+
 
 
 

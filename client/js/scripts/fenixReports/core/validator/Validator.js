@@ -1,7 +1,7 @@
 /**
  * Created by fabrizio on 12/15/14.
  */
-define(['../../../libs/jquery'], function($){
+define(['jquery'], function($){
 
     'use strict'
 
