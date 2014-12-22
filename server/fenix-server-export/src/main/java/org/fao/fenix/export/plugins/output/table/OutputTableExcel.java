@@ -130,7 +130,7 @@ public class OutputTableExcel extends Output {
                 String methodName = mapMethods.get(i).keySet().iterator().next();
                 Method method = formatterClass.getMethod(methodName,mapMethods.get(i).get(methodName));
 
-                Object resultMethod = method.invoke(formatterValue, columns.get(i), rowData[i].toString(), ((LinkedHashMap)listConfigColumns.get(i)));
+                Object resultMethod = method.invoke(formatterValue, columns.get(i), rowData[i], ((LinkedHashMap)listConfigColumns.get(i)));
                 row.createCell(i).setCellValue(resultMethod.toString());
             }
         }

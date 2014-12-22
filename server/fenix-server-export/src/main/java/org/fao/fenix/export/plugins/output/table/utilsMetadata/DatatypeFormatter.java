@@ -28,7 +28,7 @@ public class DatatypeFormatter {
     }
 
 
-    public Double getRightNumberFormat(DSDColumn column, Double data, LinkedHashMap format) {
+    public Double getRightNumberFormat(DSDColumn column, Object data, LinkedHashMap format) {
 
         Double result = null;
 
@@ -43,12 +43,12 @@ public class DatatypeFormatter {
     }
 
 
-    public String getRightTextFormat(DSDColumn column, String data, LinkedHashMap format) {
-        return data;
+    public String getRightTextFormat(DSDColumn column, Object data, LinkedHashMap format) {
+        return data.toString();
     }
 
 
-    public String getRightCodeFormat(DSDColumn column, String data, LinkedHashMap format) {
+    public String getRightCodeFormat(DSDColumn column, Object data, LinkedHashMap format) {
 
         String result = null;
         String label = null;
@@ -62,7 +62,7 @@ public class DatatypeFormatter {
                 Iterator<OjCode> codesIt = codeListIt.next().getCodes().iterator();
                 while (codesIt.hasNext() && notFound) {
                     OjCode ojCode = codesIt.next();
-                    if (ojCode.getCode().equals(data)) {
+                    if (ojCode.getCode().equals(data.toString())) {
                         label = chooseRightLabel(ojCode);
                         notFound = false;
                     }
@@ -70,13 +70,13 @@ public class DatatypeFormatter {
             }
             Object outputFormatValue = format.get("formatCode");
             String formatValue = outputFormatValue != null && !outputFormatValue.toString().equals("")? outputFormatValue.toString() : "$label";
-            result = formatRightValue(formatValue, data, label);
+            result = formatRightValue(formatValue, data.toString(), label);
         }
         return result;
     }
 
 
-    public String getRightCustomCodeodeFormat(DSDColumn column, String data, LinkedHashMap format) {
+    public String getRightCustomCodeFormat(DSDColumn column, Object data, LinkedHashMap format) {
 
         //TODO
         return getRightCodeFormat(column,data,format);
@@ -114,28 +114,28 @@ public class DatatypeFormatter {
     }
 
 
-    public String getRightLabelFormat(DSDColumn column, Map<String,Object> data, LinkedHashMap format) {
-        return data.get(language).toString();
+    public String getRightLabelFormat(DSDColumn column, LinkedHashMap data, LinkedHashMap format) {
+        return (String)data.get(language);
     }
 
 
-    public Boolean getRightBoolFormat(DSDColumn column, String data, LinkedHashMap format) {
+    public Boolean getRightBoolFormat(DSDColumn column, Object data, LinkedHashMap format) {
         Boolean result = null;
 
         if (!data.equals(null)) {
-            result = Boolean.parseBoolean(data);
+            result = (Boolean)data;
         }
 
         return result;
     }
 
 
-    public Double getRightPercentageFormat(DSDColumn column, Double data, LinkedHashMap format) {
+    public Double getRightPercentageFormat(DSDColumn column, Object data, LinkedHashMap format) {
         return getRightNumberFormat(column, data, format);
     }
 
 
-    public String getRightDateFormat(DSDColumn column, String data, LinkedHashMap format) {
+    public String getRightDateFormat(DSDColumn column, Object data, LinkedHashMap format) {
 
         String result = null;
 
@@ -161,7 +161,7 @@ public class DatatypeFormatter {
     }
 
 
-    public String getRightYearFormat(DSDColumn column, String data, LinkedHashMap format) {
+    public String getRightYearFormat(DSDColumn column, Object data, LinkedHashMap format) {
         String result = null;
 
         if (!data.equals(null)) {
@@ -186,7 +186,7 @@ public class DatatypeFormatter {
     }
 
 
-    public String getRightMonthFormat(DSDColumn column, String data, LinkedHashMap format) {
+    public String getRightMonthFormat(DSDColumn column, Object data, LinkedHashMap format) {
         String result = null;
 
         if (!data.equals(null)) {
@@ -210,7 +210,7 @@ public class DatatypeFormatter {
     }
 
 
-    public String getRightTimeFormat(DSDColumn column, String data, LinkedHashMap format) {
+    public String getRightTimeFormat(DSDColumn column, Object data, LinkedHashMap format) {
         String result = null;
 
         if (!data.equals(null)) {
@@ -235,7 +235,7 @@ public class DatatypeFormatter {
     }
 
 
-    public Double getRightEnumerationformat(DSDColumn column, Double data, LinkedHashMap format){
+    public Double getRightEnumerationformat(DSDColumn column, Object data, LinkedHashMap format){
 
         return getRightNumberFormat(column,data,format);
     }
