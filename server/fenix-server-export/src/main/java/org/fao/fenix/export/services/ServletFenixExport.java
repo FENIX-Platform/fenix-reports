@@ -71,19 +71,9 @@ public class ServletFenixExport extends HttpServlet {
         if (outputHeader!=null) {
             File tmpFile = new File(tmpFolder,request.getParameter("id"));
             if (tmpFile.exists()) {
-                response.setContentType("application/vnd.ms-excel");
-                response.setHeader("Content-Disposition", "attachment; filename=test.xlsx");
-                response.setContentType("application/vnd.openxml");
-                tmpFile.length(); //TODO
-
-                /*
-
-               response.setHeader("Content-Disposition", "attachment; filename=\"" + outputHeader.getName());
-               response.setContentLength(outputHeader.getSize());
-               response.setContentType(outputHeader.getType().getContentType());
-               //response.setHeader("Size", String.valueOf(outputHeader.getSize()));
-
-                */
+                response.setContentType(outputHeader.getType().getContentType());
+                response.setHeader("Content-Disposition", "attachment; filename="+outputHeader.getName());
+                response.setContentLengthLong(tmpFile.length());
 
 
                 writeFile(tmpFile, response.getOutputStream());
