@@ -15,13 +15,17 @@ define(['jquery', 'validator'], function ($, Validator) {
 
         validator.checkPayload(payload, url)
 
+        var that = this;
+
         $.ajax({
             url: url,
             crossDomain: true,
             type: 'POST',
             data: JSON.stringify(payload),
             contentType: 'application/json',
+            beforeSend: that.loadAnimatedGif(),
             success: function (data) {
+                that.removeAnimatedGif();
                 console.log('success export')
                 window.location = data;
             },
@@ -36,6 +40,19 @@ define(['jquery', 'validator'], function ($, Validator) {
             }
         })
 
+
+    }
+
+
+    FenixReports.prototype.loadAnimatedGif = function(){
+        $( "body" ).append('<div id="fenixExportLoaderImage"/>');
+        debugger;
+    }
+
+
+    FenixReports.prototype.removeAnimatedGif = function(){
+        var element = document.getElementById("fenixExportLoaderImage")
+        if(element){element.parentNode.removeChild(element)}
     }
 
 
