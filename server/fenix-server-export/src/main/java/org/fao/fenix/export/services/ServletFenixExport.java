@@ -73,8 +73,7 @@ public class ServletFenixExport extends HttpServlet {
             if (tmpFile.exists()) {
                 response.setContentType(outputHeader.getType().getContentType());
                 response.setHeader("Content-Disposition", "attachment; filename="+outputHeader.getName());
-                response.setContentLengthLong(tmpFile.length());
-
+                response.setContentLength((int)tmpFile.length());
 
                 writeFile(tmpFile, response.getOutputStream());
                 tmpFile.delete();
@@ -94,7 +93,6 @@ public class ServletFenixExport extends HttpServlet {
     private String createTmpFileURL(HttpServletRequest request, File tmpFile) {
         return request.getRequestURL().toString() + "?id=" + tmpFile.getName();
     }
-
 
     private void writeFile(File file, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
