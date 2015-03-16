@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-/**
- * Created by fabrizio on 12/1/14.
- */
+
 public class PropertiesReader {
 
     private static PropertiesReader readerInstance;

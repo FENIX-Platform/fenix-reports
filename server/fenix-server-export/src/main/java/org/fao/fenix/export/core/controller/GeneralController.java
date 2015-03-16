@@ -9,6 +9,7 @@ import org.fao.fenix.export.core.output.factory.OutputFactory;
 import org.fao.fenix.export.core.output.plugin.Output;
 
 import java.io.OutputStream;
+import java.util.Date;
 
 public class GeneralController {
 
@@ -36,6 +37,9 @@ public class GeneralController {
 
     //Produce output data
     public void write(OutputStream outputStream) throws Exception {
+        System.out.println("start");
+
+        System.out.println(new Date().toString());
         process();
         outputPlugin.write(outputStream);
     }

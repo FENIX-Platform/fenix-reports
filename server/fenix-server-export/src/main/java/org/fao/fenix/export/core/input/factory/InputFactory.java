@@ -11,9 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-/**
- * Created by fabrizio on 12/1/14.
- */
+
 public class InputFactory {
 
 
