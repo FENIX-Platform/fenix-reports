@@ -150,8 +150,7 @@ public class DataCreator {
 
                             } else if (keyObj.equals(REF_FIELD)) {
 
-
-
+                                
                             } else if(keyObj.equals(PATTERN_PROPERTIES_FIELD)){
 
                                 if(mapFieldDSD.getValue().get(FOLLOW_PATTERN_PROPERTIES)!= null && mapFieldDSD.getValue().get(FOLLOW_PATTERN_PROPERTIES).get(TYPE_FIELD).asText().equals(STRING_TYPE)){
