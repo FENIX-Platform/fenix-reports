@@ -59,10 +59,6 @@ public class DataCreator {
                 System.out.println("");
             }
 
-            /*
-            String methodString = "get" + key.substring(0, 1).toUpperCase() + key.substring(1);
-            Method method = MeIdentification.class.getMethod(methodString, null);
-            Object returnedValue = method.invoke(meIdentification, null);*/
 
             if (returnedValue != null) {
                 JsonNode tempField = mapDsdTmp.getValue().get(TITLE_FIELD);
@@ -91,23 +87,7 @@ public class DataCreator {
                     }
 
                 }
-                   /* if (key.equals("contacts") || mapDsdTmp.getValue().get(TYPE_FIELD) != null && mapDsdTmp.getValue().get(TYPE_FIELD).asText().equals(STRING_TYPE)  ) {
-                        if (key.equals("contacts")) {
-                            this.metaDataCleaned.put("Contacts", returnedValue);
-                        } else {
-                            this.metaDataCleaned.put(tempField.get(LANG.toLowerCase()).asText(), returnedValue);
-                        }
-                    }else {
-                        if (mapDsdTmp.getValue().get(REF_FIELD) != null) {
-                            JsonNode msdRef = getMdsdObjectFromReference(mapDsdTmp.getValue().get(REF_FIELD).asText());
-                            this.metaDataCleaned.put(tempField.get(LANG.toLowerCase()).asText(), fillRecursive(msdRef.fields(), returnedValue));
-                        }
-                        if (mapDsdTmp.getValue().get() != null) {
-                            JsonNode msdRef = getMdsdObjectFromReference(mapDsdTmp.getValue().get(REF_FIELD).asText());
-                            this.metaDataCleaned.put(tempField.get(LANG.toLowerCase()).asText(), fillRecursive(msdRef.fields(), returnedValue));
-                        }
-                    }
-                }*/
+
             }
         }
         System.out.println("finish!");
@@ -137,27 +117,8 @@ public class DataCreator {
 
                 case REF_FIELD:
 
-                    String[] path = mapFieldDSD.getValue().asText().substring(2).split("/");
+                    processReferenceField(mapFieldDSD, returnedValue, tempMap);
 
-                    String url = null;
-                    JsonNode res = null;
-                    JsonNode refMdsd = mdsd;
-                    for (int i = 0; i < path.length; i++) {
-                        res = refMdsd.get(path[i]);
-                        refMdsd = res;
-                    }
-
-                    if (refMdsd.get(PROPERTIES_FIELD) != null) {
-                        Iterator<Map.Entry<String, JsonNode>> properties = refMdsd.get(PROPERTIES_FIELD).fields();
-                        while (properties.hasNext()) {
-                            Map.Entry<String, JsonNode> tempProperty = properties.next();
-                            Object resultInvokation = invokeMethodByReflection(tempProperty.getKey(), returnedValue, false);
-                            if (resultInvokation != null) {
-                                tempMap.put(tempProperty.getKey(), fillRecursive(tempProperty.getValue().fields(), resultInvokation));
-                            }
-
-                        }
-                    }
                     break;
 
 
@@ -170,9 +131,8 @@ public class DataCreator {
                         case STRING_TYPE:
                         case NUMBER_TYPE:
 
-                            tempMap.put(LANG, returnedValue);
+                            return returnedValue;
 
-                            break;
 
                         case ARRAY_TYPE:
                             /*
@@ -186,8 +146,11 @@ public class DataCreator {
                             while (fields.hasNext()) {
                                 mapFieldDSD = fields.next();
                                 if (mapFieldDSD.getKey().equals(ITEMS_FIELD)) {
+                                    result = new ArrayList<Object>();
                                     for (int i = 0; i < ((ArrayList) returnedValue).size(); i++) {
-                                        result = new ArrayList<Object>();
+                                        if (((ArrayList) returnedValue).size() > 1) {
+                                            System.out.println("here!!");
+                                        }
                                         result.add(fillRecursive(mapFieldDSD.getValue().fields(), ((ArrayList) returnedValue).get(i)));
                                     }
                                     return result;
@@ -217,6 +180,9 @@ public class DataCreator {
                                 Iterator<Map.Entry<String, JsonNode>> tempIt = mapFieldDSD.getValue().fields();
                                 while (tempIt.hasNext()) {
                                     Map.Entry<String, JsonNode> objectValue = tempIt.next();
+                                    if (objectValue.getKey().equals("resourceRepresentationType")) {
+                                        System.out.println("stop!");
+                                    }
                                     Object msdValue = invokeMethodByReflection(objectValue.getKey(), returnedValue, false);
                                     if (msdValue != null)
                                         tempMap.put(objectValue.getKey(), fillRecursive(objectValue.getValue().fields(), msdValue));
@@ -251,22 +217,6 @@ public class DataCreator {
                     System.out.println("enum");
 
                     break;
-
-             /*   default:
-
-                    Object resultInvoked = invokeMethodByReflection(key, returnedValue, false);
-                    // if yes,  continue
-                    if (resultInvoked != null && mapFieldDSD.getValue().get(TYPE_FIELD) != null) {
-
-                        if (mapFieldDSD.getValue().get(TYPE_FIELD).asText().equals(STRING_TYPE)) {
-                            return resultInvoked;
-                        } else {
-                            fillRecursive(mapFieldDSD.getValue().fields(), resultInvoked);
-                        }
-                    }
-
-                    break;
-*/
 
             }
         }
@@ -313,6 +263,33 @@ public class DataCreator {
         }
 
         return result;
+    }
+
+
+    private void processReferenceField(Map.Entry<String, JsonNode> mapFieldDSD, Object returnedValue, HashMap<String, Object> tempMap) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+
+        String[] path = mapFieldDSD.getValue().asText().substring(2).split("/");
+
+        String url = null;
+        JsonNode res = null;
+        JsonNode refMdsd = mdsd;
+        for (int i = 0; i < path.length; i++) {
+            res = refMdsd.get(path[i]);
+            refMdsd = res;
+        }
+
+        if (refMdsd.get(PROPERTIES_FIELD) != null) {
+            Iterator<Map.Entry<String, JsonNode>> properties = refMdsd.get(PROPERTIES_FIELD).fields();
+            while (properties.hasNext()) {
+                Map.Entry<String, JsonNode> tempProperty = properties.next();
+                Object resultInvokation = invokeMethodByReflection(tempProperty.getKey(), returnedValue, false);
+                if (resultInvokation != null) {
+                    tempMap.put(tempProperty.getKey(), fillRecursive(tempProperty.getValue().fields(), resultInvokation));
+                }
+
+            }
+        }
+
     }
 
 
