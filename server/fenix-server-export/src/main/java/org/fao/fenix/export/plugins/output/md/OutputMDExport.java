@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.log4j.Logger;
 import org.fao.fenix.commons.msd.dto.full.MeIdentification;
@@ -15,14 +15,16 @@ import org.fao.fenix.export.core.dto.CoreOutputType;
 import org.fao.fenix.export.core.dto.data.CoreData;
 import org.fao.fenix.export.core.output.plugin.Output;
 import org.fao.fenix.export.plugins.output.md.data.DataCreator;
+import org.fao.fenix.export.plugins.output.md.layout.LayoutCreator;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class OutputMDExport extends Output {
 
@@ -32,60 +34,51 @@ public class OutputMDExport extends Output {
     private FileOutputStream temp;
     private MeIdentification metadata;
     private DataCreator dataCreator ;
+    private final String MDSD_URL = "http://faostat3.fao.org/d3s2/v2/mdsd";
+    private JsonNode mdsdNode;
+    private ByteArrayOutputStream baos;
 
     @Override
-    public void init(Map<String, Object> config) {
-        this.config = config;
-        this.document = new Document();
-
-
-    }
+    public void init(Map<String, Object> config) {this.config = config;
+        dataCreator = new DataCreator();}
 
     @Override
     public void process(CoreData resource) throws Exception {
         metadata = resource.getMetadata();
+        if(mdsdNode == null)
+            getMdsd();
+        dataCreator.initDataFromMDSD(mdsdNode,resource.getMetadata());
+        document = new Document();
+        baos = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, baos);
+        document.open();
+        LayoutCreator layoutCreator = new LayoutCreator(document);
+        document = layoutCreator.init((TreeMap<String, Object>) dataCreator.getMetaDataCleaned());
+        document.add(new Paragraph("Prova pdf"));
+        document.close();
+
     }
 
     @Override
     public CoreOutputHeader getHeader() throws Exception {
         CoreOutputHeader coreOutputHeader = new CoreOutputHeader();
         coreOutputHeader.setName(((config.get("fileName") != null) ? config.get("fileName").toString() : "fenixExport.pdf"));
-        coreOutputHeader.setSize(100);
+        coreOutputHeader.setSize(baos.size());
         coreOutputHeader.setType(CoreOutputType.pdf);
         return coreOutputHeader;
     }
 
     @Override
     public void write(OutputStream outputStream) throws Exception {
-
-
-        try {
-            PdfWriter.getInstance(document, outputStream);
-            document.open();
-            if (metadata != null) {
-                compileData(document, metadata);
-            }
-
-
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        }
-
-        document.close();
+        baos.writeTo(outputStream);
         outputStream.close();
+        outputStream.flush();
     }
 
 
-    private void compileData(Document document, MeIdentification meIdentification) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, IOException {
-
-
-        String url = "http://faostat3.fao.org/d3s2/v2/mdsd";
-
-
-        dataCreator = new DataCreator();
-
+    private void getMdsd () throws IOException {
         String result = null;
-        Response response = ClientBuilder.newBuilder().build().target(url).request().get();
+        Response response = ClientBuilder.newBuilder().build().target(MDSD_URL).request().get();
 
 
         result += "{\n" +
@@ -1256,15 +1249,9 @@ public class OutputMDExport extends Output {
         JsonFactory factory = mapper.getFactory();
         JsonParser jp = factory.createParser(result);
 
-        JsonNode actualObj = mapper.readTree(jp);
-        actualObj = mapper.readTree(jp);
-        dataCreator = new DataCreator();
-        dataCreator.initDataFromMDSD(actualObj,meIdentification);
+        mdsdNode = mapper.readTree(jp);
+        mdsdNode = mapper.readTree(jp);
 
-
-        Map<String,Object> dataCleaned = dataCreator.getMetaDataCleaned();
-
-        System.out.println("finish!");
     }
 
 }
