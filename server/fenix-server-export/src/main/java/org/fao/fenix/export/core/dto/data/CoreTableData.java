@@ -1,7 +1,7 @@
 package org.fao.fenix.export.core.dto.data;
 
 
-import org.fao.fenix.commons.msd.dto.data.dataset.MeIdentification;
+import org.fao.fenix.commons.msd.dto.full.MeIdentification;
 
 import java.util.Iterator;
 
@@ -14,8 +14,8 @@ public class CoreTableData extends CoreData<Object[]> {
     public CoreTableData() {
     }
 
-    public CoreTableData(org.fao.fenix.commons.msd.dto.full.MeIdentification metadata, Iterator<Object[]> data) {
-        this.metadata = (MeIdentification)metadata;
+    public CoreTableData(MeIdentification metadata, Iterator<Object[]> data) {
+        this.metadata = metadata;
         this.data = data;
     }
 

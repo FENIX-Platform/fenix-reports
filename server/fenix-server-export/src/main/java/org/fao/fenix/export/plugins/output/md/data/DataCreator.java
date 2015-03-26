@@ -2,6 +2,7 @@ package org.fao.fenix.export.plugins.output.md.data;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.Lists;
 import org.fao.fenix.commons.msd.dto.full.MeIdentification;
 import org.fao.fenix.export.plugins.output.md.data.dto.MDSDescriptor;
 
@@ -48,6 +49,10 @@ public class DataCreator {
             Map.Entry<String, JsonNode> mapDsdTmp = properties.next();
             String key = mapDsdTmp.getKey();
 
+
+            if(key.equals("meContent")){
+                System.out.println("here!");
+            }
             // TODO: to delete
             boolean uncoveredFields = key.equals("contacts") || key.equals("characterSet") || key.equals("meContent") ||
                     key.equals("metadataStandardName") || key.equals("metadataStandardVersion") ||  key.equals("title");
@@ -70,7 +75,7 @@ public class DataCreator {
                     if (mapDsdTmp.getValue().get(TYPE_FIELD) != null) {
 
                         String typeField = mapDsdTmp.getValue().get(TYPE_FIELD).asText();
-                        MDSDescriptor value =initMDSD(mapDsdTmp.getValue(),key);
+                        MDSDescriptor value =initDtoMDSD(mapDsdTmp.getValue(), key);
                         String order = getOrderFromEntity(mapDsdTmp.getValue());
 
                         String titleSimple = (uncoveredFields) ? key : tempField.get(LANG.toLowerCase()).asText();
@@ -89,7 +94,7 @@ public class DataCreator {
                         JsonNode msdRef = getMdsdObjectFromReference(mapDsdTmp.getValue().get(REF_FIELD).asText());
                         String order = getOrderFromEntity(mapDsdTmp.getValue());
 
-                        MDSDescriptor tempVal = initMDSD(mapDsdTmp.getValue(),key);
+                        MDSDescriptor tempVal = initDtoMDSD(mapDsdTmp.getValue(), key);
                         this.metaDataCleaned.put(order, tempVal.setValue(fillRecursive(msdRef.fields(), returnedValue)));
                     }
                 }
@@ -146,6 +151,7 @@ public class DataCreator {
 
                         case STRING_TYPE:
                         case NUMBER_TYPE:
+                        case ENUM_FIELD:
 
                             return returnedValue;
 
@@ -154,6 +160,7 @@ public class DataCreator {
                             /*
                              * Type Array can have as sibling a items field
                              */
+                            // TO add titles
 
                             System.out.println("array");
                             ArrayList<Object> result = null;
@@ -178,59 +185,65 @@ public class DataCreator {
                              * Type Object can have as sibling a properties field or patternProperties field
                              */
 
-                            if (fields.hasNext()) {
-                                mapFieldDSD = fields.next();
-                            } else {
-                                break;
+                            boolean exit = false;
+
+                            String keyObj = null;
+                            String titleObj = null;
+                            String description = null;
+                            String[] objParsed;
+                            ListIterator<Map.Entry<String, JsonNode>> list = Lists.newArrayList(fields).listIterator();
+                            String resultObj = findTitleAndDescriptionOnObj(list);
+                            objParsed = (resultObj != null)?  resultObj.split("&"):  null;
+
+                            if(objParsed!= null && objParsed.length>1){
+                                titleObj = objParsed[0];
+                                description = objParsed[1];
+                            }else if (objParsed!= null){
+                                titleObj = objParsed[0];
                             }
 
-                            String keyObj = mapFieldDSD.getKey();
-                            String titleObj = (mapFieldDSD.getValue().get(TITLE_FIELD) != null) ? mapFieldDSD.getValue().get(TITLE_FIELD).get(LANG.toLowerCase()).asText() :
-                                    "objectTitleProvv" + 10000 * Math.random() + "";
-                            String description = (mapFieldDSD.getValue().get(DESCRIPTION_FIELD) != null) ? mapFieldDSD.getValue().get(DESCRIPTION_FIELD).get(LANG.toLowerCase()).asText() :
-                                    "objectTitleProvv" + 10000 * Math.random() + "";
 
-                            // Three cases: properties_field, ref_field and pattern_properties
-                            // First one: properties
-                            if (keyObj.equals(PROPERTIES_FIELD ) && titleObj!= null) {
-                                Iterator<Map.Entry<String, JsonNode>> tempIt = mapFieldDSD.getValue().fields();
-                                while (tempIt.hasNext()) {
-                                    Map.Entry<String, JsonNode> objectValue = tempIt.next();
-                                    Object msdValue = invokeMethodByReflection(objectValue.getKey(), returnedValue, false);
-                                    if (msdValue != null) {
-                                        MDSDescriptor objectTypeMdsDescriptor = initMDSD(objectValue.getValue(),objectValue.getKey());
-                                         String orderObject = getOrderFromEntity(objectValue.getValue());
-                                        tempMap.put(orderObject, objectTypeMdsDescriptor.setValue(fillRecursive(objectValue.getValue().fields(), msdValue)));
+                            while(list.hasPrevious()) {
+                                mapFieldDSD = list.previous();
+
+                                keyObj = mapFieldDSD.getKey();
+                                // Three cases: properties_field, ref_field and pattern_properties
+                                // First one: properties
+                                if (keyObj.equals(PROPERTIES_FIELD)) {
+                                    Iterator<Map.Entry<String, JsonNode>> tempIt = mapFieldDSD.getValue().fields();
+                                    while (tempIt.hasNext()) {
+                                        Map.Entry<String, JsonNode> objectValue = tempIt.next();
+                                        Object msdValue = invokeMethodByReflection(objectValue.getKey(), returnedValue, false);
+                                        if (msdValue != null) {
+                                            MDSDescriptor objectTypeMdsDescriptor = initDtoMDSD(titleObj,description, objectValue.getKey());
+                                            String orderObject = getOrderFromEntity(objectValue.getValue());
+                                            tempMap.put(orderObject, objectTypeMdsDescriptor.setValue(fillRecursive(objectValue.getValue().fields(), msdValue)));
+                                        }
                                     }
+
+                                } else if (keyObj.equals(REF_FIELD)) {
+
+                                    String[] pathRefs = mapFieldDSD.getValue().asText().substring(2).split("/");
+
+                                    Object returnedValueRef = invokeMethodByReflection(pathRefs[pathRefs.length - 1], returnedValue, false);
+
+
+                                /*if (returnedValueRef != null) {
+
                                 }
+*/
 
-                            } else if (keyObj.equals(REF_FIELD)) {
+                                } else if (keyObj.equals(PATTERN_PROPERTIES_FIELD)) {
 
-                                String[] pathRefs = mapFieldDSD.getValue().asText().substring(2).split("/");
+                                    if (mapFieldDSD.getValue().get(".{1}") != null && mapFieldDSD.getValue().get(".{1}").get(TYPE_FIELD).asText().equals(STRING_TYPE)) {
 
-                                Object returnedValueRef = invokeMethodByReflection(pathRefs[pathRefs.length - 1], returnedValue, false);
-                                if (returnedValueRef != null) {
+                                        return invokeMethodByReflection(null, returnedValue, true);
+                                    }
 
                                 }
-
-
-                            } else if (keyObj.equals(PATTERN_PROPERTIES_FIELD)) {
-
-                                if (mapFieldDSD.getValue().get(".{1}") != null && mapFieldDSD.getValue().get(".{1}").get(TYPE_FIELD).asText().equals(STRING_TYPE)) {
-
-                                    return invokeMethodByReflection(null, returnedValue, true);
-                                }
-
                             }
                             break;
                     }
-
-                    break;
-
-                case ENUM_FIELD:
-
-                    System.out.println("enum");
-
                     break;
 
             }
@@ -300,21 +313,29 @@ public class DataCreator {
                 Map.Entry<String, JsonNode> tempProperty = properties.next();
                 Object resultInvokation = invokeMethodByReflection(tempProperty.getKey(), returnedValue, false);
                 if (resultInvokation != null) {
-                    MDSDescriptor tempObject = initMDSD(tempProperty.getValue(),tempProperty.getKey());
+                    MDSDescriptor tempObject = initDtoMDSD(tempProperty.getValue(), tempProperty.getKey());
                     tempMap.put(getOrderFromEntity(tempProperty.getValue()), tempObject.setValue(fillRecursive(tempProperty.getValue().fields(), resultInvokation)));
                 }
 
             }
+        }else if(refMdsd.get(ENUM_FIELD) != null){
+
         }
 
     }
 
 
-    private MDSDescriptor initMDSD (JsonNode entity, String beanName){
+    private MDSDescriptor initDtoMDSD (String title, String description, String beanName){
+        return  new MDSDescriptor(beanName,title,description);
+    }
+
+
+    private MDSDescriptor initDtoMDSD (JsonNode entity, String beanName){
         String title = (entity.get(TITLE_FIELD)!= null)? entity.get(TITLE_FIELD).get(LANG.toLowerCase()).asText(): null;
         String description = (entity.get(DESCRIPTION_FIELD)!= null)? entity.get(DESCRIPTION_FIELD).get(LANG.toLowerCase()).asText(): null;
         return  new MDSDescriptor(beanName,title,description);
     }
+
 
     private String getOrderFromEntity (JsonNode entity){
 
@@ -328,6 +349,36 @@ public class DataCreator {
     private boolean isFieldRequired (JsonNode entity) {
         return ((entity.get(REQUIRED_FIELD)!= null) && (entity.get(REQUIRED_FIELD).asBoolean()));
     }
+
+
+    private Object invokeMethodEnumType (Object bean) {
+        return null;
+    }
+
+
+    private String findTitleAndDescriptionOnObj (ListIterator<Map.Entry<String, JsonNode>> fields) {
+        String result = null;
+        String titleRes = null;
+        String descRes = null;
+        while(fields.hasNext()){
+            Map.Entry<String, JsonNode> tmp = fields.next();
+            if(tmp.getKey().equals(TITLE_FIELD) && !(tmp.getValue().get(LANG.toLowerCase()).asText().equals(null) )){
+                titleRes = tmp.getValue().get(LANG.toLowerCase()).asText();
+            }else if (tmp.getKey().equals(DESCRIPTION_FIELD) && !(tmp.getValue().get(LANG.toLowerCase()).asText().equals(null) )){
+                descRes = tmp.getValue().get(LANG.toLowerCase()).asText();
+            }
+        }
+        if( titleRes!= null && descRes!= null){
+            result = titleRes + "&"+descRes;
+        }else if(titleRes!= null && descRes== null){
+            result = titleRes ;
+        }
+
+        return result;
+
+
+    }
+
 }
 
 

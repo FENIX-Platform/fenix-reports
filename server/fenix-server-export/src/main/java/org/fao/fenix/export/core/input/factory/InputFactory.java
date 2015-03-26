@@ -1,7 +1,7 @@
 package org.fao.fenix.export.core.input.factory;
 
 import org.apache.log4j.Logger;
-import org.fao.fenix.commons.msd.dto.data.dataset.Resource;
+import org.fao.fenix.commons.msd.dto.data.Resource;
 import org.fao.fenix.export.core.dto.PluginConfig;
 import org.fao.fenix.export.core.input.plugin.Input;
 import org.fao.fenix.export.core.utils.configuration.ConfiguratorURL;

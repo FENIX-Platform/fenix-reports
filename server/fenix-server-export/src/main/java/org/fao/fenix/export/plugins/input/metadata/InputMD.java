@@ -1,7 +1,7 @@
 package org.fao.fenix.export.plugins.input.metadata;
 
 
-import org.fao.fenix.commons.msd.dto.data.dataset.Resource;
+import org.fao.fenix.commons.msd.dto.data.Resource;
 import org.fao.fenix.export.core.dto.data.CoreData;
 import org.fao.fenix.export.core.dto.data.CoreTableData;
 import org.fao.fenix.export.core.input.plugin.Input;

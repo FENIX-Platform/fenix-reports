@@ -1,6 +1,7 @@
 package org.fao.fenix.export.core.dto;
 
-import org.fao.fenix.commons.msd.dto.data.dataset.Resource;
+
+import org.fao.fenix.commons.msd.dto.data.Resource;
 
 public class CoreConfig {
 
@@ -9,6 +10,12 @@ public class CoreConfig {
     private PluginConfig input;
     private PluginConfig output;
 
+
+ /*   public CoreConfig(PluginConfig input, PluginConfig output, Resource resource) {
+        this.input = input;
+        this.output = output;
+        this.resource = resource;
+    }*/
 
     public Resource getResource() {
         return resource;
