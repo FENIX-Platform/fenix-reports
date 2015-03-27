@@ -12,6 +12,15 @@ import com.itextpdf.text.pdf.PdfWriter;
  */
 public   class IndexEvent extends PdfPageEventHelper {
     private int page;
+
+    public void setBody(boolean body) {
+        this.body = body;
+    }
+
+    public boolean isBody() {
+        return body;
+    }
+
     private boolean body;
     @Override
     public void onEndPage(PdfWriter writer, Document document) {

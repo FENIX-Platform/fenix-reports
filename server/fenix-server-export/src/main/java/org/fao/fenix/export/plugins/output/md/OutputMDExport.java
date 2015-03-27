@@ -51,7 +51,7 @@ public class OutputMDExport extends Output {
         ContentEvent event = new ContentEvent();
         contentWriter.setPageEvent(event);
         document.open();
-        LayoutCreator layoutCreator = new LayoutCreator(document);
+        LayoutCreator layoutCreator = new LayoutCreator(document, event);
         document = layoutCreator.init((TreeMap<String, Object>) dataCreator.getMetaDataCleaned());
         document.close();
 

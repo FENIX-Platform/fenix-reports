@@ -15,6 +15,15 @@ public  class ContentEvent extends PdfPageEventHelper {
 
 
     private int page;
+
+    public Map<String, Integer> getIndex() {
+        return index;
+    }
+
+    public void setIndex(Map<String, Integer> index) {
+        this.index = index;
+    }
+
     Map<String, Integer> index = new LinkedHashMap<String, Integer>();
 
     @Override

@@ -2,12 +2,12 @@ package org.fao.fenix.export.plugins.output.md.layout;
 
 
 import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import org.fao.fenix.export.plugins.output.md.data.dto.MDSDescriptor;
+import org.fao.fenix.export.plugins.output.md.layout.utils.ContentEvent;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.TreeMap;
+import java.util.*;
 
 public class LayoutCreator {
 
@@ -17,20 +17,25 @@ public class LayoutCreator {
     private  static String STRING_TYPEFIELD = String.class.toString();
     private  static String RECURSIVE_TYPEFIELD = TreeMap.class.toString();
     private  static String ARRAY_TYPEFIELD = ArrayList.class.toString();
+    ArrayList<Chapter> chapterList;
 
 
 
+    private ContentEvent event;
     private Document document;
     private TreeMap<String,Object> modelData ;
 
-    public LayoutCreator (Document document) throws DocumentException {
+    public LayoutCreator(Document document, ContentEvent event) throws DocumentException {
         this.document = document;
+        this.event = event;
     }
 
 
     public Document init (TreeMap<String,Object> modelData) throws DocumentException {
         this.modelData = modelData;
         styleSheetCreator = new StyleSheetCreator();
+        PdfPTable table = null;
+        Chapter indexChapter = null;
 
         Iterator<String> dataIterator = modelData.keySet().iterator();
 
@@ -41,10 +46,16 @@ public class LayoutCreator {
             initMargin = 0;
             if (counter == 0) {
                 createTitle(temp);
-                createIndexOnFirstPage(temp);
+                indexChapter = new Chapter("Index", -1);
+                indexChapter.setNumberDepth(-1); // not show number style
+                table = new PdfPTable(2);
+
+
 
             }else{
               //createBody(temp,initMargin);
+
+                indexAfter(temp,table, indexChapter);
             }
             counter++;
         }
@@ -144,14 +155,37 @@ public class LayoutCreator {
 
     private void createIndexOnFirstPage(MDSDescriptor temp) throws DocumentException {
 
+        chapterList = new ArrayList<Chapter>();
         String[] titles = {"asd", "asd", "as", "@", "2", "23", "2", "42"};
         for (int i = 0; i < titles.length; i++) {
             Chunk chapTitle = new Chunk(titles[i] + " " + i);
             Chapter chapter = new Chapter(new Paragraph(chapTitle), i);
             chapTitle.setLocalDestination(chapter.getTitle().getContent());
             document.add(chapter);
+            chapterList.add(chapter);
+        }
+    }
+
+    private void indexAfter(MDSDescriptor mdsDescriptor, PdfPTable table, Chapter indexChapter) throws DocumentException {
+
+
+            PdfPCell left = new PdfPCell(new Phrase("X"));
+            left.setBorder(Rectangle.NO_BORDER);
+
+            Chunk pageno = new Chunk(mdsDescriptor.getTitleToVisualize());
+            PdfPCell right = new PdfPCell(new Phrase(pageno));
+            right.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            right.setBorder(Rectangle.NO_BORDER);
+
+            table.addCell(left);
+            table.addCell(right);
+
+            indexChapter.add(table);
+            document.add(indexChapter);
+            // add content chapter
+
         }
     }
 
 
-}
+
