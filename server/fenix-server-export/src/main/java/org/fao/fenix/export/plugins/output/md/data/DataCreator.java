@@ -76,7 +76,7 @@ public class DataCreator {
 
                         String typeField = mapDsdTmp.getValue().get(TYPE_FIELD).asText();
                         MDSDescriptor value =initDtoMDSD(mapDsdTmp.getValue(), key);
-                        String order = getOrderFromEntity(mapDsdTmp.getValue());
+                        String order =key.equals("title")? 1+"": getOrderFromEntity(mapDsdTmp.getValue());
 
                         String titleSimple = (uncoveredFields) ? key : tempField.get(LANG.toLowerCase()).asText();
                         // simple case: string type or number type
@@ -127,7 +127,7 @@ public class DataCreator {
                         JsonNode temp = mapFieldDSD.getValue().get(FOLLOW_PATTERN_PROPERTIES).get(FOLLOW_PATTERN_PROPERTIES);
 
                         if(temp.get(TYPE_FIELD)!= null && temp.get(TYPE_FIELD).asText().equals(STRING_TYPE)){
-                            return ((LinkedHashMap) returnedValue).get("EN");
+                            return ((LinkedHashMap) returnedValue).get(LANG.toLowerCase());
                         }else if(temp.get(REF_FIELD)!= null || temp.get(TYPE_FIELD).asText().equals(OBJECT_TYPE)){
                             System.out.println("vediamo!");
                         }
@@ -182,7 +182,7 @@ public class DataCreator {
 
                         case OBJECT_TYPE:
                             /*
-                             * Type Object can have as sibling a properties field or patternProperties field
+                             * Type Object can have as sibling a properties field or patternProperties field or ref_field
                              */
 
                             boolean exit = false;
@@ -205,6 +205,7 @@ public class DataCreator {
 
                             while(list.hasPrevious()) {
                                 mapFieldDSD = list.previous();
+                                String orderObject = getOrderFromEntity(mapFieldDSD.getValue());
 
                                 keyObj = mapFieldDSD.getKey();
                                 // Three cases: properties_field, ref_field and pattern_properties
@@ -215,29 +216,19 @@ public class DataCreator {
                                         Map.Entry<String, JsonNode> objectValue = tempIt.next();
                                         Object msdValue = invokeMethodByReflection(objectValue.getKey(), returnedValue, false);
                                         if (msdValue != null) {
-                                            MDSDescriptor objectTypeMdsDescriptor = initDtoMDSD(titleObj,description, objectValue.getKey());
-                                            String orderObject = getOrderFromEntity(objectValue.getValue());
+                                            MDSDescriptor objectTypeMdsDescriptor = initDtoMDSD(titleObj, description, objectValue.getKey());
                                             tempMap.put(orderObject, objectTypeMdsDescriptor.setValue(fillRecursive(objectValue.getValue().fields(), msdValue)));
                                         }
                                     }
 
                                 } else if (keyObj.equals(REF_FIELD)) {
-
-                                    String[] pathRefs = mapFieldDSD.getValue().asText().substring(2).split("/");
-
-                                    Object returnedValueRef = invokeMethodByReflection(pathRefs[pathRefs.length - 1], returnedValue, false);
-
-
-                                /*if (returnedValueRef != null) {
-
-                                }
-*/
+                                    tempMap.put(orderObject,fillRecursive(getMdsdObjectFromReference(mapFieldDSD.getValue().asText()).fields(), returnedValue));
 
                                 } else if (keyObj.equals(PATTERN_PROPERTIES_FIELD)) {
 
-                                    if (mapFieldDSD.getValue().get(".{1}") != null && mapFieldDSD.getValue().get(".{1}").get(TYPE_FIELD).asText().equals(STRING_TYPE)) {
+                                    if (mapFieldDSD.getValue().get(FOLLOW_PATTERN_PROPERTIES) != null && mapFieldDSD.getValue().get(FOLLOW_PATTERN_PROPERTIES).get(TYPE_FIELD).asText().equals(STRING_TYPE)) {
 
-                                        return invokeMethodByReflection(null, returnedValue, true);
+                                       return invokeMethodByReflection(null, returnedValue, true);
                                     }
 
                                 }
@@ -286,8 +277,13 @@ public class DataCreator {
 
         } else {
             methodString = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-            Method method = instanceToUse.getClass().getMethod(methodString, null);
-            result = method.invoke(instanceToUse, null);
+            if (methodString.equals("getOjCodeList")) {
+                System.out.println("stop!");
+                result = null;
+            } else {
+                Method method = instanceToUse.getClass().getMethod(methodString, null);
+                result = method.invoke(instanceToUse, null);
+            }
         }
 
         return result;
@@ -375,8 +371,6 @@ public class DataCreator {
         }
 
         return result;
-
-
     }
 
 }

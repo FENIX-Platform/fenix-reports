@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -76,11 +75,7 @@ public class ServletFenixExport extends HttpServlet {
                 response.setContentType(outputHeader.getType().getContentType());
                 response.setHeader("Content-Disposition", "attachment; filename="+outputHeader.getName());
                 response.setContentLength((int)tmpFile.length());
-
                 writeFile(tmpFile, response.getOutputStream());
-                System.out.println("finish");
-
-                System.out.println(new Date().toString());
                 tmpFile.delete();
                 return;
             }

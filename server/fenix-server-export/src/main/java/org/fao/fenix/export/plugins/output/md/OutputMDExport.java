@@ -3,7 +3,7 @@ package org.fao.fenix.export.plugins.output.md;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.itextpdf.text.Document;
-import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.log4j.Logger;
 import org.fao.fenix.commons.msd.dto.full.MeIdentification;
@@ -14,6 +14,7 @@ import org.fao.fenix.export.core.output.plugin.Output;
 import org.fao.fenix.export.plugins.input.metadata.mediator.MDClientMediator;
 import org.fao.fenix.export.plugins.output.md.data.DataCreator;
 import org.fao.fenix.export.plugins.output.md.layout.LayoutCreator;
+import org.fao.fenix.export.plugins.output.md.layout.utils.ContentEvent;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -44,13 +45,14 @@ public class OutputMDExport extends Output {
         if(mdsdNode == null)
             getMdsd();
         dataCreator.initDataFromMDSD(mdsdNode,resource.getMetadata());
-        document = new Document();
+        Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         baos = new ByteArrayOutputStream();
-        PdfWriter.getInstance(document, baos);
+        PdfWriter contentWriter = PdfWriter.getInstance(document, baos);
+        ContentEvent event = new ContentEvent();
+        contentWriter.setPageEvent(event);
         document.open();
         LayoutCreator layoutCreator = new LayoutCreator(document);
         document = layoutCreator.init((TreeMap<String, Object>) dataCreator.getMetaDataCleaned());
-        document.add(new Paragraph("Prova pdf"));
         document.close();
 
     }

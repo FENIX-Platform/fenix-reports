@@ -2,7 +2,7 @@ package org.fao.fenix.export.plugins.output.md.layout;
 
 
 import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.CMYKColor;
 
 import java.util.HashMap;
@@ -10,16 +10,35 @@ import java.util.HashMap;
 public class StyleSheetCreator {
 
 
-    private HashMap<FontType, Font> fontMap;
+    private HashMap<String, Font> fontMap;
     private FontType fontType;
+    private static final String TITLE = "title";
 
 
     public void init () {
 
         fontMap = new HashMap<>();
-        fontMap.put(fontType.title,FontFactory.getFont(FontFactory.TIMES, 18, Font.BOLD, new CMYKColor(255, 0, 0, 64)));
+        fontMap.put("title",new Font(Font.FontFamily.HELVETICA ,30, Font.BOLD,
+                new CMYKColor(0.9f, 0.7f, 0.4f, 0.1f)));
+/*
         fontMap.put(fontType.normal, FontFactory.getFont(FontFactory.COURIER, 10, Font.NORMAL));
+*/
     }
+
+    public Paragraph getSpaceParagraph (String section) {
+
+        Paragraph result= null;
+        switch (section) {
+
+            case TITLE:
+                result = new Paragraph(new Paragraph(20, "",  FontType.title.getFontType()));
+                break;
+        }
+
+        return result;
+
+    }
+
 
 
     public Font getFont (FontType font) {

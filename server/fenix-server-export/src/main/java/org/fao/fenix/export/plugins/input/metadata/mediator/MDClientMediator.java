@@ -47,7 +47,7 @@ public class MDClientMediator {
 
         JsonNode result = null;
         try {
-            result = new ObjectMapper().readValue(new File("/home/fabrizio/Documents/GenericProjects/fenix-reports/server/fenix-server-export/jsonExamples/Config/guideMDSD.json"), JsonNode.class);
+            result = new ObjectMapper().readValue(new File("/home/fabrizio/Documents/GenericProjects/fenix-reports/server/fenix-server-export/jsonExamples/Config/guideMDSD2.json"), JsonNode.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
