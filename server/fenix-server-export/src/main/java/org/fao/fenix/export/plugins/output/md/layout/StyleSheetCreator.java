@@ -4,6 +4,7 @@ package org.fao.fenix.export.plugins.output.md.layout;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.CMYKColor;
+import org.fao.fenix.export.plugins.output.md.layout.utils.FontType;
 
 import java.util.HashMap;
 

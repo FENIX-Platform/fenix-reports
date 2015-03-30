@@ -804,11 +804,11 @@
       "$ref": "#/definitions/OjCodeList"
     },
     "metadataStandardName": {
-      "title": "Character-set",
+      "title": "Metadata Standard Name",
       "title_i18n": {
-        "en": "Character-set",
-        "fr": "CaractÃƒÂ¨re-set",
-        "es": "Character-set"
+        "en": "CMetadata Standard Name",
+        "fr": "Metadata Standard Name",
+        "es": "Metadata Standard Name"
       },
       "description": "Full name of the character coding standard used by the resource.",
       "description_i18n": {

@@ -4,13 +4,17 @@ package org.fao.fenix.export.plugins.output.md.layout;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
+import org.apache.log4j.Logger;
 import org.fao.fenix.export.plugins.output.md.data.dto.MDSDescriptor;
 import org.fao.fenix.export.plugins.output.md.layout.utils.ContentEvent;
+import org.fao.fenix.export.plugins.output.md.layout.utils.FontType;
+import org.fao.fenix.export.plugins.output.md.layout.utils.IndexModel;
 
 import java.util.*;
 
 public class LayoutCreator {
 
+    private static final Logger LOGGER = Logger.getLogger(LayoutCreator.class);
     private  StyleSheetCreator styleSheetCreator;
     private FontType fontType;
     private  static String DATE_TYPEFIELD = Date.class.toString();
@@ -18,6 +22,7 @@ public class LayoutCreator {
     private  static String RECURSIVE_TYPEFIELD = TreeMap.class.toString();
     private  static String ARRAY_TYPEFIELD = ArrayList.class.toString();
     ArrayList<Chapter> chapterList;
+    private Map<String,IndexModel> indexModelMap;
 
 
 
@@ -37,8 +42,12 @@ public class LayoutCreator {
         PdfPTable table = null;
         Chapter indexChapter = null;
 
-        Iterator<String> dataIterator = modelData.keySet().iterator();
+        createIndexModel();
 
+        makeIndex();
+
+        Iterator<String> dataIterator = modelData.keySet().iterator();
+/*
         int counter=0, initMargin ;
         while(dataIterator.hasNext()) {
             MDSDescriptor temp = (MDSDescriptor) this.modelData.get(dataIterator.next());
@@ -58,13 +67,13 @@ public class LayoutCreator {
                 indexAfter(temp,table, indexChapter);
             }
             counter++;
-        }
+        }*/
         return this.document;
 
     }
 
     private void createTitle (MDSDescriptor descriptor) throws DocumentException {
-        document.add(new Paragraph(5 , descriptor.getValue().toString(),  FontType.title.getFontType() ));
+        document.add(new Paragraph(5 , descriptor.getValue().toString(),  FontType.valueField.getFontType() ));
         document.add(styleSheetCreator.getSpaceParagraph("title"));
     }
 
@@ -137,8 +146,8 @@ public class LayoutCreator {
         String title = (descriptor.getTitleToVisualize()!= null)? descriptor.getTitleToVisualize(): descriptor.getTitleBean();
         String value = descriptor.getValue().toString();
 
-        Phrase titlePhrase = new Phrase(12,title, FontType.normal.getFontType());
-        Phrase valuePhrase = new Phrase(12,value, FontType.normal.getFontType());
+        Phrase titlePhrase = new Phrase(12,title, FontType.valueField.getFontType());
+        Phrase valuePhrase = new Phrase(12,value, FontType.valueField.getFontType());
         Paragraph p = new Paragraph(titlePhrase + "  :  ");
         p.add(valuePhrase);
 
@@ -149,7 +158,7 @@ public class LayoutCreator {
     private void addOnlyTitle (MDSDescriptor toAdd) throws DocumentException {
 
         String title = (toAdd.getTitleToVisualize()!= null)? toAdd.getTitleToVisualize(): toAdd.getTitleBean();
-        document.add(new Paragraph(new Phrase(12,title,FontType.normal.getFontType())));
+        document.add(new Paragraph(new Phrase(12,title,FontType.valueField.getFontType())));
         // then space (now I don't know how to do it :) )
     }
 
@@ -166,26 +175,119 @@ public class LayoutCreator {
         }
     }
 
-    private void indexAfter(MDSDescriptor mdsDescriptor, PdfPTable table, Chapter indexChapter) throws DocumentException {
+    private void makeIndex() throws DocumentException {
 
+        PdfPTable table = new PdfPTable(2);
+        Paragraph paragraph = new Paragraph("Index", FontType.titleField.getFontType());
 
-            PdfPCell left = new PdfPCell(new Phrase("X"));
+        Chapter indexChapter = new Chapter(paragraph,0);
+
+        Set<String> keys = indexModelMap.keySet();
+
+        for(String key : keys ){
+
+            PdfPCell left = new PdfPCell(new Phrase(key,FontType.valueField.getFontType()));
             left.setBorder(Rectangle.NO_BORDER);
 
-            Chunk pageno = new Chunk(mdsDescriptor.getTitleToVisualize());
+            Chunk pageno = new Chunk(indexModelMap.get(key).getTitle(),FontType.valueField.getFontType());
             PdfPCell right = new PdfPCell(new Phrase(pageno));
             right.setHorizontalAlignment(Element.ALIGN_RIGHT);
             right.setBorder(Rectangle.NO_BORDER);
 
             table.addCell(left);
             table.addCell(right);
+        }
+        indexChapter.add(table);
+        document.add(indexChapter);
+    }
 
-            indexChapter.add(table);
-            document.add(indexChapter);
-            // add content chapter
+
+    private  void createIndexModel () {
+        indexModelMap = new HashMap<String, IndexModel>();
+
+        Set<String> keys = modelData.keySet();
+
+        int indexCounter = 0;
+
+        for( String key: keys){
+
+            indexCounter++;
+
+            MDSDescriptor tmp = (MDSDescriptor) modelData.get(key);
+
+            fillIndex(tmp, ""+indexCounter);
+
 
         }
+
     }
+
+
+    private void fillIndex (MDSDescriptor tempDescriptor, String indexKey) {
+
+
+        if(tempDescriptor.getValue().getClass().toString().equals(STRING_TYPEFIELD) || tempDescriptor.getValue().getClass().toString().equals(DATE_TYPEFIELD)){
+
+            indexModelMap.put(indexKey.toString(), new IndexModel(tempDescriptor.getTitleToVisualize(), null));
+
+        }
+         // discendents of the root
+        else if(tempDescriptor.getValue().getClass().toString().equals(TreeMap.class.toString())){
+
+            String indexUpd = indexKey + ".0";
+
+            TreeMap<String, MDSDescriptor> tmpTreeMAp = (TreeMap<String,MDSDescriptor>)tempDescriptor.getValue();
+
+            Set<String> keys = ((TreeMap<String,MDSDescriptor>)tempDescriptor.getValue()).keySet();
+
+            for(String key : keys) {
+                indexModelMap.put(indexKey.toString(), new IndexModel(tempDescriptor.getTitleToVisualize(), null));
+
+                indexUpd  = updateCounter(indexUpd);
+                fillIndex(tmpTreeMAp.get(key),indexUpd);
+            }
+        }
+
+        else if(tempDescriptor.getValue().getClass().toString().equals(ArrayList.class.toString())){
+
+            String indexUpd = indexKey + ".0";
+/*
+
+            ArrayList<T> tmpTreeMAp =(ArrayList<T>)tempDescriptor.getValue();
+            Class<T> persistentClass = (Class<T>)
+                    ((ParameterizedType)getClass().getGenericSuperclass())
+                            .getActualTypeArguments()[0];
+
+
+            LOGGER.error(persistentClass.getClass().toString()); */
+
+
+        }
+
+
+        LOGGER.error(tempDescriptor.getValue().getClass().toString());
+
+
+    }
+
+    private String updateCounter ( String counter) {
+
+        String[] counterChunks = counter.split("\\.");
+        int lengthSplit = counterChunks.length;
+
+        String result = "";
+        for(int i=0; i<lengthSplit; i++){
+            if(i!= lengthSplit-1){
+                result+= counterChunks[i]+".";
+            }else{
+                result+= Integer.parseInt(counterChunks[i])+ 1 ;
+            }
+        }
+
+        return result;
+    }
+}
+
 
 
 

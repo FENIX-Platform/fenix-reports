@@ -50,16 +50,14 @@ public class DataCreator {
             String key = mapDsdTmp.getKey();
 
 
-            if(key.equals("meContent")){
+            if(key.equals("contacts")){
                 System.out.println("here!");
             }
             // TODO: to delete
             boolean uncoveredFields = key.equals("contacts") || key.equals("characterSet") || key.equals("meContent") ||
                     key.equals("metadataStandardName") || key.equals("metadataStandardVersion") ||  key.equals("title");
 
-            if(key.equals("title")){
-                System.out.println("stop!");
-            }
+
             Object returnedValue = invokeMethodByReflection(key, meIdentification, false);
             if (returnedValue != null) {
                 JsonNode tempField = mapDsdTmp.getValue().get(TITLE_FIELD);
@@ -107,9 +105,12 @@ public class DataCreator {
 
         Map<String, Object> tempMap = new TreeMap<String, Object>();
 
-        while (fields.hasNext()) {
+        ListIterator<Map.Entry<String, JsonNode>> listBack = Lists.newArrayList(fields).listIterator();
+        MDSDescriptor resultObj = findTitleAndDescriptionOnObj(listBack);
 
-            Map.Entry<String, JsonNode> mapFieldDSD = fields.next();
+        while (listBack.hasPrevious()) {
+
+            Map.Entry<String, JsonNode> mapFieldDSD = listBack.previous();
             String key = mapFieldDSD.getKey();
 
             // different from object reference
@@ -123,11 +124,11 @@ public class DataCreator {
                         String orderString = order.get(LANG).asText();
                     }
 
-                    if(mapFieldDSD.getValue().get(FOLLOW_PATTERN_PROPERTIES) != null && mapFieldDSD.getValue().get(FOLLOW_PATTERN_PROPERTIES).get(FOLLOW_PATTERN_PROPERTIES) != null){
-                        JsonNode temp = mapFieldDSD.getValue().get(FOLLOW_PATTERN_PROPERTIES).get(FOLLOW_PATTERN_PROPERTIES);
+                    if(mapFieldDSD.getValue().get(FOLLOW_PATTERN_PROPERTIES) != null ){
+                        JsonNode temp = mapFieldDSD.getValue().get(FOLLOW_PATTERN_PROPERTIES);
 
                         if(temp.get(TYPE_FIELD)!= null && temp.get(TYPE_FIELD).asText().equals(STRING_TYPE)){
-                            return ((LinkedHashMap) returnedValue).get(LANG.toLowerCase());
+                            return ((LinkedHashMap) returnedValue).get(LANG.toUpperCase());
                         }else if(temp.get(REF_FIELD)!= null || temp.get(TYPE_FIELD).asText().equals(OBJECT_TYPE)){
                             System.out.println("vediamo!");
                         }
@@ -165,9 +166,9 @@ public class DataCreator {
                             System.out.println("array");
                             ArrayList<Object> result = null;
                             String arrayKey = mapFieldDSD.getKey();
-
-                            while (fields.hasNext()) {
-                                mapFieldDSD = fields.next();
+                            ListIterator<Map.Entry<String, JsonNode>> list = Lists.newArrayList(listBack).listIterator();
+                            while (list.hasNext()) {
+                                mapFieldDSD = list.next();
                                 if (mapFieldDSD.getKey().equals(ITEMS_FIELD)) {
                                     result = new ArrayList<Object>();
                                     for (int i = 0; i < ((ArrayList) returnedValue).size(); i++) {
@@ -188,23 +189,11 @@ public class DataCreator {
                             boolean exit = false;
 
                             String keyObj = null;
-                            String titleObj = null;
-                            String description = null;
-                            String[] objParsed;
-                            ListIterator<Map.Entry<String, JsonNode>> list = Lists.newArrayList(fields).listIterator();
-                            String resultObj = findTitleAndDescriptionOnObj(list);
-                            objParsed = (resultObj != null)?  resultObj.split("&"):  null;
 
-                            if(objParsed!= null && objParsed.length>1){
-                                titleObj = objParsed[0];
-                                description = objParsed[1];
-                            }else if (objParsed!= null){
-                                titleObj = objParsed[0];
-                            }
+                            ListIterator<Map.Entry<String, JsonNode>> listObj = Lists.newArrayList(fields).listIterator();
 
-
-                            while(list.hasPrevious()) {
-                                mapFieldDSD = list.previous();
+                            while(listObj.hasPrevious()) {
+                                mapFieldDSD = listObj.previous();
                                 String orderObject = getOrderFromEntity(mapFieldDSD.getValue());
 
                                 keyObj = mapFieldDSD.getKey();
@@ -216,8 +205,7 @@ public class DataCreator {
                                         Map.Entry<String, JsonNode> objectValue = tempIt.next();
                                         Object msdValue = invokeMethodByReflection(objectValue.getKey(), returnedValue, false);
                                         if (msdValue != null) {
-                                            MDSDescriptor objectTypeMdsDescriptor = initDtoMDSD(titleObj, description, objectValue.getKey());
-                                            tempMap.put(orderObject, objectTypeMdsDescriptor.setValue(fillRecursive(objectValue.getValue().fields(), msdValue)));
+                                            tempMap.put(orderObject, resultObj.setValue(fillRecursive(objectValue.getValue().fields(), msdValue)));
                                         }
                                     }
 
@@ -278,7 +266,6 @@ public class DataCreator {
         } else {
             methodString = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
             if (methodString.equals("getOjCodeList")) {
-                System.out.println("stop!");
                 result = null;
             } else {
                 Method method = instanceToUse.getClass().getMethod(methodString, null);
@@ -316,6 +303,8 @@ public class DataCreator {
             }
         }else if(refMdsd.get(ENUM_FIELD) != null){
 
+            System.out.println("TODO!");
+
         }
 
     }
@@ -352,10 +341,10 @@ public class DataCreator {
     }
 
 
-    private String findTitleAndDescriptionOnObj (ListIterator<Map.Entry<String, JsonNode>> fields) {
-        String result = null;
+    private MDSDescriptor findTitleAndDescriptionOnObj (ListIterator<Map.Entry<String, JsonNode>> fields) {
         String titleRes = null;
         String descRes = null;
+        MDSDescriptor result = new MDSDescriptor();
         while(fields.hasNext()){
             Map.Entry<String, JsonNode> tmp = fields.next();
             if(tmp.getKey().equals(TITLE_FIELD) && !(tmp.getValue().get(LANG.toLowerCase()).asText().equals(null) )){
@@ -365,9 +354,10 @@ public class DataCreator {
             }
         }
         if( titleRes!= null && descRes!= null){
-            result = titleRes + "&"+descRes;
+            result.setTitleToVisualize(titleRes);
+            result.setDescription(descRes);
         }else if(titleRes!= null && descRes== null){
-            result = titleRes ;
+            result.setTitleToVisualize(titleRes);
         }
 
         return result;
