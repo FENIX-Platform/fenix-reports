@@ -7,7 +7,6 @@ import org.fao.fenix.commons.msd.dto.full.MeIdentification;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -37,20 +36,20 @@ public class MDClientMediator {
 
 
     public JsonNode getParsedMDSD (String url) {
-       /* JsonNode result = null;
+        JsonNode result = null;
         Response response = ClientBuilder.newBuilder().build().target(url).request().get();
         try {
             result =  new ObjectMapper().readValue(response.readEntity(String.class), JsonNode.class);
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
-
+        }
+/*
         JsonNode result = null;
         try {
             result = new ObjectMapper().readValue(new File("/home/fabrizio/Documents/GenericProjects/fenix-reports/server/fenix-server-export/jsonExamples/Config/guideMDSD2.json"), JsonNode.class);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
 
         return result;

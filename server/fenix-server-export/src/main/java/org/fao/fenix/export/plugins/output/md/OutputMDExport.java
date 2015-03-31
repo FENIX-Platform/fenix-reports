@@ -31,7 +31,7 @@ public class OutputMDExport extends Output {
     private FileOutputStream temp;
     private MeIdentification metadata;
     private DataCreator dataCreator ;
-    private final String MDSD_URL = "http://hqlprfenixapp2.hq.un.fao.org:12900/wds/rest/mdsd/";
+    private final String MDSD_URL = "http://faostat3.fao.org/d3s2/v2/mdsd";
     private JsonNode mdsdNode;
     private ByteArrayOutputStream baos;
 

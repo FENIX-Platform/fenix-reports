@@ -47,27 +47,7 @@ public class LayoutCreator {
         makeIndex();
 
         Iterator<String> dataIterator = modelData.keySet().iterator();
-/*
-        int counter=0, initMargin ;
-        while(dataIterator.hasNext()) {
-            MDSDescriptor temp = (MDSDescriptor) this.modelData.get(dataIterator.next());
 
-            initMargin = 0;
-            if (counter == 0) {
-                createTitle(temp);
-                indexChapter = new Chapter("Index", -1);
-                indexChapter.setNumberDepth(-1); // not show number style
-                table = new PdfPTable(2);
-
-
-
-            }else{
-              //createBody(temp,initMargin);
-
-                indexAfter(temp,table, indexChapter);
-            }
-            counter++;
-        }*/
         return this.document;
 
     }
@@ -189,7 +169,11 @@ public class LayoutCreator {
             PdfPCell left = new PdfPCell(new Phrase(key,FontType.valueField.getFontType()));
             left.setBorder(Rectangle.NO_BORDER);
 
-            Chunk pageno = new Chunk(indexModelMap.get(key).getTitle(),FontType.valueField.getFontType());
+
+            System.out.println(key);
+            System.out.println(indexModelMap.get(key).getTitle());
+            String prhase =(indexModelMap.get(key).getTitle()!=null)? indexModelMap.get(key).getTitle(): "notTitle";
+            Chunk pageno = new Chunk(prhase,FontType.valueField.getFontType());
             PdfPCell right = new PdfPCell(new Phrase(pageno));
             right.setHorizontalAlignment(Element.ALIGN_RIGHT);
             right.setBorder(Rectangle.NO_BORDER);
@@ -239,9 +223,9 @@ public class LayoutCreator {
             TreeMap<String, MDSDescriptor> tmpTreeMAp = (TreeMap<String,MDSDescriptor>)tempDescriptor.getValue();
 
             Set<String> keys = ((TreeMap<String,MDSDescriptor>)tempDescriptor.getValue()).keySet();
+            indexModelMap.put(indexKey.toString(), new IndexModel(tempDescriptor.getTitleToVisualize(), null));
 
             for(String key : keys) {
-                indexModelMap.put(indexKey.toString(), new IndexModel(tempDescriptor.getTitleToVisualize(), null));
 
                 indexUpd  = updateCounter(indexUpd);
                 fillIndex(tmpTreeMAp.get(key),indexUpd);
@@ -250,7 +234,23 @@ public class LayoutCreator {
 
         else if(tempDescriptor.getValue().getClass().toString().equals(ArrayList.class.toString())){
 
+
+            indexModelMap.put(indexKey.toString(), new IndexModel(tempDescriptor.getTitleToVisualize(), null));
+
+
             String indexUpd = indexKey + ".0";
+
+            TreeMap<String,MDSDescriptor> tempArray = ((TreeMap<String, MDSDescriptor>) ((ArrayList) tempDescriptor.getValue()).get(0));
+
+            Set<String> arrayKeys = tempArray.keySet();
+
+            for(String key: arrayKeys) {
+                indexUpd  = updateCounter(indexUpd);
+                fillIndex(tempArray.get(key),indexUpd);
+            }
+
+
+
 /*
 
             ArrayList<T> tmpTreeMAp =(ArrayList<T>)tempDescriptor.getValue();
