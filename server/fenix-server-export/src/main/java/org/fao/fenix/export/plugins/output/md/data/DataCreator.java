@@ -68,7 +68,7 @@ public class DataCreator {
                     if (mapDsdTmp.getValue().get(TYPE_FIELD) != null) {
 
                         MDSDescriptor value = new MDSDescriptor(key, objectProperty.getTitleToVisualize(), objectProperty.getDescription());
-                        String order =  getOrderFromEntity(mapDsdTmp.getValue());
+                        String order = getOrderFromEntity(mapDsdTmp.getValue());
 
                         // simple case: string type or number type
                         if (isReadyToPut(objectProperty)) {
@@ -95,123 +95,129 @@ public class DataCreator {
     private Object fillRecursive2(Iterator<Map.Entry<String, JsonNode>> fields, Object returnedValue) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
         Map<String, Object> tempMap = new TreeMap<String, Object>();
-
         ListIterator<Map.Entry<String, JsonNode>> listBack = Lists.newArrayList(fields).listIterator();
         MDSDOProperty resultObj = fillObjectProperty(listBack);
-
         String type = resultObj.getType();
 
+        if(type!= null) {
+            /** STRING OR NUMBER**/
 
-        /** STRING OR NUMBER**/
-
-        if (type.equals(STRING_TYPE) || type.equals(NUMBER_TYPE)) {
-            Object valueStringType = invokeMethodByReflection(resultObj.getTitleBean(), returnedValue, false);
-            if (valueStringType != null) {
-                tempMap.put(resultObj.getOrder(), new MDSDescriptor(resultObj.getTitleBean(), resultObj.getTitleToVisualize(), resultObj.getDescription(), valueStringType));
-                return tempMap;
-            }
-        }
-
-        /** OBJECT **/
-
-        else if (type.equals(OBJECT_TYPE)) {
-
-            // 1) PROPERTIES
-            if (resultObj.getProperties() != null) {
-
-                ArrayList<Map.Entry<String, JsonNode>> itProperties = (ArrayList<Map.Entry<String, JsonNode>>) resultObj.getProperties();
-
-                handleProperties(tempMap, itProperties, returnedValue);
-
-            }
-
-            // 2) PATTERN PROPERTIES
-            else if (resultObj.getProperties() == null && resultObj.getPatternProperties() != null) {
-
-
-                Object valueObjPatternType = invokeMethodByReflection(resultObj.getTitleBean(), returnedValue, true);
-                if (valueObjPatternType != null) {
-
-                    if (resultObj.getPatternProperties().equals(STRING_TYPE)) {
-                        String orderObj = getOrderFromEntity(resultObj.getOrder());
-                        tempMap.put(
-                                orderObj,
-                                new MDSDescriptor(resultObj.getTitleBean(),
-                                        resultObj.getTitleToVisualize(),
-                                        resultObj.getDescription(),
-                                        valueObjPatternType)
-                        );
-                    } else {
-                        // TODO(FREEZED): there is not a type different from string
-                    }
+            if (type.equals(STRING_TYPE) || type.equals(NUMBER_TYPE)) {
+                Object valueStringType = invokeMethodByReflection(resultObj.getTitleBean(), returnedValue, false);
+                if (valueStringType != null) {
+                    tempMap.put(resultObj.getOrder(), new MDSDescriptor(resultObj.getTitleBean(), resultObj.getTitleToVisualize(), resultObj.getDescription(), valueStringType));
+                    return tempMap;
                 }
             }
 
-            // 3) REF PROPERTY
-            else if (resultObj.getProperties() == null && resultObj.getPatternProperties() == null && resultObj.getReference() != null) {
+            /** OBJECT **/
 
-                JsonNode mdsdNode = getMdsdObjectFromReference(resultObj.getReference());
-                if (mdsdNode.get(TYPE_FIELD).asText().equals(OBJECT_TYPE)) {
-                    if (mdsdNode.get(PROPERTIES_FIELD) != null) {
-                        ArrayList<Map.Entry<String, JsonNode>> itProperties = Lists.newArrayList(mdsdNode.get(PROPERTIES_FIELD).fields());
-                        handleProperties(tempMap, itProperties, returnedValue);
-                        return tempMap;
+            else if (type.equals(OBJECT_TYPE)) {
+
+                // 1) PROPERTIES
+                if (resultObj.getProperties() != null) {
+                    ArrayList<Map.Entry<String, JsonNode>> itProperties = (ArrayList<Map.Entry<String, JsonNode>>) resultObj.getProperties();
+                    handleProperties(tempMap, itProperties, returnedValue);
+                }
+
+                // 2) PATTERN PROPERTIES
+                else if (resultObj.getProperties() == null && resultObj.getPatternProperties() != null) {
+                    Object valueObjPatternType = invokeMethodByReflection(resultObj.getTitleBean(), returnedValue, true);
+                    if (valueObjPatternType != null) {
+
+                        if (resultObj.getPatternProperties().equals(STRING_TYPE)) {
+                            String orderObj = getOrderFromEntity(resultObj.getOrder());
+                            tempMap.put(
+                                    orderObj,
+                                    new MDSDescriptor(resultObj.getTitleBean(),
+                                            resultObj.getTitleToVisualize(),
+                                            resultObj.getDescription(),
+                                            valueObjPatternType));
+                        } else {
+                            // TODO(FREEZED): there is not a type different from string
+
+                        }
                     }
-                } else if (mdsdNode.get(ENUM_FIELD) != null) {
+                }
 
-
-                    // TODO: handle enumeration
+                // 3) REF PROPERTY
+                else if (resultObj.getProperties() == null && resultObj.getPatternProperties() == null && resultObj.getReference() != null) {
+                    handleReferences(resultObj.getReference(), tempMap, returnedValue, false);
+                    return tempMap;
                 }
             }
-        }
 
-        /** ARRAY**/
+            /** ARRAY**/
 
-        else if (type.equals(ARRAY_TYPE)) {
+            else if (type.equals(ARRAY_TYPE)) {
 
-            //TODO
+                ArrayList<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+                ArrayList<Object> values = (ArrayList<Object>) returnedValue;
 
-            ArrayList<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
-            ArrayList<Object> values = (ArrayList<Object>)returnedValue;
+                JsonNode items = ((ObjectNode) resultObj.getItems()).deepCopy();
+                if (items.get(TYPE_FIELD) != null) {
+                    if (items.get(TYPE_FIELD).asText().equals(STRING_TYPE)) {
+                        String orderGlobal = getOrderFromEntity(resultObj.getOrder());
 
-            JsonNode items = ((ObjectNode) resultObj.getItems()).deepCopy();
-            if(items.get(TYPE_FIELD) != null) {
-                if (items.get(TYPE_FIELD).asText().equals(STRING_TYPE)) {
+                        for (int arrCounter = 0; arrCounter < values.size(); arrCounter++) {
+                            Map<String, Object> tmp = new TreeMap<String, Object>();
+                            String order = getOrderFromEntity(resultObj.getOrder());
+                            tmp.put(order, values.get(arrCounter));
+                            result.add(tmp);
+                        }
+                        tempMap.put(orderGlobal, result);
+                    }
+                } else if (items.get(REF_FIELD) != null) {
                     String orderGlobal = getOrderFromEntity(resultObj.getOrder());
 
-                    for (int arrCounter = 0; arrCounter < values.size(); arrCounter++) {
-                        Map<String, Object> tmp = new TreeMap<String, Object>();
-                        String order = getOrderFromEntity(resultObj.getOrder());
-                        tmp.put(order, values.get(arrCounter));
-                        result.add(tmp);
+                    String ref = items.get(REF_FIELD).asText();
+                    String[] refSplitted = ref.substring(2).split("/");
+
+                    // OJCODE case
+                    if (refSplitted[refSplitted.length - 1].equals(OJCODE_TYPE)) {
+                        tempMap.put(orderGlobal, new MDSDescriptor(
+                                refSplitted[refSplitted.length - 1],
+                                resultObj.getTitleToVisualize(),
+                                resultObj.getDescription(),
+                                fillOjCode((ArrayList<OjCode>) returnedValue)));
+                    } else {
+                        handleReferences(items.get(REF_FIELD).asText(), tempMap, returnedValue, true);
+                        return tempMap;
                     }
-                    tempMap.put(orderGlobal, result);
                 }
             }
-            else if(items.get(REF_FIELD)!= null){
-                String orderGlobal = getOrderFromEntity(resultObj.getOrder());
-
-                String ref = items.get(REF_FIELD).asText();
-                String[] refSplitted = ref.substring(2).split("/");
-
-                // OJCODE case
-                if(refSplitted[refSplitted.length-1].equals(OJCODE_TYPE)){
-                    tempMap.put(orderGlobal,new MDSDescriptor(
-                            refSplitted[refSplitted.length-1],
-                            "Code(S)",
-                            null,
-                            fillOjCode((ArrayList<OjCode>) returnedValue)));
-                }else{
-
-                }
-            }
-
-
         }
-
+        else {
+            if(resultObj.getReference()!= null) {
+                handleReferences(resultObj.getReference(), tempMap, returnedValue, false);
+            }
+        }
 
         return tempMap;
 
+    }
+
+    private void handleReferences(String reference, Map<String, Object> mapToFill, Object returnedValue, boolean isArray) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+
+        JsonNode mdsdNode = getMdsdObjectFromReference(reference);
+        if (mdsdNode.get(TYPE_FIELD).asText().equals(OBJECT_TYPE)) {
+            if (mdsdNode.get(PROPERTIES_FIELD) != null) {
+                ArrayList<Map.Entry<String, JsonNode>> itProperties = Lists.newArrayList(mdsdNode.get(PROPERTIES_FIELD).fields());
+
+                if (isArray) {
+                    ArrayList<Object> values = (ArrayList<Object>) returnedValue;
+                    for (int z = 0; z < values.size(); z++) {
+                        handleProperties(mapToFill, itProperties, values.get(z));
+                    }
+                } else {
+                    handleProperties(mapToFill, itProperties, returnedValue);
+                }
+            }
+        } else if (mdsdNode.get(ENUM_FIELD) != null) {
+
+
+            // TODO: handle enumeration
+        }
     }
 
 
@@ -255,7 +261,7 @@ public class DataCreator {
     }
 
 
-    private void processReferenceField(Map.Entry<String, JsonNode> mapFieldDSD, Object returnedValue, TreeMap<String, Object> tempMap) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+   /* private void processReferenceField(Map.Entry<String, JsonNode> mapFieldDSD, Object returnedValue, TreeMap<String, Object> tempMap) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
         String[] path = mapFieldDSD.getValue().asText().substring(2).split("/");
 
@@ -290,7 +296,7 @@ public class DataCreator {
 
     private MDSDescriptor initDtoMDSD(String title, String description, String beanName) {
         return new MDSDescriptor(beanName, title, description);
-    }
+    }*/
 
 
     private MDSDescriptor initDtoMDSD(JsonNode entity, String beanName) {
@@ -304,7 +310,6 @@ public class DataCreator {
 
         String result = (entity.get(ORDER_FIELD) != null) ? entity.get(ORDER_FIELD).asText() : 10000 + COUNTER + "";
         COUNTER++;
-
         return result;
     }
 
@@ -312,7 +317,6 @@ public class DataCreator {
 
         String result = (entity != null) ? entity : 10000 + COUNTER + "";
         COUNTER++;
-
         return result;
     }
 
@@ -322,39 +326,10 @@ public class DataCreator {
     }
 
 
-    private Object invokeMethodEnumType(Object bean) {
-        return null;
-    }
-
-
-    private MDSDescriptor findTitleAndDescriptionOnObj(ListIterator<Map.Entry<String, JsonNode>> fields) {
-        String titleRes = null;
-        String descRes = null;
-        MDSDescriptor result = new MDSDescriptor();
-        while (fields.hasNext()) {
-            Map.Entry<String, JsonNode> tmp = fields.next();
-            if (tmp.getKey().equals(TITLE_FIELD) && !(tmp.getValue().get(LANG.toLowerCase()).asText().equals(null))) {
-                titleRes = tmp.getValue().get(LANG.toLowerCase()).asText();
-            } else if (tmp.getKey().equals(DESCRIPTION_FIELD) && !(tmp.getValue().get(LANG.toLowerCase()).asText().equals(null))) {
-                descRes = tmp.getValue().get(LANG.toLowerCase()).asText();
-            }
-        }
-        if (titleRes != null && descRes != null) {
-            result.setTitleToVisualize(titleRes);
-            result.setDescription(descRes);
-        } else if (titleRes != null && descRes == null) {
-            result.setTitleToVisualize(titleRes);
-        }
-
-        return result;
-    }
-
-
     private MDSDOProperty fillObjectProperty(ListIterator<Map.Entry<String, JsonNode>> fields) {
 
         MDSDOProperty result = new MDSDOProperty();
         while (fields.hasNext()) {
-
             Map.Entry<String, JsonNode> tmp = fields.next();
 
             switch (tmp.getKey()) {
@@ -392,7 +367,6 @@ public class DataCreator {
                     break;
 
                 case ITEMS_FIELD:
-                    System.out.println("here");
                     result.setItems(tmp.getValue());
                     break;
             }
@@ -420,8 +394,8 @@ public class DataCreator {
 
     private boolean isReadyToPut(MDSDOProperty objectProperty) {
 
-        return objectProperty.getType().equals(STRING_TYPE) ||
-                objectProperty.getType().equals(NUMBER_TYPE) ||
+        return  (objectProperty.getType()!= null &&  (
+                (objectProperty.getType().equals(STRING_TYPE) || objectProperty.getType().equals(NUMBER_TYPE) ) ) )||
                 (objectProperty.getPatternProperties() != null && objectProperty.getPatternProperties().equals(STRING_TYPE));
     }
 
@@ -429,6 +403,10 @@ public class DataCreator {
 
         for (int k = 0; k < itProperties.size(); k++) {
             String titleBean = itProperties.get(k).getKey();
+
+            if(titleBean.equals("contactInfo")) {
+                System.out.println("here!");
+            }
 
             MDSDOProperty objectProperty = fillObjectProperty(Lists.newArrayList(itProperties.get(k).getValue().fields()).listIterator());
             Object mdsdValue = getReturnedValueFromObject(objectProperty, returnedValue, titleBean);
@@ -445,7 +423,7 @@ public class DataCreator {
         }
     }
 
-    private ArrayList<String>  fillOjCode (ArrayList<OjCode> values ) {
+    private ArrayList<String> fillOjCode(ArrayList<OjCode> values) {
         ArrayList<String> mapToFill = new ArrayList<String>();
         for (int h = 0; h < values.size(); h++) {
             mapToFill.add(values.get(h).getCode() + " - " + values.get(h).getLabel().get(LANG.toUpperCase()));

@@ -9,14 +9,11 @@ public enum FontType {
 
     title(new Font(Font.FontFamily.HELVETICA ,25, Font.NORMAL,
             new CMYKColor(0.9f, 0.7f, 0.4f, 0.1f))),
-    titleField(FontFactory.getFont(("fonts/roboto/Roboto-Light.ttf"), "Identity-H", BaseFont.EMBEDDED, 15, Font.UNDEFINED,  ColorType.blueFenix.getCmykColor())),
-    valueField(FontFactory.getFont(("fonts/roboto/Roboto-Regular.ttf"), "Identity-H", BaseFont.EMBEDDED, 12, Font.UNDEFINED, ColorType.grey.getCmykColor())),
-    descriptionField(FontFactory.getFont(("fonts/roboto/Roboto-Regular.ttf"), "Identity-H", BaseFont.EMBEDDED, 10, Font.UNDEFINED, ColorType.grey.getCmykColor()));
-
-
+    titleField(FontFactory.getFont((FontTypeSource.robotoLight.getFontSource()), "Identity-H", BaseFont.EMBEDDED, 10, Font.UNDEFINED,  ColorType.blueFenix.getCmykColor())),
+    valueField(FontFactory.getFont((FontTypeSource.robotoRegular.getFontSource()), "Identity-H", BaseFont.EMBEDDED, 9, Font.UNDEFINED, ColorType.grey.getCmykColor())),
+    descriptionField(FontFactory.getFont((FontTypeSource.robotoRegular.getFontSource()), "Identity-H", BaseFont.EMBEDDED, 8, Font.UNDEFINED, ColorType.grey.getCmykColor()));
 
     private Font fontType;
-
 
     FontType(Font fontType) { this.fontType = fontType; }
 
