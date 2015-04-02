@@ -66,69 +66,121 @@ public class LayoutCreator {
         for(String key: keys) {
 
            MDSDescriptor element = (MDSDescriptor)modelData.get(key);
-            if(isAStringObject(element.getValue())) {
-                boolean isBiggerHeaderMArgin = key.equals("1");
-                writeSimpleElement(SIMPLE_RIGHT_MARGIN,isBiggerHeaderMArgin, (MDSDescriptor) modelData.get(key), indexChapter);
+            processDocumentBody(element,key,indexChapter, modelData);
+        }
+    }
 
+
+    private void processDocumentBody (MDSDescriptor element, String key, int indexChapter, TreeMap<String,Object> dataModel) throws DocumentException {
+
+        System.out.println(element.getValue().getClass().toString());
+        boolean isBiggerHeaderMArgin = key.equals("1");
+
+        if (isAStringObject(element.getValue())) {
+           writeSimpleElement(SIMPLE_RIGHT_MARGIN, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter);
+        }else if(isAnArrayObject(element.getValue())){
+            System.out.println("array!");
+
+
+        }else if(isARecursiveObject(element.getValue())) {
+            System.out.println("recursive!");
+            writeRecursiveElement(SIMPLE_RIGHT_MARGIN, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter);
+            TreeMap<String,Object> recursiveData = (TreeMap<String,Object>)element.getValue();
+
+            Set<String> recKyes = recursiveData.keySet();
+            SIMPLE_HEIGHT_MARGIN += 3;
+            for(String recKey: recKyes) {
+                MDSDescriptor elemRec = (MDSDescriptor)recursiveData.get(recKey);
+                processDocumentBody(elemRec,recKey,indexChapter, recursiveData);
             }
         }
+
+    }
+
+    private boolean isAnArrayObject (Object object) {
+        return object.getClass().toString().equals(ARRAY_TYPEFIELD);
+    }
+
+    private boolean isARecursiveObject (Object object) {
+        return object.getClass().toString().equals(RECURSIVE_TYPEFIELD);
+    }
+
+    private boolean isAStringObject (Object object) {
+        return object.getClass().toString().equals(STRING_TYPEFIELD) || object.getClass().toString().equals(DATE_TYPEFIELD) ;
     }
 
 
     private void writeSimpleElement (int rightMargin, boolean isBiggerHeaderMargin, MDSDescriptor value, int indexChapter ) throws DocumentException {
 
         float marginApplied = (isBiggerHeaderMargin)?  SIMPLE_HEIGHT_MARGIN+5: SIMPLE_HEIGHT_MARGIN;
-        Paragraph titleP = new Paragraph(value.getValue().toString(), FontType.titleField.getFontType());
-        titleP.setAlignment(Element.ALIGN_LEFT);
-        Chapter title = new Chapter(titleP, indexChapter);
 
-        indexChapter++;
-        PdfPTable table = new PdfPTable(2);
+        PdfPTable table = new PdfPTable(3);
 
-      /* *//* PdfPCell titleCell = new PdfPCell();
-        Paragraph titleP = new Paragraph(value.getValue().toString(), FontType.titleField.getFontType());
-        titleP.setAlignment(Element.ALIGN_LEFT);
-        Chapter title = new Chapter(titleP, indexChapter);*//*
+        PdfPCell titleCell = new PdfPCell();
+        Phrase title = new Phrase( value.getTitleToVisualize().toString(), FontType.titleField.getFontType());
 
         titleCell.addElement(title);
         titleCell.setBorder(Rectangle.NO_BORDER);
-        titleCell.setHorizontalAlignment(Element.ALIGN_LEFT + rightMargin);
-        indexChapter ++;*/
-       // titleCell.setLeading(SIMPLE_HEIGHT_MARGIN, marginApplied);
+        titleCell.setHorizontalAlignment(Element.ALIGN_LEFT );
+        titleCell.setPaddingRight(rightMargin);
 
         PdfPCell valueCell  = new PdfPCell();
         valueCell.addElement(new Phrase(value.getValue().toString(), FontType.valueField.getFontType()));
         valueCell.setBorder(Rectangle.NO_BORDER);
         valueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        valueCell.Bchapt
-
-        //  valueCell.setLeading(SIMPLE_HEIGHT_MARGIN, marginApplied);
 
         PdfPCell descripCell = new PdfPCell();
+        Phrase description = new Phrase(value.getDescription().toString());
         descripCell.addElement(new Phrase(value.getDescription().toString(), FontType.descriptionField.getFontType()));
         descripCell.setBorder(Rectangle.NO_BORDER);
         descripCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        indexChapter ++;
 
-        // descripCell.setLeading(SIMPLE_HEIGHT_MARGIN, marginApplied);
-
-      //  table.addCell(titleCell);
+        table.addCell(titleCell);
         table.addCell(valueCell);
         table.addCell(descripCell);
 
         // space
         table.setSpacingAfter(SIMPLE_HEIGHT_MARGIN);
-        document.add(title);
 
         document.add(table);
+    }
+
+    private void writeRecursiveElement (int rightMargin, boolean isBiggerHeaderMargin, MDSDescriptor value, int indexChapter ) throws DocumentException {
+
+        float marginApplied = (isBiggerHeaderMargin)?  SIMPLE_HEIGHT_MARGIN+5: SIMPLE_HEIGHT_MARGIN;
+
+        PdfPTable table = new PdfPTable(3);
+
+        PdfPCell titleCell = new PdfPCell();
+        Phrase title = new Phrase(indexChapter + ". " + value.getTitleToVisualize().toString(), FontType.titleField.getFontType());
+
+        titleCell.addElement(title);
+        titleCell.setBorder(Rectangle.NO_BORDER);
+        titleCell.setHorizontalAlignment(Element.ALIGN_LEFT );
+        titleCell.setPaddingRight(rightMargin);
 
 
+        PdfPCell valueCell  = new PdfPCell();
+        valueCell.addElement(new Phrase("", FontType.valueField.getFontType()));
+        valueCell.setBorder(Rectangle.NO_BORDER);
+        valueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell descripCell = new PdfPCell();
+        descripCell.addElement(new Phrase(value.getDescription().toString(), FontType.descriptionField.getFontType()));
+        descripCell.setBorder(Rectangle.NO_BORDER);
+        descripCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+
+        table.addCell(titleCell);
+        table.addCell(valueCell);
+        table.addCell(descripCell);
+
+        // space
+        table.setSpacingAfter(SIMPLE_HEIGHT_MARGIN);
+
+        document.add(table);
     }
 
 
-    private boolean isAStringObject (Object object) {
-        return object.getClass().toString().equals(STRING_TYPEFIELD) || object.getClass().toString().equals(DATE_TYPEFIELD) ;
-    }
 
 
     private void createFooter () {
