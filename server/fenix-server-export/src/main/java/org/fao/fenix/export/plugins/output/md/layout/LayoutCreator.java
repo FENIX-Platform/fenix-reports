@@ -2,21 +2,23 @@ package org.fao.fenix.export.plugins.output.md.layout;
 
 
 import com.itextpdf.text.*;
+import com.itextpdf.text.List;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import org.apache.log4j.Logger;
 import org.fao.fenix.export.plugins.output.md.data.dto.MDSDescriptor;
 import org.fao.fenix.export.plugins.output.md.layout.utils.ContentEvent;
-import org.fao.fenix.export.plugins.output.md.layout.utils.FontType;
 import org.fao.fenix.export.plugins.output.md.layout.utils.IndexModel;
+import org.fao.fenix.export.plugins.output.md.layout.utils.MDFontTypes;
+import org.fao.fenix.export.plugins.output.md.layout.utils.RegistrationFont;
 
+import java.io.IOException;
 import java.util.*;
 
 public class LayoutCreator {
 
     private static final Logger LOGGER = Logger.getLogger(LayoutCreator.class);
     private  StyleSheetCreator styleSheetCreator;
-    private FontType fontType;
     private static float SIMPLE_HEIGHT_MARGIN = 15;
     private static int SIMPLE_RIGHT_MARGIN = 0;
     private  static String DATE_TYPEFIELD = Date.class.toString();
@@ -27,33 +29,43 @@ public class LayoutCreator {
     private Map<String,IndexModel> indexModelMap;
     private ContentEvent event;
     private Document document;
+    private RegistrationFont registrationFont;
     private TreeMap<String,Object> modelData ;
 
     public LayoutCreator(Document document, ContentEvent event) throws DocumentException {
         this.document = document;
         this.event = event;
+        // register all fenix fonts and styles
+        registrationFont = new RegistrationFont();
+        registrationFont.registerAll();
     }
 
 
-    public Document init (TreeMap<String,Object> modelData) throws DocumentException {
+    public Document init (TreeMap<String,Object> modelData) throws DocumentException, IOException {
+
+        // register all f
+
         this.modelData = modelData;
         styleSheetCreator = new StyleSheetCreator();
         PdfPTable table = null;
         Chapter indexChapter = null;
+
 
        /* createIndexModel();
 
         makeIndex();*/
         createBody();
 
-        Iterator<String> dataIterator = modelData.keySet().iterator();
+
+
+      //  Iterator<String> dataIterator = modelData.keySet().iterator();
 
         return this.document;
 
     }
 
     private void createTitle (MDSDescriptor descriptor) throws DocumentException {
-        document.add(new Paragraph(5 , descriptor.getValue().toString(),  FontType.valueField.getFontType() ));
+        document.add(new Paragraph(5 , descriptor.getValue().toString(),  MDFontTypes.valueField.getFontType() ));
         document.add(styleSheetCreator.getSpaceParagraph("title"));
     }
 
@@ -63,35 +75,40 @@ public class LayoutCreator {
 
         Set<String> keys = modelData.keySet();
         int indexChapter =1;
+        int margin = 0;
         for(String key: keys) {
 
            MDSDescriptor element = (MDSDescriptor)modelData.get(key);
-            processDocumentBody(element,key,indexChapter, modelData);
+            if(element.getTitleBean().equals("uid")){
+                System.out.println("stop!");
+            }
+            processDocumentBody(margin,element,key,indexChapter, modelData);
         }
     }
 
 
-    private void processDocumentBody (MDSDescriptor element, String key, int indexChapter, TreeMap<String,Object> dataModel) throws DocumentException {
+    private void processDocumentBody(int margin, MDSDescriptor element, String key, int indexChapter, TreeMap<String, Object> dataModel) throws DocumentException {
 
-        System.out.println(element.getValue().getClass().toString());
+
         boolean isBiggerHeaderMArgin = key.equals("1");
 
         if (isAStringObject(element.getValue())) {
-           writeSimpleElement(SIMPLE_RIGHT_MARGIN, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter);
+           writeSimpleElement(margin, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter);
         }else if(isAnArrayObject(element.getValue())){
             System.out.println("array!");
+            ArrayList<Object> values = (ArrayList<Object>) element.getValue();
+            writeArrayElement (margin, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter, values);
 
 
         }else if(isARecursiveObject(element.getValue())) {
             System.out.println("recursive!");
-            writeRecursiveElement(SIMPLE_RIGHT_MARGIN, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter);
+            writeRecursiveElement(margin, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter);
             TreeMap<String,Object> recursiveData = (TreeMap<String,Object>)element.getValue();
 
             Set<String> recKyes = recursiveData.keySet();
-            SIMPLE_HEIGHT_MARGIN += 3;
             for(String recKey: recKyes) {
                 MDSDescriptor elemRec = (MDSDescriptor)recursiveData.get(recKey);
-                processDocumentBody(elemRec,recKey,indexChapter, recursiveData);
+                processDocumentBody(margin+5, elemRec,recKey,indexChapter, recursiveData);
             }
         }
 
@@ -115,23 +132,24 @@ public class LayoutCreator {
         float marginApplied = (isBiggerHeaderMargin)?  SIMPLE_HEIGHT_MARGIN+5: SIMPLE_HEIGHT_MARGIN;
 
         PdfPTable table = new PdfPTable(3);
+        table.setWidthPercentage(100);
 
         PdfPCell titleCell = new PdfPCell();
-        Phrase title = new Phrase( value.getTitleToVisualize().toString(), FontType.titleField.getFontType());
+        Phrase title = new Phrase( value.getTitleToVisualize().toString(), MDFontTypes.titleField.getFontType());
 
         titleCell.addElement(title);
         titleCell.setBorder(Rectangle.NO_BORDER);
         titleCell.setHorizontalAlignment(Element.ALIGN_LEFT );
-        titleCell.setPaddingRight(rightMargin);
+        titleCell.setPaddingLeft(rightMargin);
 
         PdfPCell valueCell  = new PdfPCell();
-        valueCell.addElement(new Phrase(value.getValue().toString(), FontType.valueField.getFontType()));
+        valueCell.addElement(new Phrase(value.getValue().toString(), MDFontTypes.valueField.getFontType()));
         valueCell.setBorder(Rectangle.NO_BORDER);
         valueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 
         PdfPCell descripCell = new PdfPCell();
         Phrase description = new Phrase(value.getDescription().toString());
-        descripCell.addElement(new Phrase(value.getDescription().toString(), FontType.descriptionField.getFontType()));
+        descripCell.addElement(new Phrase(value.getDescription().toString(), MDFontTypes.descriptionField.getFontType()));
         descripCell.setBorder(Rectangle.NO_BORDER);
         descripCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
@@ -147,12 +165,33 @@ public class LayoutCreator {
 
     private void writeRecursiveElement (int rightMargin, boolean isBiggerHeaderMargin, MDSDescriptor value, int indexChapter ) throws DocumentException {
 
-        float marginApplied = (isBiggerHeaderMargin)?  SIMPLE_HEIGHT_MARGIN+5: SIMPLE_HEIGHT_MARGIN;
+        String titleString = (value.getTitleToVisualize() != null)? value.getTitleToVisualize().toString() : "title";
+        String descString = (value.getDescription() != null)? value.getDescription().toString() : "Description";
+
+        Paragraph title = new Paragraph();
+        title.add( new Phrase(titleString, MDFontTypes.titleField.getFontType()));
+        title.setIndentationLeft(rightMargin);
+
+        Paragraph description = new Paragraph();
+        description.add(new Phrase(descString, MDFontTypes.descriptionField.getFontType()));
+        description.setIndentationLeft(rightMargin);
+
+        description.setSpacingAfter(SIMPLE_HEIGHT_MARGIN);
+
+        document.add(title);
+        document.add(description);
+
+
+
+      /*  float marginApplied = (isBiggerHeaderMargin)?  SIMPLE_HEIGHT_MARGIN+5: SIMPLE_HEIGHT_MARGIN;
 
         PdfPTable table = new PdfPTable(3);
 
         PdfPCell titleCell = new PdfPCell();
-        Phrase title = new Phrase(indexChapter + ". " + value.getTitleToVisualize().toString(), FontType.titleField.getFontType());
+        String titleString = (value.getTitleToVisualize() != null)? value.getTitleToVisualize().toString() : "title";
+        String descString = (value.getDescription() != null)? value.getDescription().toString() : "Description";
+
+        Phrase title = new Phrase(titleString, MDFontTypes.titleField.getFontType());
 
         titleCell.addElement(title);
         titleCell.setBorder(Rectangle.NO_BORDER);
@@ -161,12 +200,55 @@ public class LayoutCreator {
 
 
         PdfPCell valueCell  = new PdfPCell();
-        valueCell.addElement(new Phrase("", FontType.valueField.getFontType()));
+        valueCell.addElement(new Phrase("", MDFontTypes.valueField.getFontType()));
         valueCell.setBorder(Rectangle.NO_BORDER);
         valueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 
         PdfPCell descripCell = new PdfPCell();
-        descripCell.addElement(new Phrase(value.getDescription().toString(), FontType.descriptionField.getFontType()));
+        descripCell.addElement(new Phrase(descString, MDFontTypes.descriptionField.getFontType()));
+        descripCell.setBorder(Rectangle.NO_BORDER);
+        descripCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+
+        table.addCell(titleCell);
+        table.addCell(valueCell);
+        table.addCell(descripCell);
+
+        // space
+        table.setSpacingAfter(SIMPLE_HEIGHT_MARGIN);
+
+        document.add(table);*/
+    }
+
+
+    private void writeArrayElement(int rightMargin, boolean isBiggerHeaderMargin, MDSDescriptor value, int indexChapter, ArrayList<Object> values) throws DocumentException {
+
+        PdfPTable table = new PdfPTable(3);
+
+        PdfPCell titleCell = new PdfPCell();
+        String titleString = "";
+        String descString = "";
+
+        Phrase title = new Phrase(titleString, MDFontTypes.titleField.getFontType());
+
+        titleCell.addElement(title);
+        titleCell.setBorder(Rectangle.NO_BORDER);
+        titleCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+    //    titleCell.setPaddingRight(rightMargin);
+
+        List valuesList = new List();
+        for(int i= 0 ; i < values.size(); i++) {
+            ListItem c = new ListItem(values.get(i).toString(), MDFontTypes.valueField.getFontType());
+            valuesList.add(c);
+        }
+
+
+        PdfPCell valueCell  = new PdfPCell();
+        valueCell.addElement(valuesList);
+        valueCell.setBorder(Rectangle.NO_BORDER);
+        valueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell descripCell = new PdfPCell();
+        descripCell.addElement(new Phrase(descString, MDFontTypes.descriptionField.getFontType()));
         descripCell.setBorder(Rectangle.NO_BORDER);
         descripCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
@@ -178,8 +260,8 @@ public class LayoutCreator {
         table.setSpacingAfter(SIMPLE_HEIGHT_MARGIN);
 
         document.add(table);
-    }
 
+    }
 
 
 
@@ -191,8 +273,8 @@ public class LayoutCreator {
         String title = (descriptor.getTitleToVisualize()!= null)? descriptor.getTitleToVisualize(): descriptor.getTitleBean();
         String value = descriptor.getValue().toString();
 
-        Phrase titlePhrase = new Phrase(12,title, FontType.valueField.getFontType());
-        Phrase valuePhrase = new Phrase(12,value, FontType.valueField.getFontType());
+        Phrase titlePhrase = new Phrase(12,title, MDFontTypes.valueField.getFontType());
+        Phrase valuePhrase = new Phrase(12,value, MDFontTypes.valueField.getFontType());
         Paragraph p = new Paragraph(titlePhrase + "  :  ");
         p.add(valuePhrase);
 
@@ -203,7 +285,7 @@ public class LayoutCreator {
     private void addOnlyTitle (MDSDescriptor toAdd) throws DocumentException {
 
         String title = (toAdd.getTitleToVisualize()!= null)? toAdd.getTitleToVisualize(): toAdd.getTitleBean();
-        document.add(new Paragraph(new Phrase(12,title,FontType.valueField.getFontType())));
+        document.add(new Paragraph(new Phrase(12,title, MDFontTypes.valueField.getFontType())));
         // then space (now I don't know how to do it :) )
     }
 
@@ -223,7 +305,7 @@ public class LayoutCreator {
     private void makeIndex() throws DocumentException {
 
         PdfPTable table = new PdfPTable(2);
-        Paragraph paragraph = new Paragraph("Index", FontType.titleField.getFontType());
+        Paragraph paragraph = new Paragraph("Index", MDFontTypes.titleField.getFontType());
 
         Chapter indexChapter = new Chapter(paragraph,0);
 
@@ -231,11 +313,11 @@ public class LayoutCreator {
 
         for(String key : keys ){
 
-            PdfPCell left = new PdfPCell(new Phrase(key,FontType.valueField.getFontType()));
+            PdfPCell left = new PdfPCell(new Phrase(key, MDFontTypes.valueField.getFontType()));
             left.setBorder(Rectangle.NO_BORDER);
 
             String prhase =(indexModelMap.get(key).getTitle()!=null)? indexModelMap.get(key).getTitle(): "notTitle";
-            Chunk pageno = new Chunk(prhase,FontType.valueField.getFontType());
+            Chunk pageno = new Chunk(prhase, MDFontTypes.valueField.getFontType());
             PdfPCell right = new PdfPCell(new Phrase(pageno));
             right.setHorizontalAlignment(Element.ALIGN_RIGHT);
             right.setBorder(Rectangle.NO_BORDER);

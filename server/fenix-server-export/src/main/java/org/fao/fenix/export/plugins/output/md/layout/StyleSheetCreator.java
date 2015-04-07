@@ -4,7 +4,7 @@ package org.fao.fenix.export.plugins.output.md.layout;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.CMYKColor;
-import org.fao.fenix.export.plugins.output.md.layout.utils.FontType;
+import org.fao.fenix.export.plugins.output.md.layout.utils.MDFontTypes;
 
 import java.util.HashMap;
 
@@ -12,7 +12,7 @@ public class StyleSheetCreator {
 
 
     private HashMap<String, Font> fontMap;
-    private FontType fontType;
+    private MDFontTypes fontType;
     private static final String TITLE = "title";
 
 
@@ -32,7 +32,7 @@ public class StyleSheetCreator {
         switch (section) {
 
             case TITLE:
-                result = new Paragraph(new Paragraph(20, "",  FontType.title.getFontType()));
+                result = new Paragraph(new Paragraph(20, "",  MDFontTypes.titleField.getFontType()));
                 break;
         }
 
@@ -42,7 +42,7 @@ public class StyleSheetCreator {
 
 
 
-    public Font getFont (FontType font) {
+    public Font getFont (MDFontTypes font) {
         if(fontMap!= null)
             return fontMap.get(font);
         return null;
