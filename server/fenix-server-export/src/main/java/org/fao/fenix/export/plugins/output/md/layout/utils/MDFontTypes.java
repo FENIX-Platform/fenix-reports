@@ -5,10 +5,10 @@ import com.itextpdf.text.FontFactory;
 
 public enum MDFontTypes {
 
-    titleField(FontFactory.getFont("roboto_thin",10,ColorType.blueFenix.getCmykColor()/*, "Identity-H", BaseFont.EMBEDDED, 10, Font.UNDEFINED,  ColorType.blueFenix.getCmykColor()))*/)),
-    valueField((FontFactory.getFont(("roboto_light"),9,ColorType.grey.getCmykColor()/*, "Identity-H", BaseFont.EMBEDDED, 9, Font.UNDEFINED,  ColorType.grey.getCmykColor()))*/))),
-    descriptionField((FontFactory.getFont(("roboto_light"),8,ColorType.grey.getCmykColor()/*, "Identity-H", BaseFont.EMBEDDED, 8, Font.UNDEFINED,  ColorType.grey.getCmykColor()))*/)));
-
+    titleField(FontFactory.getFont("roboto_light",10,ColorType.blueFenix.getCmykColor()/*, "Identity-H", BaseFont.EMBEDDED, 10, Font.UNDEFINED,  ColorType.blueFenix.getCmykColor()))*/)),
+    valueField((FontFactory.getFont(("roboto_light"),8,ColorType.grey.getCmykColor()/*, "Identity-H", BaseFont.EMBEDDED, 9, Font.UNDEFINED,  ColorType.grey.getCmykColor()))*/))),
+    descriptionField((FontFactory.getFont(("roboto_light"),5,ColorType.borderGrey.getCmykColor()/*, "Identity-H", BaseFont.EMBEDDED, 8, Font.UNDEFINED,  ColorType.grey.getCmykColor()))*/))),
+    footerField((FontFactory.getFont(("roboto_light"), 7, ColorType.grey.getCmykColor()/*, "Identity-H", BaseFont.EMBEDDED, 8, Font.UNDEFINED,  ColorType.grey.getCmykColor()))*/)));
 
     private Font fontType;
 

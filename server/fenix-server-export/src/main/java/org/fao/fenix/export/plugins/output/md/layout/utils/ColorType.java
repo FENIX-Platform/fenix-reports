@@ -7,7 +7,8 @@ public enum ColorType {
 
 
     grey(new CMYKColor((float) 0.0, (float) 0.0, (float) 0.0, (float) 0.80)),
-    blueFenix( new CMYKColor(100,52, 0, 0));
+    blueFenix( new CMYKColor(100,52, 0, 0)),
+    borderGrey(new CMYKColor((float) 0.0, (float) 0.0, (float) 0.0, (float) 0.40));
 
 
     private CMYKColor cmykColor;

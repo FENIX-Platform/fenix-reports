@@ -2,8 +2,9 @@ package org.fao.fenix.export.plugins.output.md;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.PageSize;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.ColumnText;
+import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.log4j.Logger;
 import org.fao.fenix.commons.msd.dto.full.MeIdentification;
@@ -14,7 +15,7 @@ import org.fao.fenix.export.core.output.plugin.Output;
 import org.fao.fenix.export.plugins.input.metadata.mediator.MDClientMediator;
 import org.fao.fenix.export.plugins.output.md.data.DataCreator;
 import org.fao.fenix.export.plugins.output.md.layout.LayoutCreator;
-import org.fao.fenix.export.plugins.output.md.layout.utils.ContentEvent;
+import org.fao.fenix.export.plugins.output.md.layout.utils.MDFontTypes;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -35,6 +36,57 @@ public class OutputMDExport extends Output {
     private JsonNode mdsdNode;
     private ByteArrayOutputStream baos;
 
+    /** Inner class to add a header and a footer. */
+    class HeaderFooter extends PdfPageEventHelper {
+        /** Alternating phrase for the header. */
+        Phrase[] header = new Phrase[2];
+        /** Current page number (will be reset for every chapter). */
+        int pagenumber;
+
+        /**
+         * Initialize one of the headers.
+         * @see com.itextpdf.text.pdf.PdfPageEventHelper#onOpenDocument(
+         *      com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document)
+         */
+        public void onOpenDocument(PdfWriter writer, Document document) {
+            header[0] = new Phrase("Movie history");
+            pagenumber = 1;
+        }
+
+        /**
+         * Initialize one of the headers, based on the chapter title;
+         * reset the page number.
+         * @see com.itextpdf.text.pdf.PdfPageEventHelper#onChapter(
+         *      com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document, float,
+         *      com.itextpdf.text.Paragraph)
+         */
+        public void onChapter(PdfWriter writer, Document document,
+                              float paragraphPosition, Paragraph title) {
+           // pagenumber = 1;
+        }
+
+        /**
+         * Increase the page number.
+         * @see com.itextpdf.text.pdf.PdfPageEventHelper#onStartPage(
+         *      com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document)
+         */
+        public void onStartPage(PdfWriter writer, Document document) {
+            pagenumber++;
+        }
+
+        /**
+         * Adds the header and the footer.
+         * @see com.itextpdf.text.pdf.PdfPageEventHelper#onEndPage(
+         *      com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document)
+         */
+        public void onEndPage(PdfWriter writer, Document document) {
+            Rectangle rect = writer.getBoxSize("art");
+            ColumnText.showTextAligned(writer.getDirectContent(),
+                    Element.ALIGN_CENTER, new Phrase(String.format(" %d", pagenumber-1), MDFontTypes.footerField.getFontType()),
+                    ((rect.getLeft() + rect.getRight())-50), rect.getBottom() - 18, 0);
+        }
+    }
+
     @Override
     public void init(Map<String, Object> config) {this.config = config;
         dataCreator = new DataCreator();}
@@ -48,10 +100,14 @@ public class OutputMDExport extends Output {
         Document document = new Document(PageSize.A4, 50, 50, 50, 50);
         baos = new ByteArrayOutputStream();
         PdfWriter contentWriter = PdfWriter.getInstance(document, baos);
-        ContentEvent event = new ContentEvent();
+
+        HeaderFooter event = new HeaderFooter();
+        contentWriter.setBoxSize("art", new Rectangle(36, 54, 559, 788));
+
         contentWriter.setPageEvent(event);
+
         document.open();
-        LayoutCreator layoutCreator = new LayoutCreator(document, event);
+        LayoutCreator layoutCreator = new LayoutCreator(document);
         document = layoutCreator.init((TreeMap<String, Object>) dataCreator.getMetaDataCleaned());
         document.close();
 
