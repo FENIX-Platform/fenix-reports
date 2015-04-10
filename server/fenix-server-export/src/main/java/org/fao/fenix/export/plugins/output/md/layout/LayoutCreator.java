@@ -72,9 +72,9 @@ public class LayoutCreator {
         for (String key : keys) {
 
             MDSDescriptor element = (MDSDescriptor) modelData.get(key);
-            if (element.getTitleBean().equals("uid")) {
+          /*  if (element.getTitleBean().equals("uid")) {
                 System.out.println("stop!");
-            }
+            }*/
             processDocumentBody(margin, element, key, indexChapter, modelData);
         }
     }
@@ -85,7 +85,7 @@ public class LayoutCreator {
 
         boolean isBiggerHeaderMArgin = key.equals("1");
 
-        if (isAStringObject(element.getValue())) {
+        if (isAStringObject(element.getValue()) && !element.getTitleBean().equals("title")) {
             writeSimpleElement(margin, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter);
         } else if (isAnArrayObject(element.getValue())) {
             System.out.println("array!");

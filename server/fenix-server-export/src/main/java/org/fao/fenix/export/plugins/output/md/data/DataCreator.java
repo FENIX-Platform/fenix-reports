@@ -55,7 +55,9 @@ public class DataCreator {
             Map.Entry<String, JsonNode> mapDsdTmp = properties.next();
             String key = mapDsdTmp.getKey();
 
+/*
             System.out.println(key);
+*/
 
             MDSDOProperty objectProperty = fillObjectProperty(Lists.newArrayList(mapDsdTmp.getValue().fields()).listIterator());
             Object returnedValue = getReturnedValueFromObject(objectProperty, meIdentification, key);
@@ -403,10 +405,10 @@ public class DataCreator {
 
         for (int k = 0; k < itProperties.size(); k++) {
             String titleBean = itProperties.get(k).getKey();
-
+/*
             if(titleBean.equals("contactInfo")) {
                 System.out.println("here!");
-            }
+            }*/
 
             MDSDOProperty objectProperty = fillObjectProperty(Lists.newArrayList(itProperties.get(k).getValue().fields()).listIterator());
             Object mdsdValue = getReturnedValueFromObject(objectProperty, returnedValue, titleBean);
