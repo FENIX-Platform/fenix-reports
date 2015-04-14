@@ -100,6 +100,11 @@ public class LayoutCreator {
 
             Set<String> recKyes = recursiveData.keySet();
             for (String recKey : recKyes) {
+
+                if(recKey.equals("2")){
+                    System.out.println("stop!");
+                }
+
                 MDSDescriptor elemRec = (MDSDescriptor) recursiveData.get(recKey);
                 processDocumentBody(margin + 5, elemRec, recKey, indexChapter, recursiveData);
             }
@@ -191,11 +196,20 @@ public class LayoutCreator {
 
 
         for (int i = 0; i < arraySize; i++) {
-            PdfPTable table = new PdfPTable(2);
+            String[] codeLabel = values.get(i).toString().split("-");
+            PdfPTable table = new PdfPTable(codeLabel.length);
             table.setWidthPercentage(100);
 
+            PdfPCell[] cells = new PdfPCell[codeLabel.length];
 
-            PdfPCell codeCell = new PdfPCell();
+            for( int z =0 ; z<codeLabel.length; z++) {
+                cells[z] = new PdfPCell();
+                cells[z] = new PdfPCell(new Phrase(codeLabel[z],MDFontTypes.valueField.getFontType()));
+                cells[z].setMinimumHeight(20);
+                cells[z].setVerticalAlignment(Element.ALIGN_MIDDLE);
+                table.addCell(cells[z]);
+            }
+         /*   PdfPCell codeCell = new PdfPCell();
             PdfPCell valueCell = new PdfPCell();
             String[] codeLabel = values.get(i).toString().split("-");
 
@@ -212,7 +226,7 @@ public class LayoutCreator {
             cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
 
-            table.addCell(cell2);
+            table.addCell(cell2);*/
         /*
             Font font = MDFontTypes.valueField.getFontType();
 

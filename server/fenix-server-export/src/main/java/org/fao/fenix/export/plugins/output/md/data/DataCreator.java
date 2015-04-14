@@ -54,6 +54,9 @@ public class DataCreator {
 
             Map.Entry<String, JsonNode> mapDsdTmp = properties.next();
             String key = mapDsdTmp.getKey();
+            if(key.equals("meContent")){
+                System.out.println("stop!");
+            }
 
 /*
             System.out.println(key);
@@ -405,10 +408,10 @@ public class DataCreator {
 
         for (int k = 0; k < itProperties.size(); k++) {
             String titleBean = itProperties.get(k).getKey();
-/*
-            if(titleBean.equals("contactInfo")) {
+
+            if(titleBean.equals("keywords")) {
                 System.out.println("here!");
-            }*/
+            }
 
             MDSDOProperty objectProperty = fillObjectProperty(Lists.newArrayList(itProperties.get(k).getValue().fields()).listIterator());
             Object mdsdValue = getReturnedValueFromObject(objectProperty, returnedValue, titleBean);
@@ -418,7 +421,18 @@ public class DataCreator {
                 if (isReadyToPut(objectProperty)) {
                     mapToFill.put(orderObj,
                             new MDSDescriptor(titleBean, objectProperty.getTitleToVisualize(), objectProperty.getDescription(), mdsdValue));
-                } else {
+                }
+                else if(objectProperty.getType() != null &&
+                        objectProperty.getType().equals(ARRAY_TYPE) &&
+                        objectProperty.getItems().get(TYPE_FIELD)!= null &&
+                        objectProperty.getItems().get(TYPE_FIELD).asText().equals(STRING_TYPE)){
+                    ArrayList<String> values = new ArrayList<String>();
+                    for(String s: (ArrayList<String>)mdsdValue){
+                        values.add(s);
+                    }
+                    mapToFill.put(orderObj, new MDSDescriptor(titleBean, objectProperty.getTitleToVisualize(), objectProperty.getDescription(),values));
+                }
+                else {
                     mapToFill.put(orderObj, new MDSDescriptor(titleBean, objectProperty.getTitleToVisualize(), objectProperty.getDescription(), fillRecursive2(itProperties.get(k).getValue().fields(), mdsdValue)));
                 }
             }
@@ -428,10 +442,46 @@ public class DataCreator {
     private ArrayList<String> fillOjCode(ArrayList<OjCode> values) {
         ArrayList<String> mapToFill = new ArrayList<String>();
         for (int h = 0; h < values.size(); h++) {
-            mapToFill.add(values.get(h).getCode() + " - " + values.get(h).getLabel().get(LANG.toUpperCase()));
+            String value = (values.get(h).getLabel()!= null)? values.get(h).getLabel().get(LANG.toUpperCase()): "";
+            mapToFill.add(values.get(h).getCode() + " - " + value);
         }
         return mapToFill;
     }
+
+
+    /*private void handleArray () {
+
+        ArrayList<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+        ArrayList<Object> values = (ArrayList<Object>) returnedValue;
+
+        JsonNode items = ((ObjectNode) resultObj.getItems()).deepCopy();
+        if (items.get(TYPE_FIELD) != null) {
+            if (items.get(TYPE_FIELD).asText().equals(STRING_TYPE)) {
+                String orderGlobal = getOrderFromEntity(resultObj.getOrder());
+
+                for (int arrCounter = 0; arrCounter < values.size(); arrCounter++) {
+                    Map<String, Object> tmp = new TreeMap<String, Object>();
+                    String order = getOrderFromEntity(resultObj.getOrder());
+                    tmp.put(order, values.get(arrCounter));
+                    result.add(tmp);
+                }
+                tempMap.put(orderGlobal, result);
+            }
+        } else if (items.get(REF_FIELD) != null) {
+            String orderGlobal = getOrderFromEntity(resultObj.getOrder());
+
+            String ref = items.get(REF_FIELD).asText();
+            String[] refSplitted = ref.substring(2).split("/");
+
+            // OJCODE case
+            if (refSplitted[refSplitted.length - 1].equals(OJCODE_TYPE)) {
+                tempMap.put(orderGlobal, new MDSDescriptor(
+                        refSplitted[refSplitted.length - 1],
+                        resultObj.getTitleToVisualize(),
+                        resultObj.getDescription(),
+                        fillOjCode((ArrayList<OjCode>) returnedValue)));
+            }
+    }*/
 }
 
 
