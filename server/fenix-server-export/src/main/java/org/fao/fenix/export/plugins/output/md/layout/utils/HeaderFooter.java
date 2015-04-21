@@ -1,20 +1,25 @@
 package org.fao.fenix.export.plugins.output.md.layout.utils;
 
-
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import javax.swing.text.Document;
+import java.io.IOException;
 
-public class HeaderFooter extends PdfPageEventHelper {
-
+/** Inner class to add a header and a footer. */
+class HeaderFooter extends PdfPageEventHelper {
 
     /** Current page number (will be reset for every chapter). */
     int pagenumber;
+    String title;
+    private final static String IMAGE_PATH = "logo/FAO_logo.png";
+    Image logo;
+
+    public HeaderFooter(String title) {
+        this.title = title;
+    }
+
 
     /**
      * Initialize one of the headers.
@@ -23,6 +28,25 @@ public class HeaderFooter extends PdfPageEventHelper {
      */
     public void onOpenDocument(PdfWriter writer, Document document) {
         pagenumber = 1;
+        try {
+            logo = Image.getInstance(this.getClass().getClassLoader().getResource("../").getPath() + IMAGE_PATH);
+        } catch (BadElementException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Initialize one of the headers, based on the chapter title;
+     * reset the page number.
+     * @see com.itextpdf.text.pdf.PdfPageEventHelper#onChapter(
+     *      com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document, float,
+     *      com.itextpdf.text.Paragraph)
+     */
+    public void onChapter(PdfWriter writer, Document document,
+                          float paragraphPosition, Paragraph title) {
+        // pagenumber = 1;
     }
 
     /**
@@ -41,23 +65,19 @@ public class HeaderFooter extends PdfPageEventHelper {
      */
     public void onEndPage(PdfWriter writer, Document document) {
         Rectangle rect = writer.getBoxSize("art");
-       /* switch(writer.getPageNumber() % 2) {
-            case 0:
+        ColumnText.showTextAligned(writer.getDirectContent(),
+                Element.ALIGN_CENTER, new Phrase(String.format(" %d", pagenumber - 1), MDFontTypes.footerField.getFontType()),
+                ((rect.getLeft() + rect.getRight()) - 50), rect.getBottom() - 18, 0);
+        ColumnText.showTextAligned(writer.getDirectContent(),
+                Element.ALIGN_CENTER, new Phrase(title.toUpperCase(), MDFontTypes.headerField.getFontType()),
+                ((rect.getLeft() + rect.getRight()) / 2), rect.getTop() + 5, 0);
+        logo.scalePercent((float) 15);
 
-                break;
-            case 1:
-                ColumnText.showTextAligned(writer.getDirectContent(),
-                        Element.ALIGN_LEFT, new Phrase("asd1"),
-                        rect.getLeft(), rect.getTop(), 0);
-                break;
+        logo.setAbsolutePosition(rect.getLeft() + 7, rect.getTop() - 7);
+        try {
+            writer.getDirectContent().addImage(logo);
+        } catch (DocumentException e) {
+            e.printStackTrace();
         }
-        ColumnText.showTextAligned(writer.getDirectContent(),
-                Element.ALIGN_CENTER, new Phrase(String.format("page %d", pagenumber)),
-                (rect.getLeft() + rect.getRight()) / 2, rect.getBottom() - 18, 0);
-    }*/
-        ColumnText.showTextAligned(writer.getDirectContent(),
-                Element.ALIGN_RIGHT, new Phrase("pageeEEEE"),
-                rect.getRight(), rect.getTop(), 0);
     }
-
 }

@@ -1,19 +1,20 @@
-package org.fao.fenix.export.plugins.output.md.layout;
+package org.fao.fenix.export.plugins.output.md.full;
 
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import org.apache.log4j.Logger;
+import org.fao.fenix.export.plugins.output.md.layout.factory.LayoutCreator;
 import org.fao.fenix.export.plugins.output.md.data.dto.MDSDescriptor;
 import org.fao.fenix.export.plugins.output.md.layout.utils.*;
 
 import java.io.IOException;
 import java.util.*;
 
-public class LayoutCreator {
+public class FullLayoutCreator extends LayoutCreator{
 
-    private static final Logger LOGGER = Logger.getLogger(LayoutCreator.class);
+    private static final Logger LOGGER = Logger.getLogger(FullLayoutCreator.class);
     private StyleSheetCreator styleSheetCreator;
     private static float SIMPLE_HEIGHT_MARGIN = 18;
     private static int SIMPLE_RIGHT_MARGIN = 0;
@@ -27,7 +28,7 @@ public class LayoutCreator {
     private RegistrationFont registrationFont;
     private TreeMap<String, Object> modelData;
 
-    public LayoutCreator(Document document) throws DocumentException {
+    public FullLayoutCreator(Document document) throws DocumentException {
         this.document = document;
         // register all fenix fonts and styles
         registrationFont = new RegistrationFont();
@@ -35,6 +36,7 @@ public class LayoutCreator {
     }
 
 
+    @Override
     public Document init(TreeMap<String, Object> modelData) throws DocumentException, IOException {
 
         // register all f
@@ -345,7 +347,7 @@ public class LayoutCreator {
 
     }
 
-    private void addStringTypeField(MDSDescriptor descriptor, int margin) throws DocumentException {
+  /*  private void addStringTypeField(MDSDescriptor descriptor, int margin) throws DocumentException {
         String title = (descriptor.getTitleToVisualize() != null) ? descriptor.getTitleToVisualize() : descriptor.getTitleBean();
         String value = descriptor.getValue().toString();
 
@@ -454,7 +456,7 @@ public class LayoutCreator {
 
         }
         LOGGER.error(tempDescriptor.getValue().getClass().toString());
-    }
+    }*/
 
     private String updateCounter(String counter) {
 

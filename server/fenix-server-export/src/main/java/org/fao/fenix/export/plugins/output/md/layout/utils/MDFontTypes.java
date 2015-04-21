@@ -9,7 +9,7 @@ public enum MDFontTypes {
     valueField((FontFactory.getFont(("roboto_light"),9,ColorType.grey.getCmykColor()))),
     descriptionField((FontFactory.getFont(("roboto_light"),5,ColorType.descGrey.getCmykColor()))),
     footerField((FontFactory.getFont(("roboto_light"), 7, ColorType.grey.getCmykColor()))),
-    headerField((FontFactory.getFont(("roboto_thin"), 14, ColorType.blueFenix.getCmykColor())));
+    headerField((FontFactory.getFont(("roboto_thin"), 12, ColorType.blueFenix.getCmykColor())));
 
 
     private Font fontType;

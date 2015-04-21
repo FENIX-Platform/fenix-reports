@@ -24,6 +24,8 @@ public class DataCreator {
     private final static String REQUIRED_FIELD = "required";
     private final static String ORDER_FIELD = "propertyOrder";
     private final static String TITLE_FIELD = "title_i18n";
+    private final static String TITLE_FIELD_GENERIC = "title";
+
     private final static String DESCRIPTION_FIELD = "description_i18n";
     private final static String REF_FIELD = "$ref";
     private final static String TYPE_FIELD = "type";
@@ -54,7 +56,7 @@ public class DataCreator {
 
             Map.Entry<String, JsonNode> mapDsdTmp = properties.next();
             String key = mapDsdTmp.getKey();
-            if(key.equals("meContent")){
+            if(key.equals("contacts")){
                 System.out.println("stop!");
             }
 
@@ -220,6 +222,8 @@ public class DataCreator {
             }
         } else if (mdsdNode.get(ENUM_FIELD) != null) {
 
+            System.out.println("stop!");
+
 
             // TODO: handle enumeration
         }
@@ -374,6 +378,12 @@ public class DataCreator {
                 case ITEMS_FIELD:
                     result.setItems(tmp.getValue());
                     break;
+
+                case TITLE_FIELD_GENERIC:
+                    if(result.getTitleToVisualize() == null){
+                        result.setTitleToVisualize(tmp.getValue().asText());
+                    }
+                    break;
             }
 
         }
@@ -409,7 +419,7 @@ public class DataCreator {
         for (int k = 0; k < itProperties.size(); k++) {
             String titleBean = itProperties.get(k).getKey();
 
-            if(titleBean.equals("keywords")) {
+            if(titleBean.equals("contactInfo")) {
                 System.out.println("here!");
             }
 

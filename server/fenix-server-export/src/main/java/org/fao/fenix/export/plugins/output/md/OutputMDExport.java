@@ -15,7 +15,7 @@ import org.fao.fenix.export.core.output.plugin.Output;
 import org.fao.fenix.export.plugins.input.metadata.mediator.MDClientMediator;
 import org.fao.fenix.export.plugins.output.md.data.DataCreator;
 import org.fao.fenix.export.plugins.output.md.data.dto.MDSDescriptor;
-import org.fao.fenix.export.plugins.output.md.layout.LayoutCreator;
+import org.fao.fenix.export.plugins.output.md.layout.factory.LayoutCreator;
 import org.fao.fenix.export.plugins.output.md.layout.utils.MDFontTypes;
 
 import java.io.ByteArrayOutputStream;
@@ -31,6 +31,7 @@ public class OutputMDExport extends Output {
     private static final Logger LOGGER = Logger.getLogger(OutputMDExport.class);
     private Map<String, Object> config;
     private Document document;
+    private HeaderFooter event;
     private FileOutputStream temp;
     private MeIdentification metadata;
     private DataCreator dataCreator ;
@@ -41,13 +42,14 @@ public class OutputMDExport extends Output {
     private final int MARGIN_UP  = 80;
     private final int MARGIN_BOTTOM  = 50;
     private final int MARGIN_RIGHT  = 50;
+    private final int LOGO_SCALE_PERCENTAGE = 10;
+    private final int RIGHT_OFFSET_FOOTER = 50;
 
 
 
-    /** Inner class to add a header and a footer. */
+  /** Inner class to add a header and a footer. */
     class HeaderFooter extends PdfPageEventHelper {
 
-        /** Current page number (will be reset for every chapter). */
         int pagenumber;
         String title;
         private final static String IMAGE_PATH = "logo/FAO_logo.png";
@@ -58,11 +60,6 @@ public class OutputMDExport extends Output {
         }
 
 
-        /**
-         * Initialize one of the headers.
-         * @see com.itextpdf.text.pdf.PdfPageEventHelper#onOpenDocument(
-         *      com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document)
-         */
         public void onOpenDocument(PdfWriter writer, Document document) {
             pagenumber = 1;
             try {
@@ -74,41 +71,26 @@ public class OutputMDExport extends Output {
             }
         }
 
-        /**
-         * Initialize one of the headers, based on the chapter title;
-         * reset the page number.
-         * @see com.itextpdf.text.pdf.PdfPageEventHelper#onChapter(
-         *      com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document, float,
-         *      com.itextpdf.text.Paragraph)
-         */
+
         public void onChapter(PdfWriter writer, Document document,
                               float paragraphPosition, Paragraph title) {
            // pagenumber = 1;
         }
 
-        /**
-         * Increase the page number.
-         * @see com.itextpdf.text.pdf.PdfPageEventHelper#onStartPage(
-         *      com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document)
-         */
         public void onStartPage(PdfWriter writer, Document document) {
             pagenumber++;
         }
 
-        /**
-         * Adds the header and the footer.
-         * @see com.itextpdf.text.pdf.PdfPageEventHelper#onEndPage(
-         *      com.itextpdf.text.pdf.PdfWriter, com.itextpdf.text.Document)
-         */
+
         public void onEndPage(PdfWriter writer, Document document) {
             Rectangle rect = writer.getBoxSize("art");
             ColumnText.showTextAligned(writer.getDirectContent(),
                     Element.ALIGN_CENTER, new Phrase(String.format(" %d", pagenumber - 1), MDFontTypes.footerField.getFontType()),
-                    ((rect.getLeft() + rect.getRight())-50), rect.getBottom() - 18, 0);
+                    ((rect.getLeft() + rect.getRight())-RIGHT_OFFSET_FOOTER), rect.getBottom() - 18, 0);
             ColumnText.showTextAligned(writer.getDirectContent(),
                     Element.ALIGN_CENTER, new Phrase(title.toUpperCase(), MDFontTypes.headerField.getFontType()),
                     ((rect.getLeft() + rect.getRight()) / 2), rect.getTop() + 5, 0);
-            logo.scalePercent((float) 15);
+            logo.scalePercent(10,11);
 
             logo.setAbsolutePosition(rect.getLeft()+7,rect.getTop()-7);
             try {
@@ -129,6 +111,7 @@ public class OutputMDExport extends Output {
         if(mdsdNode == null)
             getMdsd();
         dataCreator.initDataFromMDSD(mdsdNode,resource.getMetadata());
+        // TODO: setting configuration pagesize
         Document document = new Document(PageSize.A4, MARGIN_LEFT, MARGIN_RIGHT,
                 MARGIN_UP, MARGIN_BOTTOM);
         baos = new ByteArrayOutputStream();
@@ -137,11 +120,11 @@ public class OutputMDExport extends Output {
 
         HeaderFooter event = new HeaderFooter(title);
         contentWriter.setBoxSize("art", new Rectangle(36, 54, 559, 788));
-
         contentWriter.setPageEvent(event);
 
         document.open();
-        LayoutCreator layoutCreator = new LayoutCreator(document);
+        boolean isFull = config.get("full")!= null? Boolean.getBoolean(config.get("full").toString()): false;
+        LayoutCreator layoutCreator = LayoutCreator.createInstance(isFull, document);
         document = layoutCreator.init((TreeMap<String, Object>) dataCreator.getMetaDataCleaned());
         document.close();
 

@@ -1,4 +1,4 @@
-package org.fao.fenix.export.plugins.output.md.layout;
+package org.fao.fenix.export.plugins.output.md.full;
 
 
 import com.itextpdf.text.Font;
