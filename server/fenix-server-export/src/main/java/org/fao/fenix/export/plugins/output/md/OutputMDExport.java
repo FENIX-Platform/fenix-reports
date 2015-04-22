@@ -90,7 +90,8 @@ public class OutputMDExport extends Output {
             ColumnText.showTextAligned(writer.getDirectContent(),
                     Element.ALIGN_CENTER, new Phrase(title.toUpperCase(), MDFontTypes.headerField.getFontType()),
                     ((rect.getLeft() + rect.getRight()) / 2), rect.getTop() + 5, 0);
-            logo.scalePercent(10,11);
+            logo.scalePercent(10,11
+            );
 
             logo.setAbsolutePosition(rect.getLeft()+7,rect.getTop()-7);
             try {

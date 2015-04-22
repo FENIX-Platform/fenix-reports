@@ -22,7 +22,9 @@ public class StandardLayoutCreator extends LayoutCreator {
 
     private static final Logger LOGGER = Logger.getLogger(StandardLayoutCreator.class);
     private StyleSheetCreator styleSheetCreator;
-    private static float SIMPLE_HEIGHT_MARGIN = 18;
+    private static float SIMPLE_HEIGHT_MARGIN = 19;
+    private static int MARGIN_TO_ADD = 6;
+
     private static int SIMPLE_RIGHT_MARGIN = 0;
     private static String DATE_TYPEFIELD = Date.class.toString();
     private static String STRING_TYPEFIELD = String.class.toString();
@@ -59,7 +61,6 @@ public class StandardLayoutCreator extends LayoutCreator {
 
     private void createBody() throws DocumentException {
 
-
         Set<String> keys = modelData.keySet();
         int indexChapter = 1;
         int margin = 0;
@@ -74,6 +75,12 @@ public class StandardLayoutCreator extends LayoutCreator {
 
 
         boolean isBiggerHeaderMArgin = key.equals("1");
+
+        if(element.getTitleBean().equals("disseminationPeriodicity")){
+            System.out.println("msds");
+        }
+
+        System.out.println(element.getTitleBean());
 
         if(!SpecialBean.isSpecialBean(element.getTitleBean())) {
 
@@ -94,7 +101,7 @@ public class StandardLayoutCreator extends LayoutCreator {
                 for (String recKey : recKyes) {
 
                     MDSDescriptor elemRec = (MDSDescriptor) recursiveData.get(recKey);
-                    processDocumentBody(margin + 5, elemRec, recKey, indexChapter, recursiveData);
+                    processDocumentBody(margin + MARGIN_TO_ADD, elemRec, recKey, indexChapter, recursiveData);
                 }
             }
         }else {
@@ -261,16 +268,21 @@ public class StandardLayoutCreator extends LayoutCreator {
             return result;
         }*/
         if(isAnArrayObject(element.getValue())) {
+            result = "";
             ArrayList<Object> values = (ArrayList<Object>) element.getValue();
             for(int i=0; i<values.size(); i++) {
                 if (isAStringObject(values.get(i))) {
-                    return values.get(i).toString().split("-")[1];
+                    result+= values.get(i).toString().split("-")[1] ;
+                    if(i<values.size()-1){
+                        result+= ", ";
+                    }
                 } else {
                     if (result == null) {
                         result = getStringFromSpecialBean((MDSDescriptor) values.get(i));
                     }
                 }
             }
+            return result;
         }else if(isARecursiveObject(element.getValue())) {
             TreeMap<String, Object> recursiveData = (TreeMap<String, Object>) element.getValue();
 
