@@ -3,6 +3,7 @@ package org.fao.fenix.export.plugins.output.md.standard;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.draw.LineSeparator;
 import org.apache.log4j.Logger;
 import org.fao.fenix.export.plugins.output.md.data.dto.MDSDescriptor;
 import org.fao.fenix.export.plugins.output.md.full.StyleSheetCreator;
@@ -23,14 +24,16 @@ public class StandardLayoutCreator extends LayoutCreator {
     private static final Logger LOGGER = Logger.getLogger(StandardLayoutCreator.class);
     private StyleSheetCreator styleSheetCreator;
     private static float SIMPLE_HEIGHT_MARGIN = 19;
+    private static float SIMPLE_HEIGHT_MARGIN_PARAGRAPH = 5;
     private static int MARGIN_TO_ADD = 6;
+    private static float SEPARATOR_WIDTH = (float) 0.71;
 
     private static int SIMPLE_RIGHT_MARGIN = 0;
     private static String DATE_TYPEFIELD = Date.class.toString();
     private static String STRING_TYPEFIELD = String.class.toString();
     private static String RECURSIVE_TYPEFIELD = TreeMap.class.toString();
     private static String ARRAY_TYPEFIELD = ArrayList.class.toString();
-    private static int[] COLSPAN_TABLE = new int[] {2,3};
+    private static int[] COLSPAN_TABLE = new int[]{2, 3};
     private Document document;
     private RegistrationFont registrationFont;
     private TreeMap<String, Object> modelData;
@@ -76,24 +79,27 @@ public class StandardLayoutCreator extends LayoutCreator {
 
         boolean isBiggerHeaderMArgin = key.equals("1");
 
-        if(element.getTitleBean().equals("disseminationPeriodicity")){
-            System.out.println("msds");
-        }
 
+/*
         System.out.println(element.getTitleBean());
+*/
 
-        if(!SpecialBean.isSpecialBean(element.getTitleBean())) {
+        if (!SpecialBean.isSpecialBean(element.getTitleBean())) {
 
             if (isAStringObject(element.getValue()) && !element.getTitleBean().equals("title")) {
                 writeSimpleElement(margin, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter);
             } else if (isAnArrayObject(element.getValue())) {
+/*
                 System.out.println("array!");
+*/
                 ArrayList<Object> values = (ArrayList<Object>) element.getValue();
                 writeArrayElement(margin, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter, values);
 
 
             } else if (isARecursiveObject(element.getValue())) {
+/*
                 System.out.println("recursive!");
+*/
                 writeRecursiveElement(margin, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter);
                 TreeMap<String, Object> recursiveData = (TreeMap<String, Object>) element.getValue();
 
@@ -104,10 +110,12 @@ public class StandardLayoutCreator extends LayoutCreator {
                     processDocumentBody(margin + MARGIN_TO_ADD, elemRec, recKey, indexChapter, recursiveData);
                 }
             }
-        }else {
+        } else {
+/*
             System.out.println("special!");
+*/
             element.setValue(getStringFromSpecialBean(element));
-            writeSimpleElement(margin,isBiggerHeaderMArgin,element,indexChapter);
+            writeSimpleElement(margin, isBiggerHeaderMArgin, element, indexChapter);
         }
 
     }
@@ -145,10 +153,13 @@ public class StandardLayoutCreator extends LayoutCreator {
         PdfPCell valueCell = new PdfPCell();
         valueCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
+
         valueCell.addElement(new Phrase(value.getValue().toString(), MDFontTypes.valueField.getFontType()));
         valueCell.setBorder(Rectangle.NO_BORDER);
         valueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         valueCell.setColspan(2);
+
+        setRightHeightOfCells(titleCell, valueCell, value);
 
         table.addCell(titleCell);
         table.addCell(valueCell);
@@ -159,14 +170,62 @@ public class StandardLayoutCreator extends LayoutCreator {
         document.add(table);
     }
 
+
+    private void setRightHeightOfCells(PdfPCell titleCell, PdfPCell valueCell, MDSDescriptor element) {
+
+
+        int words = countCharNumber(element.getValue().toString());
+        System.out.println(words);
+        System.out.println(element.getTitleToVisualize());
+        if (words > 60) {
+            System.out.println(element.getTitleToVisualize());
+            titleCell.setVerticalAlignment(Element.ALIGN_TOP);
+        }
+    }
+
+    private int countCharNumber(String word) {
+        int counter = 0;
+        if(word!= null && !word.equals("")) {
+            char[] arr = word.toCharArray();
+            for (char c : arr) {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
     private void writeRecursiveElement(int rightMargin, boolean isBiggerHeaderMargin, MDSDescriptor value, int indexChapter) throws DocumentException {
 
         String titleString = (value.getTitleToVisualize() != null) ? value.getTitleToVisualize().toString() : "title";
 
         Paragraph title = new Paragraph();
-        title.add(new Phrase(titleString, MDFontTypes.titleField.getFontType()));
+        Phrase phrase = new Phrase(titleString, MDFontTypes.titleField.getFontType());
+        title.add(phrase);
         title.setIndentationLeft(rightMargin);
+
+        if (isAllUppercase(titleString)) {
+
+            LineSeparator UNDERLINE =
+                    new LineSeparator(SEPARATOR_WIDTH, 100, ColorType.borderGrey.getCmykColor(), Element.ALIGN_CENTER, -2);
+
+            title.add(UNDERLINE);
+        }
+        title.setSpacingAfter(SIMPLE_HEIGHT_MARGIN_PARAGRAPH);
         document.add(title);
+    }
+
+
+    private boolean isAllUppercase(String s) {
+
+        if (s != null) {
+            for (char c : s.toCharArray()) {
+                if (!Character.isUpperCase(c) && !Character.isWhitespace(c))
+                    return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
 
     }
 
@@ -183,7 +242,7 @@ public class StandardLayoutCreator extends LayoutCreator {
 
         PdfPCell titleCell = new PdfPCell();
         Phrase title = new Phrase(value.getTitleToVisualize().toString(), MDFontTypes.titleField.getFontType());
-        titleCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        titleCell.setVerticalAlignment(Element.ALIGN_TOP);
         titleCell.addElement(title);
         titleCell.setBorder(Rectangle.NO_BORDER);
         titleCell.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -198,7 +257,8 @@ public class StandardLayoutCreator extends LayoutCreator {
             PdfPCell[] cells = new PdfPCell[codeLabel.length];
 
             for (int z = 0; z < codeLabel.length; z++) {
-                Phrase phrase = new Phrase(codeLabel[z], MDFontTypes.valueField.getFontType());
+                String toAdd=  (i != arraySize - 1)? " , " : " ";
+                Phrase phrase = new Phrase(codeLabel[z]+toAdd, MDFontTypes.valueField.getFontType());
                 valueCell.addElement(phrase);
             }
 
@@ -260,21 +320,21 @@ public class StandardLayoutCreator extends LayoutCreator {
     }
 
 
-    private String getStringFromSpecialBean (MDSDescriptor element) {
+    private String getStringFromSpecialBean(MDSDescriptor element) {
 
         String result = null;
      /*   if(isAStringObject(element.getValue())) {
             result = element.getValue().toString().split("-")[1];
             return result;
         }*/
-        if(isAnArrayObject(element.getValue())) {
+        if (isAnArrayObject(element.getValue())) {
             result = "";
             ArrayList<Object> values = (ArrayList<Object>) element.getValue();
-            for(int i=0; i<values.size(); i++) {
+            for (int i = 0; i < values.size(); i++) {
                 if (isAStringObject(values.get(i))) {
-                    result+= values.get(i).toString().split("-")[1] ;
-                    if(i<values.size()-1){
-                        result+= ", ";
+                    result += values.get(i).toString().split("-")[1];
+                    if (i < values.size() - 1) {
+                        result += ", ";
                     }
                 } else {
                     if (result == null) {
@@ -283,10 +343,10 @@ public class StandardLayoutCreator extends LayoutCreator {
                 }
             }
             return result;
-        }else if(isARecursiveObject(element.getValue())) {
+        } else if (isARecursiveObject(element.getValue())) {
             TreeMap<String, Object> recursiveData = (TreeMap<String, Object>) element.getValue();
 
-            for(String key: recursiveData.keySet()) {
+            for (String key : recursiveData.keySet()) {
                 if (result == null) {
                     result = getStringFromSpecialBean((MDSDescriptor) recursiveData.get(key));
                 }

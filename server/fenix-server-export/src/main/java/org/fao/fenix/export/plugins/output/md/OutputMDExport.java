@@ -88,12 +88,13 @@ public class OutputMDExport extends Output {
                     Element.ALIGN_CENTER, new Phrase(String.format(" %d", pagenumber - 1), MDFontTypes.footerField.getFontType()),
                     ((rect.getLeft() + rect.getRight())-RIGHT_OFFSET_FOOTER), rect.getBottom() - 18, 0);
             ColumnText.showTextAligned(writer.getDirectContent(),
-                    Element.ALIGN_CENTER, new Phrase(title.toUpperCase(), MDFontTypes.headerField.getFontType()),
+                    Element.ALIGN_CENTER, new Phrase(title, MDFontTypes.headerField.getFontType()),
                     ((rect.getLeft() + rect.getRight()) / 2), rect.getTop() + 5, 0);
-            logo.scalePercent(10,11
-            );
-
-            logo.setAbsolutePosition(rect.getLeft()+7,rect.getTop()-7);
+            logo.scalePercent(11, 12);
+            logo.setAbsolutePosition(rect.getLeft() + 7, rect.getTop() - 7);
+/*
+            System.out.println(logo.getBorder());
+*/
             try {
                 writer.getDirectContent().addImage(logo);
             } catch (DocumentException e) {
