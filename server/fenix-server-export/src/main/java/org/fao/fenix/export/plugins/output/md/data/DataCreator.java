@@ -20,7 +20,8 @@ public class DataCreator {
     private JsonNode mdsd;
 
     private final static String OJCODE_TYPE = "OjCode";
-    private final static String LANG = "EN";
+    private final static String DEFAULT_LANG = "EN";
+    private  static String LANG;
     private final static String REQUIRED_FIELD = "required";
     private final static String ORDER_FIELD = "propertyOrder";
     private final static String TITLE_FIELD = "title_i18n";
@@ -46,8 +47,9 @@ public class DataCreator {
     private static int COUNTER = 1;
 
 
-    public void initDataFromMDSD(JsonNode mdsdNode, MeIdentification meIdentification) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void initDataFromMDSD(JsonNode mdsdNode, MeIdentification meIdentification, String language) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
+        LANG = language;
         this.mdsd = mdsdNode;
         Iterator<Map.Entry<String, JsonNode>> properties = mdsdNode.get(PROPERTIES_FIELD).fields();
 
@@ -65,7 +67,7 @@ public class DataCreator {
             MDSDOProperty objectProperty = fillObjectProperty(Lists.newArrayList(mapDsdTmp.getValue().fields()).listIterator());
             Object returnedValue = getReturnedValueFromObject(objectProperty, meIdentification, key);
 
-            if (returnedValue != null) {
+            if (returnedValue != null ) {
 
                 if (objectProperty.getTitleToVisualize() != null) {
 
@@ -109,7 +111,7 @@ public class DataCreator {
 
             if (type.equals(STRING_TYPE) || type.equals(NUMBER_TYPE)) {
                 Object valueStringType = invokeMethodByReflection(resultObj.getTitleBean(), returnedValue, false);
-                if (valueStringType != null) {
+                if (valueStringType != null && !valueStringType.toString().equals("")) {
                     tempMap.put(resultObj.getOrder(), new MDSDescriptor(resultObj.getTitleBean(), resultObj.getTitleToVisualize(), resultObj.getDescription(), valueStringType));
                     return tempMap;
                 }
@@ -267,6 +269,9 @@ public class DataCreator {
             methodString = "get";
             Method method = instanceToUse.getClass().getMethod(methodString, Object.class);
             result = method.invoke(instanceToUse, (Object) LANG);
+            if(result== null) {
+                result = method.invoke(instanceToUse, (Object) DEFAULT_LANG);
+            }
 
         } else {
             methodString = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
@@ -435,6 +440,10 @@ public class DataCreator {
         ArrayList<String> mapToFill = new ArrayList<String>();
         for (int h = 0; h < values.size(); h++) {
             String value = (values.get(h).getLabel()!= null)? values.get(h).getLabel().get(LANG.toUpperCase()): "";
+
+            if(value == null){
+                 value = (values.get(h).getLabel()!= null)? values.get(h).getLabel().get(DEFAULT_LANG.toUpperCase()): "";
+            }
             mapToFill.add(values.get(h).getCode() + " - " + value);
         }
         return mapToFill;
@@ -463,6 +472,10 @@ public class DataCreator {
         methodStringMAp = "get";
         Method methodMap = resultTemp.getClass().getMethod(methodStringMAp, Object.class);
         result = methodMap.invoke(resultTemp, (Object) LANG);
+
+        if(result == null) {
+            result = methodMap.invoke(resultTemp, (Object) DEFAULT_LANG);
+        }
 
         return result.toString();
     }

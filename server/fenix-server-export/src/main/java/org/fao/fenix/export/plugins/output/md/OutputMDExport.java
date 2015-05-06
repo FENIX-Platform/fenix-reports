@@ -3,9 +3,7 @@ package org.fao.fenix.export.plugins.output.md;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.ColumnText;
-import com.itextpdf.text.pdf.PdfPageEventHelper;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.*;
 import org.apache.log4j.Logger;
 import org.fao.fenix.commons.msd.dto.full.MeIdentification;
 import org.fao.fenix.export.core.dto.CoreOutputHeader;
@@ -16,6 +14,7 @@ import org.fao.fenix.export.plugins.input.metadata.mediator.MDClientMediator;
 import org.fao.fenix.export.plugins.output.md.data.DataCreator;
 import org.fao.fenix.export.plugins.output.md.data.dto.MDSDescriptor;
 import org.fao.fenix.export.plugins.output.md.layout.factory.LayoutCreator;
+import org.fao.fenix.export.plugins.output.md.layout.utils.ColorType;
 import org.fao.fenix.export.plugins.output.md.layout.utils.MDFontTypes;
 
 import java.io.ByteArrayOutputStream;
@@ -38,16 +37,25 @@ public class OutputMDExport extends Output {
     private final String MDSD_URL = "http://faostat3.fao.org/d3s2/v2/mdsd";
     private JsonNode mdsdNode;
     private ByteArrayOutputStream baos;
+
+    private final float LOGO_HEIGHT = 120;
+    private final float LOGO_WIDTH = 150;
+
+    private final float DELIMITER_RIGHT_OFFSET = 50;
+    private final float DELIMITER_DOWN_OFFSET = 20;
+
     private final int MARGIN_LEFT  = 50;
     private final int MARGIN_UP  = 80;
     private final int MARGIN_BOTTOM  = 50;
     private final int MARGIN_RIGHT  = 50;
     private final int LOGO_SCALE_PERCENTAGE = 10;
     private final int RIGHT_OFFSET_FOOTER = 50;
+    private static float SEPARATOR_WIDTH = (float) 0.71;
 
 
 
-  /** Inner class to add a header and a footer. */
+
+    /** Inner class to add a header and a footer. */
     class HeaderFooter extends PdfPageEventHelper {
 
         int pagenumber;
@@ -75,6 +83,13 @@ public class OutputMDExport extends Output {
         public void onChapter(PdfWriter writer, Document document,
                               float paragraphPosition, Paragraph title) {
            // pagenumber = 1;
+            System.out.println("stop here");
+        }
+
+        public void onParagraph(PdfWriter writer, Document document, float paragraphPosition){
+
+
+            System.out.println("start!");
         }
 
         public void onStartPage(PdfWriter writer, Document document) {
@@ -83,6 +98,7 @@ public class OutputMDExport extends Output {
 
 
         public void onEndPage(PdfWriter writer, Document document) {
+            PdfPCell line = new PdfPCell();
             Rectangle rect = writer.getBoxSize("art");
             ColumnText.showTextAligned(writer.getDirectContent(),
                     Element.ALIGN_CENTER, new Phrase(String.format(" %d", pagenumber - 1), MDFontTypes.footerField.getFontType()),
@@ -90,13 +106,19 @@ public class OutputMDExport extends Output {
             ColumnText.showTextAligned(writer.getDirectContent(),
                     Element.ALIGN_CENTER, new Phrase(title, MDFontTypes.headerField.getFontType()),
                     ((rect.getLeft() + rect.getRight()) / 2), rect.getTop() + 5, 0);
-            logo.scalePercent(11, 12);
+
+            logo.scaleToFit(LOGO_HEIGHT, LOGO_WIDTH);
             logo.setAbsolutePosition(rect.getLeft() + 7, rect.getTop() - 7);
-/*
-            System.out.println(logo.getBorder());
-*/
             try {
-                writer.getDirectContent().addImage(logo);
+                document.add(logo);
+
+                PdfContentByte cb = writer.getDirectContent();
+                cb.setColorStroke(ColorType.borderGrey.getCmykColor());
+                cb.setLineWidth( SEPARATOR_WIDTH) ;
+                cb.moveTo(200, 805);
+                cb.lineTo(200, 788);
+                cb.stroke();
+
             } catch (DocumentException e) {
                 e.printStackTrace();
             }
@@ -112,7 +134,11 @@ public class OutputMDExport extends Output {
         metadata = resource.getMetadata();
         if(mdsdNode == null)
             getMdsd();
-        dataCreator.initDataFromMDSD(mdsdNode,resource.getMetadata());
+
+        // getting data in the right format
+        String language = (config.get("lang")!= null && !config.get("lang").toString().equals(""))? config.get("lang").toString(): "EN";
+        dataCreator.initDataFromMDSD(mdsdNode,resource.getMetadata(), language);
+
         // TODO: setting configuration pagesize
         Document document = new Document(PageSize.A4, MARGIN_LEFT, MARGIN_RIGHT,
                 MARGIN_UP, MARGIN_BOTTOM);

@@ -27,7 +27,6 @@ public class StandardLayoutCreator extends LayoutCreator {
     private static float SIMPLE_HEIGHT_MARGIN_PARAGRAPH = 5;
     private static int MARGIN_TO_ADD = 6;
     private static float SEPARATOR_WIDTH = (float) 0.71;
-
     private static int SIMPLE_RIGHT_MARGIN = 0;
     private static String DATE_TYPEFIELD = Date.class.toString();
     private static String STRING_TYPEFIELD = String.class.toString();
@@ -49,7 +48,6 @@ public class StandardLayoutCreator extends LayoutCreator {
 
     @Override
     public Document init(TreeMap<String, Object> modelData) throws DocumentException, IOException {
-
         this.modelData = modelData;
         styleSheetCreator = new StyleSheetCreator();
         createBody();
@@ -79,27 +77,19 @@ public class StandardLayoutCreator extends LayoutCreator {
 
         boolean isBiggerHeaderMArgin = key.equals("1");
 
-
-/*
-        System.out.println(element.getTitleBean());
-*/
-
         if (!SpecialBean.isSpecialBean(element.getTitleBean())) {
 
-            if (isAStringObject(element.getValue()) && !element.getTitleBean().equals("title")) {
+            if (isAStringObject(element.getValue()) && !element.getTitleBean().equals("title") && !element.getValue().toString().equals("")) {
+                // simple case
                 writeSimpleElement(margin, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter);
             } else if (isAnArrayObject(element.getValue())) {
-/*
-                System.out.println("array!");
-*/
+                // array case
                 ArrayList<Object> values = (ArrayList<Object>) element.getValue();
                 writeArrayElement(margin, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter, values);
 
 
             } else if (isARecursiveObject(element.getValue())) {
-/*
-                System.out.println("recursive!");
-*/
+                // recursive case
                 writeRecursiveElement(margin, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter);
                 TreeMap<String, Object> recursiveData = (TreeMap<String, Object>) element.getValue();
 
@@ -111,9 +101,7 @@ public class StandardLayoutCreator extends LayoutCreator {
                 }
             }
         } else {
-/*
-            System.out.println("special!");
-*/
+            // special bean case
             element.setValue(getStringFromSpecialBean(element));
             writeSimpleElement(margin, isBiggerHeaderMArgin, element, indexChapter);
         }
@@ -142,17 +130,18 @@ public class StandardLayoutCreator extends LayoutCreator {
         table.setWidthPercentage(100);
 
         PdfPCell titleCell = new PdfPCell();
-        Phrase title = new Phrase(value.getTitleToVisualize().toString(), MDFontTypes.titleField.getFontType());
+        Chapter titleChapter = new Chapter(1);
+        titleChapter.setNumberDepth(1);
+        Paragraph title = new Paragraph(value.getTitleToVisualize().toString(), MDFontTypes.titleField.getFontType());
+        titleChapter.add(title);
         titleCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         titleCell.addElement(title);
         titleCell.setBorder(Rectangle.NO_BORDER);
         titleCell.setHorizontalAlignment(Element.ALIGN_LEFT);
         titleCell.setPaddingLeft(rightMargin);
 
-
         PdfPCell valueCell = new PdfPCell();
         valueCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-
 
         valueCell.addElement(new Phrase(value.getValue().toString(), MDFontTypes.valueField.getFontType()));
         valueCell.setBorder(Rectangle.NO_BORDER);
@@ -173,7 +162,6 @@ public class StandardLayoutCreator extends LayoutCreator {
 
     private void setRightHeightOfCells(PdfPCell titleCell, PdfPCell valueCell, MDSDescriptor element) {
 
-
         int words = countCharNumber(element.getValue().toString());
         System.out.println(words);
         System.out.println(element.getTitleToVisualize());
@@ -185,7 +173,7 @@ public class StandardLayoutCreator extends LayoutCreator {
 
     private int countCharNumber(String word) {
         int counter = 0;
-        if(word!= null && !word.equals("")) {
+        if (word != null && !word.equals("")) {
             char[] arr = word.toCharArray();
             for (char c : arr) {
                 counter++;
@@ -257,8 +245,8 @@ public class StandardLayoutCreator extends LayoutCreator {
             PdfPCell[] cells = new PdfPCell[codeLabel.length];
 
             for (int z = 0; z < codeLabel.length; z++) {
-                String toAdd=  (i != arraySize - 1)? " , " : " ";
-                Phrase phrase = new Phrase(codeLabel[z]+toAdd, MDFontTypes.valueField.getFontType());
+                String toAdd = (i != arraySize - 1) ? " , " : " ";
+                Phrase phrase = new Phrase(codeLabel[z] + toAdd, MDFontTypes.valueField.getFontType());
                 valueCell.addElement(phrase);
             }
 
@@ -323,10 +311,7 @@ public class StandardLayoutCreator extends LayoutCreator {
     private String getStringFromSpecialBean(MDSDescriptor element) {
 
         String result = null;
-     /*   if(isAStringObject(element.getValue())) {
-            result = element.getValue().toString().split("-")[1];
-            return result;
-        }*/
+
         if (isAnArrayObject(element.getValue())) {
             result = "";
             ArrayList<Object> values = (ArrayList<Object>) element.getValue();

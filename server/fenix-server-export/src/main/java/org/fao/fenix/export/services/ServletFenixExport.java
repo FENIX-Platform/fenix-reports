@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@WebServlet(urlPatterns = "/fenix/export2")
+@WebServlet(urlPatterns = "/fenix/export")
 public class ServletFenixExport extends HttpServlet {
 
     private static final Logger LOGGER = Logger.getLogger(ServletFenixExport.class);
