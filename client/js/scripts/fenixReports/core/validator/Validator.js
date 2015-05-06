@@ -1,12 +1,10 @@
-/**
- * Created by fabrizio on 12/15/14.
- */
 define(['jquery'], function($){
 
     'use strict'
 
 
     var errors = {
+        "resource": "You must put resource field into the payload",
         "output":"Error on output configuration ",
         "input":"Error on Input configuration ",
         "input-Plugin":"Error on Plugin field  in input file",
@@ -63,44 +61,54 @@ define(['jquery'], function($){
 
     Validator.prototype.checkPayload = function(resource, url){
 
-        var outputCondition = resource['output'] && resource['output']!=null && resource['output']!='';
-        var inputCondition =  resource['input'] && resource['input']!=null && resource['input']!='';
-        var inputPluginCondition = resource['input']['plugin'] && resource['input']['plugin']!=null && resource['input']['plugin']!='';
-        var outputPluginCondition= resource['output']['plugin'] && resource['output']['plugin']!=null && resource['output']['plugin']!='';
-        var dataCondition  = resource['data'] && resource['data']!=null && resource['data']!='';
-        var metadataCondition = resource['metadata'] && resource['metadata']!=null && resource['metadata']!='';
-        var urlCondition =  url && url!=null && url!='';
+        var resourceCondition = (typeof resource['resource'] !== 'undefined' && resource['resource']!= null && resource['resource']!='' )
+        if(resourceCondition){
 
-        switch (false){
+            var outputCondition = resource['output'] && resource['output']!=null && resource['output']!='';
+            var inputCondition =  resource['input'] && resource['input']!=null && resource['input']!='';
+            var inputPluginCondition = resource['input']['plugin'] && resource['input']['plugin']!=null && resource['input']['plugin']!='';
+            var outputPluginCondition= resource['output']['plugin'] && resource['output']['plugin']!=null && resource['output']['plugin']!='';
 
-            case outputCondition:
-                throw errors['output'];
-                break;
+            resource = resource['resource'];
+            var dataCondition  = resource['data'] && resource['data']!=null ;
+            var metadataCondition = resource['metadata'] && resource['metadata']!=null ;
+            var urlCondition =  url && url!=null && url!='';
 
-            case inputCondition:
-                throw errors['input'];
-                break;
+            switch (false){
 
-            case inputPluginCondition:
-                throw errors['input-Plugin'];
-                break;
+                case outputCondition:
+                    throw errors['output'];
+                    break;
 
-            case outputPluginCondition:
-                throw errors['output-Plugin'];
-                break;
+                case inputCondition:
+                    throw errors['input'];
+                    break;
 
-            case dataCondition:
-                throw errors['data'];
-                break;
+                case inputPluginCondition:
+                    throw errors['input-Plugin'];
+                    break;
 
-            case metadataCondition:
-                throw errors['metadata'];
-                break;
+                case outputPluginCondition:
+                    throw errors['output-Plugin'];
+                    break;
 
-            case urlCondition:
-                throw errors['url'];
-                break;
+                case dataCondition:
+                    throw errors['data'];
+                    break;
+
+                case metadataCondition:
+                    throw errors['metadata'];
+                    break;
+
+                case urlCondition:
+                    throw errors['url'];
+                    break;
+            }
+
+        }else{
+            throw errors['resource'];
         }
+
 
     }
 

@@ -1,19 +1,50 @@
-define(['jquery', 'validator'], function ($, Validator) {
+define(['jquery', 'validator', "fx-rp-config"], function ($, Validator, PluginCOFIG) {
 
     'use strict'
 
+    var validator, pluginChosen
 
-    var validator
+    var o = {
+        "success":""
+    }
 
 
     function FenixReports() {
+
+        this.o = o;
+
+        this.o.success = function(Plugin) {
+            pluginChosen = new Plugin;
+        }
+
+        this.o.error = function() {
+          console.error("Something went wrong on plugin creation")
+        }
+
         validator = new Validator
     }
 
 
-    FenixReports.prototype.exportData = function (payload, url) {
+    FenixReports.prototype.init = function(plugin) {
 
+        if(typeof plugin!== 'undefined' && plugin!== null && plugin !== '' &&
+            typeof  PluginCOFIG[plugin] !== 'undefined' && PluginCOFIG[plugin]){
+            require([''+PluginCOFIG[plugin]], o.success, o.error)
+        }
+        else  {
+            throw new Error('please define a valid plugin name')
+        }
+    }
+
+
+    // second version
+    FenixReports.prototype.exportData = function (config, url) {
+
+        var payload = pluginChosen.process(config)
+
+/*
         validator.checkPayload(payload, url)
+*/
 
         var that = this;
 
@@ -23,10 +54,8 @@ define(['jquery', 'validator'], function ($, Validator) {
             type: 'POST',
             data: JSON.stringify(payload),
             contentType: 'application/json',
-            beforeSend: that.loadAnimatedGif(),
+            /* beforeSend: that.loadAnimatedGif(),*/
             success: function (data) {
-                that.removeAnimatedGif();
-                console.log('success export')
                 window.location = data;
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -38,22 +67,10 @@ define(['jquery', 'validator'], function ($, Validator) {
                 console.log('errorThrown error:')
                 console.log(errorThrown)
             }
-        })
+    })
 
+}
 
-    }
-
-
-    FenixReports.prototype.loadAnimatedGif = function(){
-        $( "body" ).append('<div id="fenixExportLoaderImage"/>');
-        debugger;
-    }
-
-
-    FenixReports.prototype.removeAnimatedGif = function(){
-        var element = document.getElementById("fenixExportLoaderImage")
-        if(element){element.parentNode.removeChild(element)}
-    }
 
 
     return FenixReports;

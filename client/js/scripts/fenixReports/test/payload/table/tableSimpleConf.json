@@ -1,0 +1,120 @@
+{
+  "resource": {
+    "metadata": {
+      "uid": "test1",
+      "version": "1",
+
+      "dsd": {
+        "columns": [
+          {
+            "id": "col1",
+            "dataType": "code",
+            "key": true,
+            "values": {
+              "codes": [
+                {
+                  "codes": [
+                    {
+                      "code": "1",
+                      "label": {
+                        "EN": "Algeria"
+                      }
+                    },
+                    {
+                      "code": "2",
+                      "label": {
+                        "EN": "Angola"
+                      }
+                    },
+                    {
+                      "code": "3",
+                      "label": {
+                        "EN": "Angola"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "title": {
+              "EN": "NAtions",
+              "FR": ""
+            }
+          },
+          {
+            "id": "col2",
+            "dataType": "year",
+            "key": true,
+            "title": {
+              "EN": "date",
+              "FR": ""
+            }
+
+          },
+          {
+            "id": "col3",
+            "dataType": "number",
+            "key": true,
+            "title": {
+              "EN": "value",
+              "FR": ""
+            }
+
+          },
+          {
+            "id": "col4",
+            "dataType": "label",
+            "key": true,
+            "title": {
+              "EN": "labelProva",
+              "FR": ""
+            }
+
+          }
+
+        ]
+      }
+    },
+
+    "data": [
+      ["1", 2001, 3, {"EN":"labelEN1", "FR":"labelFR1"}],
+      ["2", 2003, 6,{"EN":"labelEN2", "FR":"labelFR2"}],
+      ["3", 2006, 9,{"EN":"labelEN3", "FR":"labelFR3"}]
+    ]
+  },
+
+  "input": {
+    "plugin": "inputTable",
+    "config": {}
+  },
+
+  "output": {
+    "plugin": "outputTable",
+    "config": {
+      "columns": [
+        {
+          "formatDate": "",
+          "formatValue": "",
+          "formatCode": ""
+        },
+        {
+          "formatDate": "",
+          "formatValue": "",
+          "formatCode": ""
+        },
+        {
+          "formatDate": "",
+          "formatValue": "",
+          "formatCode": ""
+        },
+        {
+          "formatDate": "",
+          "formatValue": "",
+          "formatCode": ""
+        }
+      ]
+
+    }
+  }
+
+}

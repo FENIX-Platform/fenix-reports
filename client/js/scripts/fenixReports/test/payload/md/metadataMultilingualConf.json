@@ -1,0 +1,12 @@
+{
+  "input":{
+    "config":{
+      "uid":"GN"
+    }
+  },
+  "output":{
+    "config":{
+      "lang":"ES"
+    }
+  }
+}
