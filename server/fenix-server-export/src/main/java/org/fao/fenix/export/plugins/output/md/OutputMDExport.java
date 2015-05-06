@@ -69,7 +69,7 @@ public class OutputMDExport extends Output {
 
 
         public void onOpenDocument(PdfWriter writer, Document document) {
-            pagenumber = 1;
+            pagenumber = 0;
             try {
                 logo = Image.getInstance(this.getClass().getClassLoader().getResource("../").getPath() + IMAGE_PATH);
             } catch (BadElementException e) {
@@ -82,11 +82,11 @@ public class OutputMDExport extends Output {
 
         public void onChapter(PdfWriter writer, Document document,
                               float paragraphPosition, Paragraph title) {
-           // pagenumber = 1;
+            // pagenumber = 1;
             System.out.println("stop here");
         }
 
-        public void onParagraph(PdfWriter writer, Document document, float paragraphPosition){
+        public void onParagraph(PdfWriter writer, Document document, float paragraphPosition) {
 
 
             System.out.println("start!");
@@ -98,29 +98,32 @@ public class OutputMDExport extends Output {
 
 
         public void onEndPage(PdfWriter writer, Document document) {
-            PdfPCell line = new PdfPCell();
-            Rectangle rect = writer.getBoxSize("art");
-            ColumnText.showTextAligned(writer.getDirectContent(),
-                    Element.ALIGN_CENTER, new Phrase(String.format(" %d", pagenumber - 1), MDFontTypes.footerField.getFontType()),
-                    ((rect.getLeft() + rect.getRight())-RIGHT_OFFSET_FOOTER), rect.getBottom() - 18, 0);
-            ColumnText.showTextAligned(writer.getDirectContent(),
-                    Element.ALIGN_CENTER, new Phrase(title, MDFontTypes.headerField.getFontType()),
-                    ((rect.getLeft() + rect.getRight()) / 2), rect.getTop() + 5, 0);
 
-            logo.scaleToFit(LOGO_HEIGHT, LOGO_WIDTH);
-            logo.setAbsolutePosition(rect.getLeft() + 7, rect.getTop() - 7);
-            try {
-                document.add(logo);
+            if (pagenumber > 0) {
+                PdfPCell line = new PdfPCell();
+                Rectangle rect = writer.getBoxSize("art");
+                ColumnText.showTextAligned(writer.getDirectContent(),
+                        Element.ALIGN_CENTER, new Phrase(String.format(" %d", pagenumber - 1), MDFontTypes.footerField.getFontType()),
+                        ((rect.getLeft() + rect.getRight()) - RIGHT_OFFSET_FOOTER), rect.getBottom() - 18, 0);
+                ColumnText.showTextAligned(writer.getDirectContent(),
+                        Element.ALIGN_CENTER, new Phrase(title, MDFontTypes.headerField.getFontType()),
+                        ((rect.getLeft() + rect.getRight()) / 2), rect.getTop() + 5, 0);
 
-                PdfContentByte cb = writer.getDirectContent();
-                cb.setColorStroke(ColorType.borderGrey.getCmykColor());
-                cb.setLineWidth( SEPARATOR_WIDTH) ;
-                cb.moveTo(200, 805);
-                cb.lineTo(200, 788);
-                cb.stroke();
+                logo.scaleToFit(LOGO_HEIGHT, LOGO_WIDTH);
+                logo.setAbsolutePosition(rect.getLeft() + 7, rect.getTop() - 7);
+                try {
+                    document.add(logo);
 
-            } catch (DocumentException e) {
-                e.printStackTrace();
+                    PdfContentByte cb = writer.getDirectContent();
+                    cb.setColorStroke(ColorType.borderGrey.getCmykColor());
+                    cb.setLineWidth(SEPARATOR_WIDTH);
+                    cb.moveTo(200, 805);
+                    cb.lineTo(200, 788);
+                    cb.stroke();
+
+                } catch (DocumentException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -153,7 +156,7 @@ public class OutputMDExport extends Output {
         document.open();
         boolean isFull = config.get("full")!= null? Boolean.getBoolean(config.get("full").toString()): false;
         LayoutCreator layoutCreator = LayoutCreator.createInstance(isFull, document);
-        document = layoutCreator.init((TreeMap<String, Object>) dataCreator.getMetaDataCleaned());
+        document = layoutCreator.init((TreeMap<String, Object>) dataCreator.getMetaDataCleaned(), title);
         document.close();
 
     }

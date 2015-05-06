@@ -37,7 +37,7 @@ public class FullLayoutCreator extends LayoutCreator{
 
 
     @Override
-    public Document init(TreeMap<String, Object> modelData) throws DocumentException, IOException {
+    public Document init(TreeMap<String, Object> modelData, String title) throws DocumentException, IOException {
 
         // register all f
 

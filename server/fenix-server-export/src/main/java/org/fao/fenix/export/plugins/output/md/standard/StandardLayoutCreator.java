@@ -45,11 +45,38 @@ public class StandardLayoutCreator extends LayoutCreator {
         registrationFont.registerAll();
     }
 
+    public void createCover(String title) throws DocumentException {
+        PdfPTable table = new PdfPTable(1);
+        table.setWidthPercentage(100);
+        PdfPCell titleCell = new PdfPCell();
+
+        Paragraph titleLabel = new Paragraph(title, MDFontTypes.coverTitle.getFontType());
+
+        titleCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        titleCell.addElement(titleLabel);
+        titleCell.setBorder(Rectangle.NO_BORDER);
+        titleCell.setBorder(Rectangle.TOP);
+        titleCell.setBorder(Rectangle.BOTTOM);
+        titleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+
+        table.addCell(titleCell);
+        try {
+            document.add(table);
+            document.newPage();
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
 
     @Override
-    public Document init(TreeMap<String, Object> modelData) throws DocumentException, IOException {
+    public Document init(TreeMap<String, Object> modelData, String title) throws DocumentException, IOException {
         this.modelData = modelData;
         styleSheetCreator = new StyleSheetCreator();
+        createCover(title);
         createBody();
         return document;
     }
@@ -130,10 +157,7 @@ public class StandardLayoutCreator extends LayoutCreator {
         table.setWidthPercentage(100);
 
         PdfPCell titleCell = new PdfPCell();
-        Chapter titleChapter = new Chapter(1);
-        titleChapter.setNumberDepth(1);
         Paragraph title = new Paragraph(value.getTitleToVisualize().toString(), MDFontTypes.titleField.getFontType());
-        titleChapter.add(title);
         titleCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         titleCell.addElement(title);
         titleCell.setBorder(Rectangle.NO_BORDER);
