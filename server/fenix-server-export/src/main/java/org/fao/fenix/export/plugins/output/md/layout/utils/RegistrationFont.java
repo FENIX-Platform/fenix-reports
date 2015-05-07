@@ -6,7 +6,6 @@ import com.itextpdf.text.FontFactory;
 public class RegistrationFont {
 
     private  boolean isRegistered = false;
-    private static RegistrationFont registrationFont;
     private  final String RELATIVE_PATH = this.getClass().getClassLoader().getResource("../").getPath();
 
     public RegistrationFont() {}
@@ -14,6 +13,7 @@ public class RegistrationFont {
 
     private  boolean init () {
 
+        System.out.println("ss");
         for(FenixFonts f: FenixFonts.values()) {
             FontFactory.register(RELATIVE_PATH + f.getUrl(), f.toString());
         }

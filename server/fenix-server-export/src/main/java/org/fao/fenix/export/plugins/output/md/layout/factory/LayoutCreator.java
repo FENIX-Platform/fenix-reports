@@ -3,6 +3,7 @@ package org.fao.fenix.export.plugins.output.md.layout.factory;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.fao.fenix.export.plugins.output.md.full.FullLayoutCreator;
 import org.fao.fenix.export.plugins.output.md.standard.StandardLayoutCreator;
 
@@ -24,5 +25,5 @@ public abstract class LayoutCreator {
 
     }
 
-    public abstract Document init(TreeMap<String, Object> modelData, String title) throws DocumentException, IOException;
+    public abstract Document init(TreeMap<String, Object> modelData, String title,PdfWriter writer) throws DocumentException, IOException;
 }

@@ -4,6 +4,7 @@ package org.fao.fenix.export.plugins.output.md.full;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.log4j.Logger;
 import org.fao.fenix.export.plugins.output.md.layout.factory.LayoutCreator;
 import org.fao.fenix.export.plugins.output.md.data.dto.MDSDescriptor;
@@ -37,7 +38,7 @@ public class FullLayoutCreator extends LayoutCreator{
 
 
     @Override
-    public Document init(TreeMap<String, Object> modelData, String title) throws DocumentException, IOException {
+    public Document init(TreeMap<String, Object> modelData, String title,PdfWriter writer) throws DocumentException, IOException {
 
         // register all f
 

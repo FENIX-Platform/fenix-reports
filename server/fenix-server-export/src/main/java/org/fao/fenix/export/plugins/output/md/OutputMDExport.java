@@ -38,8 +38,8 @@ public class OutputMDExport extends Output {
     private JsonNode mdsdNode;
     private ByteArrayOutputStream baos;
 
-    private final float LOGO_HEIGHT = 120;
-    private final float LOGO_WIDTH = 150;
+    private final float LOGO_HEIGHT = 100;
+    private final float LOGO_WIDTH = 130;
 
     private final float DELIMITER_RIGHT_OFFSET = 50;
     private final float DELIMITER_DOWN_OFFSET = 20;
@@ -69,7 +69,7 @@ public class OutputMDExport extends Output {
 
 
         public void onOpenDocument(PdfWriter writer, Document document) {
-            pagenumber = 0;
+            pagenumber = -1;
             try {
                 logo = Image.getInstance(this.getClass().getClassLoader().getResource("../").getPath() + IMAGE_PATH);
             } catch (BadElementException e) {
@@ -93,13 +93,14 @@ public class OutputMDExport extends Output {
         }
 
         public void onStartPage(PdfWriter writer, Document document) {
-            pagenumber++;
+
+            pagenumber = (pagenumber!=0)? pagenumber+1 : pagenumber+2;
         }
 
 
         public void onEndPage(PdfWriter writer, Document document) {
 
-            if (pagenumber > 0) {
+            if (pagenumber != 0) {
                 PdfPCell line = new PdfPCell();
                 Rectangle rect = writer.getBoxSize("art");
                 ColumnText.showTextAligned(writer.getDirectContent(),
@@ -156,7 +157,8 @@ public class OutputMDExport extends Output {
         document.open();
         boolean isFull = config.get("full")!= null? Boolean.getBoolean(config.get("full").toString()): false;
         LayoutCreator layoutCreator = LayoutCreator.createInstance(isFull, document);
-        document = layoutCreator.init((TreeMap<String, Object>) dataCreator.getMetaDataCleaned(), title);
+
+        document = layoutCreator.init((TreeMap<String, Object>) dataCreator.getMetaDataCleaned(), title, contentWriter);
         document.close();
 
     }

@@ -1,8 +1,7 @@
 package org.fao.fenix.export.plugins.output.md.standard;
 
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 import org.apache.log4j.Logger;
 import org.fao.fenix.export.plugins.output.md.data.dto.MDSDescriptor;
@@ -22,10 +21,14 @@ import java.util.TreeMap;
 public class StandardLayoutCreator extends LayoutCreator {
 
     private static final Logger LOGGER = Logger.getLogger(StandardLayoutCreator.class);
+    private final float LOGO_HEIGHT = 120;
+    private final float LOGO_WIDTH = 150;
     private StyleSheetCreator styleSheetCreator;
     private static float SIMPLE_HEIGHT_MARGIN = 19;
     private static float SIMPLE_HEIGHT_MARGIN_PARAGRAPH = 5;
     private static int MARGIN_TO_ADD = 6;
+    private static final String IMG_PATH = "logo/newLogos/FAO_logo_Azzurro.png";
+    private static String DESCRIPTION_COVER = "METADATA OVERVIEW";
     private static float SEPARATOR_WIDTH = (float) 0.71;
     private static int SIMPLE_RIGHT_MARGIN = 0;
     private static String DATE_TYPEFIELD = Date.class.toString();
@@ -45,38 +48,75 @@ public class StandardLayoutCreator extends LayoutCreator {
         registrationFont.registerAll();
     }
 
-    public void createCover(String title) throws DocumentException {
-        PdfPTable table = new PdfPTable(1);
-        table.setWidthPercentage(100);
-        PdfPCell titleCell = new PdfPCell();
-
-        Paragraph titleLabel = new Paragraph(title, MDFontTypes.coverTitle.getFontType());
-
-        titleCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        titleCell.addElement(titleLabel);
-        titleCell.setBorder(Rectangle.NO_BORDER);
-        titleCell.setBorder(Rectangle.TOP);
-        titleCell.setBorder(Rectangle.BOTTOM);
-        titleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+    public void createCover(String title,PdfWriter writer) throws DocumentException, IOException {
 
 
-        table.addCell(titleCell);
-        try {
-            document.add(table);
-            document.newPage();
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        }
+
+        Font t = MDFontTypes.coverTitle.getFontType();
+        Phrase titleLabel = new Phrase(title, MDFontTypes.coverTitle.getFontType());
+
+
+        Phrase descriptionLAbel = new Phrase(DESCRIPTION_COVER, MDFontTypes.coverDesc.getFontType());
+
+        Image logo = Image.getInstance(this.getClass().getClassLoader().getResource("../").getPath() + IMG_PATH);
+
+/*
+        titleLabel.setAlignment(Element.ALIGN_CENTER);
+
+
+*/
+        Rectangle rect = writer.getBoxSize("art");
+
+
+
+       /* PdfContentByte cb = writer.getDirectContent();
+        cb.setColorStroke(ColorType.borderGrey.getCmykColor());
+        cb.setLineWidth(SEPARATOR_WIDTH);
+        cb.moveTo(100, (rect.getTop() / 2) + 45);
+        cb.moveTo(500, (rect.getTop() / 2) + 45);
+
+        cb.stroke();
+
+        cb.moveTo(100, (rect.getTop() / 2) );
+        cb.moveTo(500, (rect.getTop() / 2));
+
+        cb.stroke();
+*/
+
+        PdfContentByte cb = writer.getDirectContent();
+        cb.setColorStroke(ColorType.borderGrey.getCmykColor());
+        cb.setLineWidth(SEPARATOR_WIDTH);
+        cb.moveTo(rect.getLeft() + 15, (rect.getTop() / 2) + 55);
+        cb.lineTo(rect.getRight() - 15, (rect.getTop() / 2) + 55);
+        cb.stroke();
+
+        cb.moveTo(rect.getLeft() + 15, (rect.getTop() / 2) - 5);
+        cb.lineTo(rect.getRight() - 15, (rect.getTop() / 2) - 5);
+        cb.stroke();
+
+        logo.scaleToFit(LOGO_HEIGHT, LOGO_WIDTH);
+        logo.setAbsolutePosition(rect.getRight() - rect.getLeft() - 285, (rect.getTop() / 2) + 80);
+        document.add(logo);
+
+        // TITLE
+        ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_CENTER, titleLabel, ((rect.getLeft() + rect.getRight()) / 2), (rect.getTop() / 2) + 15, 0);
+
+        // desc
+        ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_CENTER, descriptionLAbel, ((rect.getLeft() + rect.getRight()) / 2), (rect.getTop() / 2) -38, 0);
+
+
+
+        document.newPage();
 
 
     }
 
 
     @Override
-    public Document init(TreeMap<String, Object> modelData, String title) throws DocumentException, IOException {
+    public Document init(TreeMap<String, Object> modelData, String title, PdfWriter writer) throws DocumentException, IOException {
         this.modelData = modelData;
         styleSheetCreator = new StyleSheetCreator();
-        createCover(title);
+        createCover(title,writer);
         createBody();
         return document;
     }
@@ -187,10 +227,7 @@ public class StandardLayoutCreator extends LayoutCreator {
     private void setRightHeightOfCells(PdfPCell titleCell, PdfPCell valueCell, MDSDescriptor element) {
 
         int words = countCharNumber(element.getValue().toString());
-        System.out.println(words);
-        System.out.println(element.getTitleToVisualize());
         if (words > 60) {
-            System.out.println(element.getTitleToVisualize());
             titleCell.setVerticalAlignment(Element.ALIGN_TOP);
         }
     }
@@ -199,9 +236,7 @@ public class StandardLayoutCreator extends LayoutCreator {
         int counter = 0;
         if (word != null && !word.equals("")) {
             char[] arr = word.toCharArray();
-            for (char c : arr) {
-                counter++;
-            }
+            counter = arr.length;
         }
         return counter;
     }
@@ -214,12 +249,9 @@ public class StandardLayoutCreator extends LayoutCreator {
         Phrase phrase = new Phrase(titleString, MDFontTypes.titleField.getFontType());
         title.add(phrase);
         title.setIndentationLeft(rightMargin);
-
         if (isAllUppercase(titleString)) {
-
             LineSeparator UNDERLINE =
                     new LineSeparator(SEPARATOR_WIDTH, 100, ColorType.borderGrey.getCmykColor(), Element.ALIGN_CENTER, -2);
-
             title.add(UNDERLINE);
         }
         title.setSpacingAfter(SIMPLE_HEIGHT_MARGIN_PARAGRAPH);
@@ -228,7 +260,6 @@ public class StandardLayoutCreator extends LayoutCreator {
 
 
     private boolean isAllUppercase(String s) {
-
         if (s != null) {
             for (char c : s.toCharArray()) {
                 if (!Character.isUpperCase(c) && !Character.isWhitespace(c))
@@ -238,7 +269,6 @@ public class StandardLayoutCreator extends LayoutCreator {
         } else {
             return false;
         }
-
     }
 
 
