@@ -10,8 +10,8 @@ public enum MDFontTypes {
     descriptionField((FontFactory.getFont(("roboto_light"),5,ColorType.descGrey.getCmykColor()))),
     footerField((FontFactory.getFont(("roboto_light"), 7, ColorType.grey.getCmykColor()))),
     headerField((FontFactory.getFont(("roboto_thin"), 12, ColorType.blueFenix.getCmykColor()))),
-    coverTitle((FontFactory.getFont(("roboto_thin2"), 30, ColorType.descGrey.getCmykColor()))),
-    coverDesc((FontFactory.getFont(("roboto_bold"), 22, ColorType.blueFenix.getCmykColor())));
+    coverTitle((FontFactory.getFont(("roboto_thin"), 26, ColorType.descGrey.getCmykColor()))),
+    coverDesc((FontFactory.getFont(("roboto_bold"), 16, ColorType.blueFenix.getCmykColor())));
 
 
 

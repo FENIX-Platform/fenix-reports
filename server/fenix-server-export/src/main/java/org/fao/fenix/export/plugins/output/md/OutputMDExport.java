@@ -40,8 +40,20 @@ public class OutputMDExport extends Output {
 
     private final float LOGO_HEIGHT = 100;
     private final float LOGO_WIDTH = 130;
+    private final float OFFSET_RIGHT_TITLE = 49;
+    private final float OFFSET_TOP_TITLE = 5;
 
-    private final float DELIMITER_RIGHT_OFFSET = 50;
+    private final float OFFSET_RIGHT_LOGO = 7;
+    private final float OFFSET_TOP_LOGO = 3;
+
+
+    private final int TITLE_CHAR_NUMBERS_LIMIT = 25;
+
+    private final float DELIMITER_X_POS = 200;
+    private final float DELIMITER_Y_POS_START = 805;
+    private final float DELIMITER_Y_POS_END = 788;
+    private final float OFFSET_TITLE_LEFT = 70;
+
     private final float DELIMITER_DOWN_OFFSET = 20;
 
     private final int MARGIN_LEFT  = 50;
@@ -53,8 +65,6 @@ public class OutputMDExport extends Output {
     private static float SEPARATOR_WIDTH = (float) 0.71;
 
 
-
-
     /** Inner class to add a header and a footer. */
     class HeaderFooter extends PdfPageEventHelper {
 
@@ -62,9 +72,11 @@ public class OutputMDExport extends Output {
         String title;
         private final static String IMAGE_PATH = "logo/FAO_logo.png";
         Image logo;
+        Phrase titlePhrase;
 
         public HeaderFooter(String title) {
             this.title = title;
+            titlePhrase = new Phrase(title, MDFontTypes.headerField.getFontType());
         }
 
 
@@ -104,22 +116,23 @@ public class OutputMDExport extends Output {
                 PdfPCell line = new PdfPCell();
                 Rectangle rect = writer.getBoxSize("art");
                 ColumnText.showTextAligned(writer.getDirectContent(),
-                        Element.ALIGN_CENTER, new Phrase(String.format(" %d", pagenumber - 1), MDFontTypes.footerField.getFontType()),
+                        Element.ALIGN_LEFT, new Phrase(String.format(" %d", pagenumber - 1), MDFontTypes.footerField.getFontType()),
                         ((rect.getLeft() + rect.getRight()) - RIGHT_OFFSET_FOOTER), rect.getBottom() - 18, 0);
                 ColumnText.showTextAligned(writer.getDirectContent(),
-                        Element.ALIGN_CENTER, new Phrase(title, MDFontTypes.headerField.getFontType()),
-                        ((rect.getLeft() + rect.getRight()) / 2), rect.getTop() + 5, 0);
+                        Element.ALIGN_LEFT, titlePhrase,
+                        ((rect.getLeft() + rect.getRight()) / 2)-OFFSET_RIGHT_TITLE, rect.getTop() + OFFSET_TOP_TITLE, 0);
 
                 logo.scaleToFit(LOGO_HEIGHT, LOGO_WIDTH);
-                logo.setAbsolutePosition(rect.getLeft() + 7, rect.getTop() - 7);
+                logo.setAbsolutePosition(rect.getLeft() + OFFSET_RIGHT_LOGO, rect.getTop() - OFFSET_TOP_LOGO);
                 try {
                     document.add(logo);
 
                     PdfContentByte cb = writer.getDirectContent();
                     cb.setColorStroke(ColorType.borderGrey.getCmykColor());
                     cb.setLineWidth(SEPARATOR_WIDTH);
-                    cb.moveTo(200, 805);
-                    cb.lineTo(200, 788);
+                    //DELIMITER_X_POS - offsetToRMV * OFFSET_TITLE_LEFT
+                    cb.moveTo( DELIMITER_X_POS, DELIMITER_Y_POS_END);
+                    cb.lineTo( DELIMITER_X_POS, DELIMITER_Y_POS_START);
                     cb.stroke();
 
                 } catch (DocumentException e) {

@@ -21,11 +21,14 @@ import java.util.TreeMap;
 public class StandardLayoutCreator extends LayoutCreator {
 
     private static final Logger LOGGER = Logger.getLogger(StandardLayoutCreator.class);
-    private final float LOGO_HEIGHT = 120;
-    private final float LOGO_WIDTH = 150;
+    private final float LOGO_HEIGHT = 60;
+    private final float LOGO_WIDTH = 90;
     private StyleSheetCreator styleSheetCreator;
     private static float SIMPLE_HEIGHT_MARGIN = 19;
     private static float SIMPLE_HEIGHT_MARGIN_PARAGRAPH = 5;
+    private final float OFFSET_RIGHT_TITLE = 100;
+    private final float LOGO_TOP_OFFSET = 70;
+
     private static int MARGIN_TO_ADD = 6;
     private static final String IMG_PATH = "logo/newLogos/FAO_logo_Azzurro.png";
     private static String DESCRIPTION_COVER = "METADATA OVERVIEW";
@@ -39,6 +42,7 @@ public class StandardLayoutCreator extends LayoutCreator {
     private Document document;
     private RegistrationFont registrationFont;
     private TreeMap<String, Object> modelData;
+    private boolean isDoubleLine = false;
 
 
     public StandardLayoutCreator(Document document) throws DocumentException {
@@ -48,67 +52,99 @@ public class StandardLayoutCreator extends LayoutCreator {
         registrationFont.registerAll();
     }
 
+
+
+    private String[] createDoubleLines ( char[] titleLength,String title) {
+
+        boolean notFound = true;
+        String[] result = new String[2];
+        String temp = title;
+        int realCounterIndex = 0;
+        for( int i=0 ; i<titleLength.length && notFound; i++) {
+
+            int blankIndex = temp.indexOf(' ');
+            realCounterIndex+= blankIndex;
+            if(realCounterIndex > 20) {
+                result[0] = title.substring(0,realCounterIndex);
+                result[1] = title.substring(realCounterIndex);
+                notFound = false;
+            }else {
+                realCounterIndex++;
+                temp = temp.substring(blankIndex+1);
+            }
+        }
+        return result;
+    }
+
     public void createCover(String title,PdfWriter writer) throws DocumentException, IOException {
 
+        char[] titleLength  = title.toCharArray();
+        String[] linesTitle = null;
+        Phrase[] multiPhrases =null;
 
+        if(titleLength.length > 20) {
+            linesTitle = createDoubleLines(titleLength, title);
+            isDoubleLine =true;
+        }
 
-        Font t = MDFontTypes.coverTitle.getFontType();
-        Phrase titleLabel = new Phrase(title, MDFontTypes.coverTitle.getFontType());
+        Phrase titleLabel = new Phrase();
 
+        if(isDoubleLine) {
+            int i=0;
+            for(String lineTitle: linesTitle) {
+                multiPhrases[i] = new Phrase(lineTitle ,MDFontTypes.coverTitle.getFontType());
+            }
+        }else{
+            titleLabel =new Phrase(title,MDFontTypes.coverTitle.getFontType());
+        }
+
+        titleLabel.setFont(MDFontTypes.coverTitle.getFontType());
 
         Phrase descriptionLAbel = new Phrase(DESCRIPTION_COVER, MDFontTypes.coverDesc.getFontType());
 
         Image logo = Image.getInstance(this.getClass().getClassLoader().getResource("../").getPath() + IMG_PATH);
 
-/*
-        titleLabel.setAlignment(Element.ALIGN_CENTER);
-
-
-*/
         Rectangle rect = writer.getBoxSize("art");
-
-
-
-       /* PdfContentByte cb = writer.getDirectContent();
-        cb.setColorStroke(ColorType.borderGrey.getCmykColor());
-        cb.setLineWidth(SEPARATOR_WIDTH);
-        cb.moveTo(100, (rect.getTop() / 2) + 45);
-        cb.moveTo(500, (rect.getTop() / 2) + 45);
-
-        cb.stroke();
-
-        cb.moveTo(100, (rect.getTop() / 2) );
-        cb.moveTo(500, (rect.getTop() / 2));
-
-        cb.stroke();
-*/
 
         PdfContentByte cb = writer.getDirectContent();
         cb.setColorStroke(ColorType.borderGrey.getCmykColor());
         cb.setLineWidth(SEPARATOR_WIDTH);
-        cb.moveTo(rect.getLeft() + 15, (rect.getTop() / 2) + 55);
+
+
+        cb.moveTo(((rect.getLeft() + rect.getRight()) / 2)-OFFSET_RIGHT_TITLE, (rect.getTop() / 2) + 55);
         cb.lineTo(rect.getRight() - 15, (rect.getTop() / 2) + 55);
         cb.stroke();
 
-        cb.moveTo(rect.getLeft() + 15, (rect.getTop() / 2) - 5);
+      /*  cb.moveTo(((rect.getLeft() + rect.getRight()) / 2)-OFFSET_RIGHT_TITLE, (rect.getTop() / 2) - 5);
         cb.lineTo(rect.getRight() - 15, (rect.getTop() / 2) - 5);
-        cb.stroke();
+        cb.stroke();*/
 
         logo.scaleToFit(LOGO_HEIGHT, LOGO_WIDTH);
-        logo.setAbsolutePosition(rect.getRight() - rect.getLeft() - 285, (rect.getTop() / 2) + 80);
+        logo.setAbsolutePosition(((rect.getLeft() + rect.getRight()) / 2)-OFFSET_RIGHT_TITLE -8, (rect.getTop() / 2) + LOGO_TOP_OFFSET);
         document.add(logo);
 
         // TITLE
-        ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_CENTER, titleLabel, ((rect.getLeft() + rect.getRight()) / 2), (rect.getTop() / 2) + 15, 0);
 
+   /*     if(isDoubleLine){
+
+            int i=0;
+            for(Chunk chunk: titleLabel.getChunks()) {
+                ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_LEFT, chunk, ((rect.getLeft() + rect.getRight()) / 2) - OFFSET_RIGHT_TITLE, (rect.getTop() / 2) + 15+i*20, 0);
+
+
+            }
+        }else {*/
+            ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_LEFT, titleLabel, ((rect.getLeft() + rect.getRight()) / 2) - OFFSET_RIGHT_TITLE, (rect.getTop() / 2) + 15, 0);
+
+/*
+        }
+*/
         // desc
-        ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_CENTER, descriptionLAbel, ((rect.getLeft() + rect.getRight()) / 2), (rect.getTop() / 2) -38, 0);
-
-
+/*
+        ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_LEFT, descriptionLAbel, ((rect.getLeft() + rect.getRight()) / 2)-OFFSET_RIGHT_TITLE, (rect.getTop() / 2) -38, 0);
+*/
 
         document.newPage();
-
-
     }
 
 
@@ -170,7 +206,9 @@ public class StandardLayoutCreator extends LayoutCreator {
         } else {
             // special bean case
             element.setValue(getStringFromSpecialBean(element));
-            writeSimpleElement(margin, isBiggerHeaderMArgin, element, indexChapter);
+            if(element.getValue()!= null) {
+                writeSimpleElement(margin, isBiggerHeaderMArgin, element, indexChapter);
+            }
         }
 
     }
@@ -204,6 +242,8 @@ public class StandardLayoutCreator extends LayoutCreator {
         titleCell.setHorizontalAlignment(Element.ALIGN_LEFT);
         titleCell.setPaddingLeft(rightMargin);
 
+
+        System.out.println(value.getTitleToVisualize().toString());
         PdfPCell valueCell = new PdfPCell();
         valueCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
