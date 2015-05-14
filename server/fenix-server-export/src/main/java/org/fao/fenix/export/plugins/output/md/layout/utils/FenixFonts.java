@@ -7,7 +7,7 @@ public enum FenixFonts {
     roboto_light("fonts/roboto/Roboto-Light.ttf"),
     roboto_bold("fonts/roboto/Roboto-Bold.ttf"),
     roboto_thin("fonts/roboto/Roboto-Thin.ttf"),
-    roboto_thin2("fonts/roboto/Roboto-ThinItalic.ttf");
+    roboto_thin_cover("fonts/roboto/Roboto-Thin.ttf");
 
 
     private String url;

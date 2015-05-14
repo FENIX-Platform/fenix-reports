@@ -57,7 +57,6 @@ define(['jquery'], function ($) {
 
         var result = false;
         // check id of che metadata
-        debugger;
         if (typeof config.input !== 'undefined' && config.input != null &&
             config.input.config !== 'undefined' && config.input.config !== null &&
             config.input.config.uid !== 'undefined' && config.input.config.uid !== null &&

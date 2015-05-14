@@ -1,14 +1,15 @@
 package org.fao.fenix.export.plugins.output.md.standard;
 
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 import org.apache.log4j.Logger;
 import org.fao.fenix.export.plugins.output.md.data.dto.MDSDescriptor;
-import org.fao.fenix.export.plugins.output.md.full.StyleSheetCreator;
 import org.fao.fenix.export.plugins.output.md.layout.factory.LayoutCreator;
 import org.fao.fenix.export.plugins.output.md.layout.utils.ColorType;
-import org.fao.fenix.export.plugins.output.md.layout.utils.MDFontTypes;
 import org.fao.fenix.export.plugins.output.md.layout.utils.RegistrationFont;
 import org.fao.fenix.export.plugins.output.md.layout.utils.SpecialBean;
 
@@ -23,12 +24,13 @@ public class StandardLayoutCreator extends LayoutCreator {
     private static final Logger LOGGER = Logger.getLogger(StandardLayoutCreator.class);
     private final float LOGO_HEIGHT = 60;
     private final float LOGO_WIDTH = 90;
-    private StyleSheetCreator styleSheetCreator;
     private static float SIMPLE_HEIGHT_MARGIN = 19;
     private static float SIMPLE_HEIGHT_MARGIN_PARAGRAPH = 5;
     private final float OFFSET_RIGHT_TITLE = 100;
-    private final float LOGO_TOP_OFFSET = 60;
-
+    private final float OFFSET_RIGHT = 100;
+    private final float LOGO_TOP_OFFSET_SEPARATOR = 5;
+    private final float OFFSET_HEIGHT_UP_TO_CENTER = 100;
+    private final float OFFSET_HEIGHT_DWN_TITLE_TO_SEP = 11;
     private static int MARGIN_TO_ADD = 6;
     private static final String IMG_PATH = "logo/newLogos/FAO_logo_Azzurro.png";
     private static String DESCRIPTION_COVER = "METADATA OVERVIEW";
@@ -55,7 +57,7 @@ public class StandardLayoutCreator extends LayoutCreator {
     public void createCover(String title, PdfWriter writer) throws DocumentException, IOException {
 
 
-        Paragraph titleLAbel = new Paragraph(title, MDFontTypes.coverTitle.getFontType());
+        Paragraph titleLAbel = new Paragraph(title, registrationFont.getCoverTitle());
 
         Image logo = Image.getInstance(this.getClass().getClassLoader().getResource("../").getPath() + IMG_PATH);
 
@@ -65,18 +67,17 @@ public class StandardLayoutCreator extends LayoutCreator {
         cb.setColorStroke(ColorType.borderGrey.getCmykColor());
         cb.setLineWidth(SEPARATOR_WIDTH);
 
-
-        cb.moveTo(((rect.getLeft() + rect.getRight()) / 2) - OFFSET_RIGHT_TITLE, (rect.getTop() / 2) + 55);
-        cb.lineTo(rect.getRight() - 15, (rect.getTop() / 2) + 55);
+        cb.moveTo(((rect.getLeft() + rect.getRight()) / 2) - OFFSET_RIGHT, (rect.getTop() / 2) + OFFSET_HEIGHT_UP_TO_CENTER);
+        cb.lineTo(rect.getRight() - 15, (rect.getTop() / 2) + OFFSET_HEIGHT_UP_TO_CENTER);
         cb.stroke();
 
-
         logo.scaleToFit(LOGO_HEIGHT, LOGO_WIDTH);
-        logo.setAbsolutePosition(((rect.getLeft() + rect.getRight()) / 2) - OFFSET_RIGHT_TITLE - 8, (rect.getTop() / 2) + LOGO_TOP_OFFSET);
+        logo.setAbsolutePosition(((rect.getLeft() + rect.getRight()) / 2) - OFFSET_RIGHT - 8, (rect.getTop() / 2) +
+                OFFSET_HEIGHT_UP_TO_CENTER + LOGO_TOP_OFFSET_SEPARATOR);
         document.add(logo);
 
-        titleLAbel.setIndentationLeft(((rect.getLeft() + rect.getRight()) / 2) - (OFFSET_RIGHT_TITLE + 50));
-        titleLAbel.setSpacingBefore((rect.getTop() / 2) - 72);
+        titleLAbel.setIndentationLeft(((rect.getLeft() + rect.getRight()) / 2) - (OFFSET_RIGHT + 50));
+        titleLAbel.setSpacingBefore((rect.getTop() / 2) - (OFFSET_HEIGHT_UP_TO_CENTER + OFFSET_HEIGHT_DWN_TITLE_TO_SEP));
         titleLAbel.setSpacingAfter(20);
 
         titleLAbel.setAlignment(Element.ALIGN_LEFT);
@@ -85,11 +86,11 @@ public class StandardLayoutCreator extends LayoutCreator {
         Chunk CONNECT = new Chunk(new LineSeparator(SEPARATOR_WIDTH, 100, ColorType.borderGrey.getCmykColor(), Element.ALIGN_CENTER, 3.5f));
 
         Paragraph separator = new Paragraph(CONNECT);
-        separator.setIndentationLeft(((rect.getLeft() + rect.getRight()) / 2) - (OFFSET_RIGHT_TITLE + 50));
+        separator.setIndentationLeft(((rect.getLeft() + rect.getRight()) / 2) - (OFFSET_RIGHT + 50));
         document.add(separator);
 
-        Paragraph description = new Paragraph(DESCRIPTION_COVER, MDFontTypes.coverDesc.getFontType());
-        description.setIndentationLeft(((rect.getLeft() + rect.getRight()) / 2) - (OFFSET_RIGHT_TITLE + 50));
+        Paragraph description = new Paragraph(DESCRIPTION_COVER, registrationFont.getCoverDesc());
+        description.setIndentationLeft(((rect.getLeft() + rect.getRight()) / 2) - (OFFSET_RIGHT + 50));
         description.setSpacingAfter(10);
         document.add(description);
 
@@ -100,15 +101,9 @@ public class StandardLayoutCreator extends LayoutCreator {
     @Override
     public Document init(TreeMap<String, Object> modelData, String title, PdfWriter writer) throws DocumentException, IOException {
         this.modelData = modelData;
-        styleSheetCreator = new StyleSheetCreator();
         createCover(title, writer);
         createBody();
         return document;
-    }
-
-    private void createTitle(MDSDescriptor descriptor) throws DocumentException {
-        document.add(new Paragraph(5, descriptor.getValue().toString(), MDFontTypes.valueField.getFontType()));
-        document.add(styleSheetCreator.getSpaceParagraph("title"));
     }
 
 
@@ -125,7 +120,6 @@ public class StandardLayoutCreator extends LayoutCreator {
 
 
     private void processDocumentBody(int margin, MDSDescriptor element, String key, int indexChapter, TreeMap<String, Object> dataModel) throws DocumentException {
-
 
         boolean isBiggerHeaderMArgin = key.equals("1");
 
@@ -184,19 +178,17 @@ public class StandardLayoutCreator extends LayoutCreator {
         table.setWidthPercentage(100);
 
         PdfPCell titleCell = new PdfPCell();
-        Paragraph title = new Paragraph(value.getTitleToVisualize().toString(), MDFontTypes.titleField.getFontType());
+        Paragraph title = new Paragraph(value.getTitleToVisualize().toString(), registrationFont.getTitleField());
         titleCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         titleCell.addElement(title);
         titleCell.setBorder(Rectangle.NO_BORDER);
         titleCell.setHorizontalAlignment(Element.ALIGN_LEFT);
         titleCell.setPaddingLeft(rightMargin);
 
-
-        System.out.println(value.getTitleToVisualize().toString());
         PdfPCell valueCell = new PdfPCell();
         valueCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
-        valueCell.addElement(new Phrase(value.getValue().toString(), MDFontTypes.valueField.getFontType()));
+        valueCell.addElement(new Phrase(value.getValue().toString(), registrationFont.getValueField()));
         valueCell.setBorder(Rectangle.NO_BORDER);
         valueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         valueCell.setColspan(2);
@@ -234,16 +226,23 @@ public class StandardLayoutCreator extends LayoutCreator {
 
         String titleString = (value.getTitleToVisualize() != null) ? value.getTitleToVisualize().toString() : "title";
 
+        boolean isUppercase = isAllUppercase(titleString);
         Paragraph title = new Paragraph();
-        Phrase phrase = new Phrase(titleString, MDFontTypes.titleField.getFontType());
+        Font titleFont = (isUppercase) ? registrationFont.getTitleUnderlined() : registrationFont.getTitleField();
+        Phrase phrase = new Phrase(titleString, titleFont);
         title.add(phrase);
         title.setIndentationLeft(rightMargin);
-        if (isAllUppercase(titleString)) {
+        if (isUppercase) {
+            isUppercase = true;
             LineSeparator UNDERLINE =
                     new LineSeparator(SEPARATOR_WIDTH, 100, ColorType.borderGrey.getCmykColor(), Element.ALIGN_CENTER, -2);
             title.add(UNDERLINE);
         }
-        title.setSpacingAfter(SIMPLE_HEIGHT_MARGIN_PARAGRAPH);
+        if (isUppercase) {
+            title.setSpacingAfter(SIMPLE_HEIGHT_MARGIN_PARAGRAPH + 8);
+        } else {
+            title.setSpacingAfter(SIMPLE_HEIGHT_MARGIN_PARAGRAPH);
+        }
         document.add(title);
     }
 
@@ -265,14 +264,13 @@ public class StandardLayoutCreator extends LayoutCreator {
 
         int arraySize = values.size();
 
-        boolean isUniqueValue = arraySize == 1;
         PdfPTable table = new PdfPTable(2);
         table.setWidths(COLSPAN_TABLE);
         table.setWidthPercentage(100);
 
 
         PdfPCell titleCell = new PdfPCell();
-        Phrase title = new Phrase(value.getTitleToVisualize().toString(), MDFontTypes.titleField.getFontType());
+        Phrase title = new Phrase(value.getTitleToVisualize().toString(), registrationFont.getTitleField());
         titleCell.setVerticalAlignment(Element.ALIGN_TOP);
         titleCell.addElement(title);
         titleCell.setBorder(Rectangle.NO_BORDER);
@@ -285,11 +283,9 @@ public class StandardLayoutCreator extends LayoutCreator {
         for (int i = 0; i < arraySize; i++) {
             String[] codeLabel = values.get(i).toString().split("-");
 
-            PdfPCell[] cells = new PdfPCell[codeLabel.length];
-
             for (int z = 0; z < codeLabel.length; z++) {
                 String toAdd = (i != arraySize - 1) ? " , " : " ";
-                Phrase phrase = new Phrase(codeLabel[z] + toAdd, MDFontTypes.valueField.getFontType());
+                Phrase phrase = new Phrase(codeLabel[z] + toAdd, registrationFont.getValueField());
                 valueCell.addElement(phrase);
             }
 
@@ -305,49 +301,9 @@ public class StandardLayoutCreator extends LayoutCreator {
 
         document.add(table);
 
-        Paragraph blank = new Paragraph("", MDFontTypes.titleField.getFontType());
+        Paragraph blank = new Paragraph("", registrationFont.getTitleField());
         blank.setSpacingAfter(SIMPLE_HEIGHT_MARGIN);
         document.add(blank);
-    }
-
-    private void setBorderCell(boolean isOnly, PdfPCell... cells) {
-
-        if (isOnly) {
-            for (PdfPCell cell : cells) {
-                cell.setBorder(Rectangle.BOTTOM | Rectangle.TOP);
-                cell.setBorderColor(ColorType.borderGrey.getCmykColor());
-            }
-        } else {
-            for (PdfPCell cell : cells) {
-                cell.setBorder(Rectangle.BOTTOM);
-                cell.setBorderColor(ColorType.borderGrey.getCmykColor());
-            }
-        }
-
-    }
-
-
-    private void createFooter() {
-        //TODO
-
-    }
-
-
-    private String updateCounter(String counter) {
-
-        String[] counterChunks = counter.split("\\.");
-        int lengthSplit = counterChunks.length;
-
-        String result = "";
-        for (int i = 0; i < lengthSplit; i++) {
-            if (i != lengthSplit - 1) {
-                result += counterChunks[i] + ".";
-            } else {
-                result += Integer.parseInt(counterChunks[i]) + 1;
-            }
-        }
-
-        return result;
     }
 
 
@@ -382,8 +338,6 @@ public class StandardLayoutCreator extends LayoutCreator {
         }
         return result;
     }
-
-
 }
 
 

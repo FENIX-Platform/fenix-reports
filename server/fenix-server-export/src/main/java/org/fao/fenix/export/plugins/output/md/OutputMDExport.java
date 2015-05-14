@@ -3,7 +3,10 @@ package org.fao.fenix.export.plugins.output.md;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.ColumnText;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfPageEventHelper;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.log4j.Logger;
 import org.fao.fenix.commons.msd.dto.full.MeIdentification;
 import org.fao.fenix.export.core.dto.CoreOutputHeader;
@@ -18,7 +21,6 @@ import org.fao.fenix.export.plugins.output.md.layout.utils.ColorType;
 import org.fao.fenix.export.plugins.output.md.layout.utils.MDFontTypes;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
@@ -29,9 +31,6 @@ public class OutputMDExport extends Output {
 
     private static final Logger LOGGER = Logger.getLogger(OutputMDExport.class);
     private Map<String, Object> config;
-    private Document document;
-    private HeaderFooter event;
-    private FileOutputStream temp;
     private MeIdentification metadata;
     private DataCreator dataCreator ;
     private final String MDSD_URL = "http://faostat3.fao.org/d3s2/v2/mdsd";
@@ -42,25 +41,16 @@ public class OutputMDExport extends Output {
     private final float LOGO_WIDTH = 130;
     private final float OFFSET_RIGHT_TITLE = 49;
     private final float OFFSET_TOP_TITLE = 5;
-
     private final float OFFSET_RIGHT_LOGO = 7;
     private final float OFFSET_TOP_LOGO = 3;
-
-
-    private final int TITLE_CHAR_NUMBERS_LIMIT = 25;
-
     private final float DELIMITER_X_POS = 200;
     private final float DELIMITER_Y_POS_START = 805;
     private final float DELIMITER_Y_POS_END = 788;
-    private final float OFFSET_TITLE_LEFT = 70;
-
-    private final float DELIMITER_DOWN_OFFSET = 20;
-
+    private final float OFFSET_FOOTER_UP = 18;
     private final int MARGIN_LEFT  = 50;
     private final int MARGIN_UP  = 80;
     private final int MARGIN_BOTTOM  = 50;
     private final int MARGIN_RIGHT  = 50;
-    private final int LOGO_SCALE_PERCENTAGE = 10;
     private final int RIGHT_OFFSET_FOOTER = 50;
     private static float SEPARATOR_WIDTH = (float) 0.71;
 
@@ -73,10 +63,11 @@ public class OutputMDExport extends Output {
         private final static String IMAGE_PATH = "logo/FAO_logo.png";
         Image logo;
         Phrase titlePhrase;
+        Font titleHeaderFont;
 
         public HeaderFooter(String title) {
             this.title = title;
-            titlePhrase = new Phrase(title, MDFontTypes.headerField.getFontType());
+            titlePhrase = new Phrase(title);
         }
 
 
@@ -92,18 +83,6 @@ public class OutputMDExport extends Output {
         }
 
 
-        public void onChapter(PdfWriter writer, Document document,
-                              float paragraphPosition, Paragraph title) {
-            // pagenumber = 1;
-            System.out.println("stop here");
-        }
-
-        public void onParagraph(PdfWriter writer, Document document, float paragraphPosition) {
-
-
-            System.out.println("start!");
-        }
-
         public void onStartPage(PdfWriter writer, Document document) {
 
             pagenumber = (pagenumber!=0)? pagenumber+1 : pagenumber+2;
@@ -113,11 +92,14 @@ public class OutputMDExport extends Output {
         public void onEndPage(PdfWriter writer, Document document) {
 
             if (pagenumber != 0) {
-                PdfPCell line = new PdfPCell();
+                if(titleHeaderFont == null) {
+                    titleHeaderFont = FontFactory.getFont(("roboto_thin"), 12, ColorType.blueFenix.getCmykColor());
+                }
+                Phrase titlePhrase = new Phrase(title,titleHeaderFont);
                 Rectangle rect = writer.getBoxSize("art");
                 ColumnText.showTextAligned(writer.getDirectContent(),
                         Element.ALIGN_LEFT, new Phrase(String.format(" %d", pagenumber - 1), MDFontTypes.footerField.getFontType()),
-                        ((rect.getLeft() + rect.getRight()) - RIGHT_OFFSET_FOOTER), rect.getBottom() - 18, 0);
+                        ((rect.getLeft() + rect.getRight()) - RIGHT_OFFSET_FOOTER), rect.getBottom() - OFFSET_FOOTER_UP, 0);
                 ColumnText.showTextAligned(writer.getDirectContent(),
                         Element.ALIGN_LEFT, titlePhrase,
                         ((rect.getLeft() + rect.getRight()) / 2)-OFFSET_RIGHT_TITLE, rect.getTop() + OFFSET_TOP_TITLE, 0);
