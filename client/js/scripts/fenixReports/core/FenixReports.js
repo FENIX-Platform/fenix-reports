@@ -1,12 +1,17 @@
-define(['jquery', 'validator', "fx-rp-config"], function ($, Validator, PluginCOFIG) {
+define(['jquery',  "fx-rp-config"], function ($,  PluginCOFIG) {
 
-    'use strict'
+    'use strict';
 
-    var validator, pluginChosen
+
+    var  pluginChosen;
+
+
+    var EXPORT_ACCESS_POINT = '/fenix/export';
+
 
     var o = {
         "success":""
-    }
+    };
 
 
     function FenixReports() {
@@ -15,62 +20,71 @@ define(['jquery', 'validator', "fx-rp-config"], function ($, Validator, PluginCO
 
         this.o.success = function(Plugin) {
             pluginChosen = new Plugin;
-        }
+        };
 
         this.o.error = function() {
-          console.error("Something went wrong on plugin creation")
-        }
-
-        validator = new Validator
-    }
+          console.error("Something went wrong on plugin creation");
+        };
+    };
 
 
     FenixReports.prototype.init = function(plugin) {
 
         if(typeof plugin!== 'undefined' && plugin!== null && plugin !== '' &&
             typeof  PluginCOFIG[plugin] !== 'undefined' && PluginCOFIG[plugin]){
-            require([''+PluginCOFIG[plugin]], o.success, o.error)
+            require([''+PluginCOFIG[plugin]], o.success, o.error);
         }
         else  {
-            throw new Error('please define a valid plugin name')
+            throw new Error('please define a valid plugin name');
         }
-    }
+    };
 
 
-    // second version
-    FenixReports.prototype.exportData = function (config, url) {
+    FenixReports.prototype.exportData = function (config, url,successCallBack, errorCallback) {
 
-        var payload = pluginChosen.process(config)
+        var payload = pluginChosen.process(config);
 
-/*
-        validator.checkPayload(payload, url)
-*/
+        url += EXPORT_ACCESS_POINT;
 
-        var that = this;
-
+        var self = this;
         $.ajax({
             url: url,
             crossDomain: true,
             type: 'POST',
             data: JSON.stringify(payload),
             contentType: 'application/json',
-            /* beforeSend: that.loadAnimatedGif(),*/
             success: function (data) {
                 window.location = data;
+                self.onSuccess(successCallBack)
+
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 alert("error occurred");
-                console.log('jqXHR error:')
-                console.log(jqXHR)
-                console.log('textStatus error:')
-                console.log(textStatus)
-                console.log('errorThrown error:')
-                console.log(errorThrown)
+                var errors = {
+                    'jqXHR': jqXHR,
+                    'textStatus': textStatus,
+                    'errorThrown': errorThrown
+                };
+                self.onError(errorCallback, errors);
             }
-    })
+    });
+};
 
-}
 
+    FenixReports.prototype.onSuccess = function(callback) {
+        console.log('onSuccess');
+        if(callback && callback!== null) {
+            callback();
+        }
+    };
+
+
+    FenixReports.prototype.onError = function(callback, errors) {
+        console.log('onSuccess');
+        if(callback && callback!== null) {
+            callback(errors);
+        }
+    };
 
 
     return FenixReports;

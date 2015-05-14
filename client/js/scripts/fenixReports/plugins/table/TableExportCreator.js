@@ -56,7 +56,6 @@ define(['jquery'], function ($) {
 
         var result = false;
         // check data and metadata
-        debugger;
         if (typeof config.resource !== 'undefined' && config.resource != null &&
             typeof config.resource.metadata !== 'undefined' && config.resource.metadata !== null &&
             typeof config.resource.metadata.dsd !== 'undefined' && config.resource.metadata.dsd !== null &&

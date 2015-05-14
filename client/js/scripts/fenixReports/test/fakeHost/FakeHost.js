@@ -3,12 +3,12 @@ define(['jquery',
     'text!testEnv/payload/md/metadataSimpleConf.json'],
     function($, FenixExport, Payload){
 
-    'use strict'
+    'use strict';
 
     var fenixExport, payload;
 
 
-    var URL = "http://localhost:8080/fenix/export";
+    var URL = "http://localhost:8080";
 
 
     function FakeHost(){
@@ -19,18 +19,16 @@ define(['jquery',
 
     FakeHost.prototype.init = function(){
 
-        console.log('fakeHost.init')
+        console.log('fakeHost.init');
 
-        fenixExport.init("metadataExport")
+        fenixExport.init("metadataExport");
 
-        console.log(payload)
-
+        console.log(payload);
 
         $('#btn').on('click', function(e){
-            fenixExport.exportData(payload,URL)
-        })
-
-    }
+            fenixExport.exportData(payload,URL);
+        });
+    };
 
     return FakeHost;
 })

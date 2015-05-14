@@ -1,6 +1,6 @@
 define(['jquery'], function ($) {
 
-    'use strict'
+    'use strict';
 
 
     function MetadataCreator() {
@@ -50,38 +50,37 @@ define(['jquery'], function ($) {
             this.CONFIG = $.extend(true, {}, this.CONFIG, config);
         }
         return this.CONFIG;
-    }
+    };
 
 
     MetadataCreator.prototype.validateConfig = function (config) {
 
         var result = false;
         // check id of che metadata
-        if (typeof config.input !== 'undefined' && config.input != null &&
-            config.input.config !== 'undefined' && config.input.config !== null &&
-            config.input.config.uid !== 'undefined' && config.input.config.uid !== null &&
+        if (typeof config.input !== 'undefined' && config.input !== null &&
+            typeof config.input.config !== 'undefined' && config.input.config !== null &&
+            typeof config.input.config.uid !== 'undefined' && config.input.config.uid !== null &&
             config.input.uid !== '' ) {
-            result = true;
+                result = true;
+                // output configuration
+                if (config.hasOwnProperty("output")) {
+                    // check the lang
+                    if (!config.output.hasOwnProperty("plugin") &&
+                        config.output.hasOwnProperty("config") && config.output.config.hasOwnProperty("lang") &&
+                        config.output.config.lang !== null && this.languagesAdmitted[config.output.config.lang]){
+                         result = true;
+                    }
 
-            // output configuration
-            if (config.hasOwnProperty("output")) {
-                // check the lang
-                if (!config.output.hasOwnProperty("plugin") &&
-                    config.output.hasOwnProperty("config") && config.output.config.hasOwnProperty("lang")
-                    && config.output.config.lang !== null && this.languagesAdmitted[config.output.config.lang]){
-                     result = true;
+                    else {
+                        throw this.errors.configuration_wrong;
+                    }
                 }
-
-                else {
-                    throw this.errors.configuration_wrong;
-                }
-            }
         } else {
            throw this.errors.id_not_specified;
         }
 
         return result;
-    }
+    };
 
 
     return MetadataCreator;
