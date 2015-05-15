@@ -12,12 +12,11 @@ import org.fao.fenix.export.plugins.output.md.layout.factory.LayoutCreator;
 import org.fao.fenix.export.plugins.output.md.layout.utils.ColorType;
 import org.fao.fenix.export.plugins.output.md.layout.utils.RegistrationFont;
 import org.fao.fenix.export.plugins.output.md.layout.utils.SpecialBean;
+import org.fao.fenix.export.plugins.output.md.layout.utils.SpecialDateBean;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Set;
-import java.util.TreeMap;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class StandardLayoutCreator extends LayoutCreator {
 
@@ -177,6 +176,8 @@ public class StandardLayoutCreator extends LayoutCreator {
         table.setWidths(COLSPAN_TABLE);
         table.setWidthPercentage(100);
 
+
+
         PdfPCell titleCell = new PdfPCell();
         Paragraph title = new Paragraph(value.getTitleToVisualize().toString(), registrationFont.getTitleField());
         titleCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -188,7 +189,8 @@ public class StandardLayoutCreator extends LayoutCreator {
         PdfPCell valueCell = new PdfPCell();
         valueCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
-        valueCell.addElement(new Phrase(value.getValue().toString(), registrationFont.getValueField()));
+        String valueString = (SpecialDateBean.isSpecialDateBean(value.getTitleBean().toString()))? trasformDate(value.getValue()): value.getValue().toString();
+        valueCell.addElement(new Phrase(valueString, registrationFont.getValueField()));
         valueCell.setBorder(Rectangle.NO_BORDER);
         valueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         valueCell.setColspan(2);
@@ -247,6 +249,19 @@ public class StandardLayoutCreator extends LayoutCreator {
     }
 
 
+    private String trasformDate (Object obj) {
+        if(obj!= null) {
+            SimpleDateFormat f = new SimpleDateFormat("dd/MM/yyyy");
+            Date date = (Date)obj;
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return f.format(cal.getTime());
+        }else{
+            return "";
+        }
+    }
+
+
     private boolean isAllUppercase(String s) {
         if (s != null) {
             for (char c : s.toCharArray()) {
@@ -268,6 +283,7 @@ public class StandardLayoutCreator extends LayoutCreator {
         table.setWidths(COLSPAN_TABLE);
         table.setWidthPercentage(100);
 
+        String arrayValue ="";
 
         PdfPCell titleCell = new PdfPCell();
         Phrase title = new Phrase(value.getTitleToVisualize().toString(), registrationFont.getTitleField());
@@ -284,14 +300,14 @@ public class StandardLayoutCreator extends LayoutCreator {
             String[] codeLabel = values.get(i).toString().split("-");
 
             for (int z = 0; z < codeLabel.length; z++) {
-                String toAdd = (i != arraySize - 1) ? " , " : " ";
-                Phrase phrase = new Phrase(codeLabel[z] + toAdd, registrationFont.getValueField());
-                valueCell.addElement(phrase);
+                arrayValue += codeLabel[z];
+                arrayValue += (i != arraySize - 1) ? " ; " : " ";
             }
-
             if (i == arraySize - 1)
                 table.setSpacingAfter(SIMPLE_HEIGHT_MARGIN);
         }
+        Phrase phrase = new Phrase(arrayValue, registrationFont.getValueField());
+        valueCell.addElement(phrase);
 
         valueCell.setBorder(Rectangle.NO_BORDER);
         valueCell.setHorizontalAlignment(Element.ALIGN_CENTER);
