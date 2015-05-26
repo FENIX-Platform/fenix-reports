@@ -2,7 +2,6 @@ define(['jquery',
     'fenixExport',
     'text!testEnv/payload/md/metadataSimpleConf.json'],
     function($, FenixExport, Payload){
-
     'use strict';
 
     var fenixExport, payload;

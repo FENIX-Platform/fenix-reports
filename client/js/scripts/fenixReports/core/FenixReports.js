@@ -55,7 +55,7 @@ define(['jquery',  "fx-rp-config"], function ($,  PluginCOFIG) {
             contentType: 'application/json',
             success: function (data) {
                 window.location = data;
-                self.onSuccess(successCallBack)
+                self.onSuccess(successCallBack);
 
             },
             error: function (jqXHR, textStatus, errorThrown) {
