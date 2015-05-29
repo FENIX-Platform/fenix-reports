@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "MDSD",
+  "description": "D3S 2nd Level Metadata",
+  "type": "object",
+  "properties": {
+    "ask1": {
+      "title": ") Has your country identified a list of Priority Transboundary Animal Diseases (TAD)?",
+      "type": "string",
+      "uniqueItems": true,
+      "format": "select",
+      "enum": [
+        "Yes, officially",
+        "Yes, not officially",
+        "No",
+        "Not sure"
+      ]
+    },
+    "ask1.1": {
+      "title": "If yes, list the 5 highest priority diseases",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "title": " ",
+        "default": ""
+      },
+      "additionalItems": false
+    }
+  }
+}
