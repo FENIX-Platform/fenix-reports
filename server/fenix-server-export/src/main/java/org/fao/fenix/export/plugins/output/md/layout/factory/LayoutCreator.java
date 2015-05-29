@@ -25,5 +25,5 @@ public abstract class LayoutCreator {
 
     }
 
-    public abstract Document init(TreeMap<String, Object> modelData, String title,PdfWriter writer) throws DocumentException, IOException;
+    public abstract Document  init(TreeMap<String, Object> modelData, String title,PdfWriter writer) throws DocumentException, IOException;
 }

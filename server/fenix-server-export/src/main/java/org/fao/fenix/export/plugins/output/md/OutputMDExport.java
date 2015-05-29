@@ -37,6 +37,14 @@ public class OutputMDExport extends Output {
     private JsonNode mdsdNode;
     private ByteArrayOutputStream baos;
 
+
+    private final String LANGUAGE_PROPERTY = "lang";
+
+    private final String REPRESENTATION_TYPE_PROPERTY = "full";
+    private final String FILENAME_PROPERTY = "fileName";
+    private final String FILENAME_DEFAULT = "fenixExport.pdf";
+
+    private final String FONTNAME_TITLEPAGES = "roboto_thin";
     private final float LOGO_HEIGHT = 100;
     private final float LOGO_WIDTH = 130;
     private final float OFFSET_RIGHT_TITLE = 49;
@@ -93,7 +101,7 @@ public class OutputMDExport extends Output {
 
             if (pagenumber != 0) {
                 if(titleHeaderFont == null) {
-                    titleHeaderFont = FontFactory.getFont(("roboto_thin"), 12, ColorType.blueFenix.getCmykColor());
+                    titleHeaderFont = FontFactory.getFont((FONTNAME_TITLEPAGES), 12, ColorType.blueFenix.getCmykColor());
                 }
                 Phrase titlePhrase = new Phrase(title,titleHeaderFont);
                 Rectangle rect = writer.getBoxSize("art");
@@ -135,7 +143,7 @@ public class OutputMDExport extends Output {
             getMdsd();
 
         // getting data in the right format
-        String language = (config.get("lang")!= null && !config.get("lang").toString().equals(""))? config.get("lang").toString(): "EN";
+        String language = (config.get(LANGUAGE_PROPERTY)!= null && !config.get(LANGUAGE_PROPERTY).toString().equals(""))? config.get(LANGUAGE_PROPERTY).toString(): "EN";
         dataCreator.initDataFromMDSD(mdsdNode,resource.getMetadata(), language);
 
         // TODO: setting configuration pagesize
@@ -150,7 +158,7 @@ public class OutputMDExport extends Output {
         contentWriter.setPageEvent(event);
 
         document.open();
-        boolean isFull = config.get("full")!= null? Boolean.getBoolean(config.get("full").toString()): false;
+        boolean isFull = config.get(REPRESENTATION_TYPE_PROPERTY)!= null? Boolean.getBoolean(config.get(REPRESENTATION_TYPE_PROPERTY).toString()): false;
         LayoutCreator layoutCreator = LayoutCreator.createInstance(isFull, document);
 
         document = layoutCreator.init((TreeMap<String, Object>) dataCreator.getMetaDataCleaned(), title, contentWriter);
@@ -161,7 +169,7 @@ public class OutputMDExport extends Output {
     @Override
     public CoreOutputHeader getHeader() throws Exception {
         CoreOutputHeader coreOutputHeader = new CoreOutputHeader();
-        coreOutputHeader.setName(((config.get("fileName") != null) ? config.get("fileName").toString() : "fenixExport.pdf"));
+        coreOutputHeader.setName(((config.get(FILENAME_PROPERTY) != null) ? config.get(FILENAME_PROPERTY).toString() : FILENAME_DEFAULT));
         coreOutputHeader.setSize(baos.size());
         coreOutputHeader.setType(CoreOutputType.pdf);
         return coreOutputHeader;
