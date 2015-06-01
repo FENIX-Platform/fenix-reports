@@ -8,10 +8,10 @@ import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.log4j.Logger;
-import org.fao.fenix.commons.msd.dto.full.MeIdentification;
 import org.fao.fenix.export.core.dto.CoreOutputHeader;
 import org.fao.fenix.export.core.dto.CoreOutputType;
 import org.fao.fenix.export.core.dto.data.CoreData;
+import org.fao.fenix.export.core.dto.data.CoreGenericData;
 import org.fao.fenix.export.core.output.plugin.Output;
 import org.fao.fenix.export.plugins.input.metadata.mediator.MDClientMediator;
 import org.fao.fenix.export.plugins.output.fmd.layout.standard.FMDLayoutCreator;
@@ -31,7 +31,6 @@ public class OutputFMDExport extends Output {
 
     private static final Logger LOGGER = Logger.getLogger(OutputFMDExport.class);
     private Map<String, Object> config;
-    private MeIdentification metadata;
     private DataCreator dataCreator ;
     private final String MDSD_URL = "http://faostat3.fao.org/d3s2/v2/mdsd";
     private JsonNode mdsdNode;
@@ -136,20 +135,21 @@ public class OutputFMDExport extends Output {
 
     @Override
     public void process(CoreData resource) throws Exception {
-        metadata = resource.getMetadata();
         if(mdsdNode == null)
             getMdsd();
 
-        // getting data in the right format
         String language = (config.get(LANGUAGE_PROPERTY)!= null && !config.get(LANGUAGE_PROPERTY).toString().equals(""))? config.get(LANGUAGE_PROPERTY).toString(): "EN";
-        dataCreator.initDataFromMDSD(mdsdNode,resource.getMetadata(), language);
 
         // TODO: setting configuration pagesize
         Document document = new Document(PageSize.A4, MARGIN_LEFT, MARGIN_RIGHT,
                 MARGIN_UP, MARGIN_BOTTOM);
         baos = new ByteArrayOutputStream();
         PdfWriter contentWriter = PdfWriter.getInstance(document, baos);
+
+/*
         String title = retrieveTitle((TreeMap<String, Object>) dataCreator.getMetaDataCleaned());
+*/
+        String title = "FMD title";
 
         HeaderFooter event = new HeaderFooter(title);
         contentWriter.setBoxSize("art", new Rectangle(36, 54, 559, 788));
@@ -158,7 +158,8 @@ public class OutputFMDExport extends Output {
         document.open();
         FMDLayoutCreator layoutCreator = new FMDLayoutCreator(document);
 
-        document = layoutCreator.init((TreeMap<String, Object>) dataCreator.getMetaDataCleaned(), title, contentWriter);
+        TreeMap<String,Object> dataModel = new TreeMap<String,Object>(((CoreGenericData)resource).getDataStructure());
+        document = layoutCreator.init(dataModel, title, contentWriter);
         document.close();
 
     }
