@@ -36,6 +36,7 @@ public class OutputFMDExport extends Output {
     private JsonNode mdsdNode;
     private ByteArrayOutputStream baos;
     private final String LANGUAGE_PROPERTY = "lang";
+    private static String UPPER_TITLE = "Global Foot and Mouth Disease (FMD)";
 
     private final String REPRESENTATION_TYPE_PROPERTY = "full";
     private final String FILENAME_PROPERTY = "fileName";
@@ -146,12 +147,9 @@ public class OutputFMDExport extends Output {
         baos = new ByteArrayOutputStream();
         PdfWriter contentWriter = PdfWriter.getInstance(document, baos);
 
-/*
-        String title = retrieveTitle((TreeMap<String, Object>) dataCreator.getMetaDataCleaned());
-*/
-        String title = "FMD title";
 
-        HeaderFooter event = new HeaderFooter(title);
+
+        HeaderFooter event = new HeaderFooter(UPPER_TITLE);
         contentWriter.setBoxSize("art", new Rectangle(36, 54, 559, 788));
         contentWriter.setPageEvent(event);
 
@@ -159,7 +157,7 @@ public class OutputFMDExport extends Output {
         FMDLayoutCreator layoutCreator = new FMDLayoutCreator(document);
 
         TreeMap<String,Object> dataModel = new TreeMap<String,Object>(((CoreGenericData)resource).getDataStructure());
-        document = layoutCreator.init(dataModel, title, contentWriter);
+        document = layoutCreator.init(dataModel, UPPER_TITLE, contentWriter);
         document.close();
 
     }

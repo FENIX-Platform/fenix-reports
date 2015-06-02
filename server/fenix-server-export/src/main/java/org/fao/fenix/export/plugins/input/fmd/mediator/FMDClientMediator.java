@@ -7,8 +7,6 @@ import org.fao.fenix.export.plugins.output.fmd.dto.FMDQuestions;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 
 public class FMDClientMediator {
@@ -35,7 +33,7 @@ public class FMDClientMediator {
         FMDQuestions result = new FMDQuestions();
 
         try {
-          trasformObjectToBean(new ObjectMapper().readValue(new File(url), Object.class),result );
+          result = new ObjectMapper().readValue(new File(url), FMDQuestions.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,7 +41,7 @@ public class FMDClientMediator {
         return result;
     }
 
-
+/*
     private void trasformObjectToBean (Object unstructuredData, FMDQuestions dataWithStructure) {
 
         ArrayList<Object> tt = (ArrayList)unstructuredData;
@@ -57,7 +55,7 @@ public class FMDClientMediator {
                     break;
             }
         }
-    }
+    }*/
 
 
 }

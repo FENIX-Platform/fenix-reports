@@ -31,14 +31,15 @@ public class FMDLayoutCreator   {
     private final float OFFSET_HEIGHT_DWN_TITLE_TO_SEP = 11;
     private static int MARGIN_TO_ADD = 6;
     private static final String IMG_PATH = "logo/newLogos/FAO_logo_Azzurro.png";
-    private static String DESCRIPTION_COVER = "METADATA OVERVIEW";
+    private static String DESCRIPTION_COVER = "QUESTIONNAIRE OVERVIEW";
+    private static String TITLE_COVER = "Global Foot and Mouth Disease (FMD)";
     private static float SEPARATOR_WIDTH = (float) 0.71;
     private static int SIMPLE_RIGHT_MARGIN = 0;
     private static String DATE_TYPEFIELD = Date.class.toString();
     private static String STRING_TYPEFIELD = String.class.toString();
     private static String RECURSIVE_TYPEFIELD = TreeMap.class.toString();
     private static String ARRAY_TYPEFIELD = ArrayList.class.toString();
-    private static int[] COLSPAN_TABLE = new int[]{2, 3};
+    private static int[] COLSPAN_TABLE = new int[]{3, 2};
     private Document document;
     private RegistrationFont registrationFont;
     private TreeMap<String, Object> modelData;
@@ -55,7 +56,7 @@ public class FMDLayoutCreator   {
     public void createCover(String title, PdfWriter writer) throws DocumentException, IOException {
 
 
-        Paragraph titleLAbel = new Paragraph(title, registrationFont.getCoverTitle());
+        Paragraph titleLAbel = new Paragraph(TITLE_COVER, registrationFont.getCoverTitle());
 
         Image logo = Image.getInstance(this.getClass().getClassLoader().getResource("../").getPath() + IMG_PATH);
 
@@ -364,10 +365,6 @@ public class FMDLayoutCreator   {
                         result += ", ";
                     }
                 }
-
-               /* if (result == null) {
-                    result = getStringFromSpecialBean((FMDescriptor) values.get(i));
-                }*/
             }
         }
         return result;
