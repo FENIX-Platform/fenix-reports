@@ -7,18 +7,17 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 import org.apache.log4j.Logger;
-import org.fao.fenix.export.plugins.output.md.data.dto.MDSDescriptor;
-import org.fao.fenix.export.plugins.output.md.layout.factory.LayoutCreator;
-import org.fao.fenix.export.plugins.output.md.layout.utils.ColorType;
-import org.fao.fenix.export.plugins.output.md.layout.utils.RegistrationFont;
-import org.fao.fenix.export.plugins.output.md.layout.utils.SpecialBean;
-import org.fao.fenix.export.plugins.output.md.layout.utils.SpecialDateBean;
+import org.fao.fenix.export.plugins.input.fmd.dataModel.utils.FMDescriptor;
+import org.fao.fenix.export.plugins.output.fmd.layout.utils.ColorType;
+import org.fao.fenix.export.plugins.output.fmd.layout.utils.RegistrationFont;
+import org.fao.fenix.export.plugins.output.fmd.layout.utils.SpecialBeanFMD;
+import org.fao.fenix.export.plugins.output.fmd.layout.utils.SpecialDateBean;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class FMDLayoutCreator extends LayoutCreator {
+public class FMDLayoutCreator   {
 
     private static final Logger LOGGER = Logger.getLogger(FMDLayoutCreator.class);
     private final float LOGO_HEIGHT = 60;
@@ -97,7 +96,6 @@ public class FMDLayoutCreator extends LayoutCreator {
     }
 
 
-    @Override
     public Document init(TreeMap<String, Object> modelData, String title, PdfWriter writer) throws DocumentException, IOException {
         this.modelData = modelData;
         createCover(title, writer);
@@ -112,36 +110,36 @@ public class FMDLayoutCreator extends LayoutCreator {
         int indexChapter = 1;
         int margin = 0;
         for (String key : keys) {
-            MDSDescriptor element = (MDSDescriptor) modelData.get(key);
+            FMDescriptor element = (FMDescriptor) modelData.get(key);
             processDocumentBody(margin, element, key, indexChapter, modelData);
         }
     }
 
 
-    private void processDocumentBody(int margin, MDSDescriptor element, String key, int indexChapter, TreeMap<String, Object> dataModel) throws DocumentException {
+    private void processDocumentBody(int margin, FMDescriptor element, String key, int indexChapter, TreeMap<String, Object> dataModel) throws DocumentException {
 
         boolean isBiggerHeaderMArgin = key.equals("1");
 
-        if (!SpecialBean.isSpecialBean(element.getTitleBean())) {
+        if (!SpecialBeanFMD.isSpecialBean(element.getTitleBean())) {
 
             if (isAStringObject(element.getValue()) && !element.getTitleBean().equals("title") && !element.getValue().toString().equals("")) {
                 // simple case
-                writeSimpleElement(margin, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter);
+                writeSimpleElement(margin, isBiggerHeaderMArgin, (FMDescriptor) dataModel.get(key), indexChapter);
             } else if (isAnArrayObject(element.getValue())) {
                 // array case
                 ArrayList<Object> values = (ArrayList<Object>) element.getValue();
-                writeArrayElement(margin, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter, values);
+                writeArrayElement(margin, isBiggerHeaderMArgin, (FMDescriptor) dataModel.get(key), indexChapter, values);
 
 
             } else if (isARecursiveObject(element.getValue())) {
                 // recursive case
-                writeRecursiveElement(margin, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter);
+                writeRecursiveElement(margin, isBiggerHeaderMArgin, (FMDescriptor) dataModel.get(key), indexChapter);
                 TreeMap<String, Object> recursiveData = (TreeMap<String, Object>) element.getValue();
 
                 Set<String> recKyes = recursiveData.keySet();
                 for (String recKey : recKyes) {
 
-                    MDSDescriptor elemRec = (MDSDescriptor) recursiveData.get(recKey);
+                    FMDescriptor elemRec = (FMDescriptor) recursiveData.get(recKey);
                     processDocumentBody(margin + MARGIN_TO_ADD, elemRec, recKey, indexChapter, recursiveData);
                 }
             }
@@ -168,7 +166,7 @@ public class FMDLayoutCreator extends LayoutCreator {
     }
 
 
-    private void writeSimpleElement(int rightMargin, boolean isBiggerHeaderMargin, MDSDescriptor value, int indexChapter) throws DocumentException {
+    private void writeSimpleElement(int rightMargin, boolean isBiggerHeaderMargin, FMDescriptor value, int indexChapter) throws DocumentException {
 
         float marginApplied = (isBiggerHeaderMargin) ? SIMPLE_HEIGHT_MARGIN + 5 : SIMPLE_HEIGHT_MARGIN;
 
@@ -207,7 +205,7 @@ public class FMDLayoutCreator extends LayoutCreator {
     }
 
 
-    private void setRightHeightOfCells(PdfPCell titleCell, PdfPCell valueCell, MDSDescriptor element) {
+    private void setRightHeightOfCells(PdfPCell titleCell, PdfPCell valueCell, FMDescriptor element) {
 
         int words = countCharNumber(element.getValue().toString());
         if (words > 60) {
@@ -224,7 +222,7 @@ public class FMDLayoutCreator extends LayoutCreator {
         return counter;
     }
 
-    private void writeRecursiveElement(int rightMargin, boolean isBiggerHeaderMargin, MDSDescriptor value, int indexChapter) throws DocumentException {
+    private void writeRecursiveElement(int rightMargin, boolean isBiggerHeaderMargin, FMDescriptor value, int indexChapter) throws DocumentException {
 
         String titleString = (value.getTitleToVisualize() != null) ? value.getTitleToVisualize().toString() : "title";
 
@@ -275,7 +273,7 @@ public class FMDLayoutCreator extends LayoutCreator {
     }
 
 
-    private void writeArrayElement(int rightMargin, boolean isBiggerHeaderMargin, MDSDescriptor value, int indexChapter, ArrayList<Object> values) throws DocumentException {
+    private void writeArrayElement(int rightMargin, boolean isBiggerHeaderMargin, FMDescriptor value, int indexChapter, ArrayList<Object> values) throws DocumentException {
 
         int arraySize = values.size();
 
@@ -323,36 +321,57 @@ public class FMDLayoutCreator extends LayoutCreator {
     }
 
 
-    private String getStringFromSpecialBean(MDSDescriptor element) {
+    private String getStringFromSpecialBean(FMDescriptor element) {
 
         String result = null;
 
         if (isAnArrayObject(element.getValue())) {
-            result = "";
             ArrayList<Object> values = (ArrayList<Object>) element.getValue();
-            for (int i = 0; i < values.size(); i++) {
-                if (isAStringObject(values.get(i))) {
-                    result += values.get(i).toString().split("-")[1];
-                    if (i < values.size() - 1) {
-                        result += ", ";
-                    }
-                } else {
-                    if (result == null) {
-                        result = getStringFromSpecialBean((MDSDescriptor) values.get(i));
-                    }
-                }
-            }
-            return result;
+            return handleArraySpecialObject(values);
         } else if (isARecursiveObject(element.getValue())) {
             TreeMap<String, Object> recursiveData = (TreeMap<String, Object>) element.getValue();
 
             for (String key : recursiveData.keySet()) {
                 if (result == null) {
-                    result = getStringFromSpecialBean((MDSDescriptor) recursiveData.get(key));
+
+                    if (isAnArrayObject(recursiveData.get(key))) {
+                        result = handleArraySpecialObject((ArrayList<Object>)recursiveData.get(key));
+
+                    } else {
+                        result = getStringFromSpecialBean((FMDescriptor) recursiveData.get(key));
+                    }
                 }
             }
         }
         return result;
+    }
+
+
+    private String handleArraySpecialObject (ArrayList<Object> values) {
+
+     String result = "";
+        for (int i = 0; i < values.size(); i++) {
+            if (isAStringObject(values.get(i))) {
+                result += values.get(i);
+                if (i < values.size() - 1) {
+                    result += ", ";
+                }
+            } else {
+                TreeMap<String,Object> tmp = (TreeMap<String,Object>)values.get(i);
+                for(String key: tmp.keySet()) {
+                    result += tmp.get(key).toString();
+                    if (i < values.size() - 1) {
+                        result += ", ";
+                    }
+                }
+
+               /* if (result == null) {
+                    result = getStringFromSpecialBean((FMDescriptor) values.get(i));
+                }*/
+            }
+        }
+        return result;
+
     }
 }
 
