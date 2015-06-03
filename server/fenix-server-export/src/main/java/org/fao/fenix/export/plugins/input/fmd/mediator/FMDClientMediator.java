@@ -5,18 +5,27 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.fao.fenix.export.plugins.output.fmd.dto.FMDQuestions;
 
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
 
 
 public class FMDClientMediator {
 
-    private final int ask1_1Position = 1;
-    private final int ask1_Position = 0;
-
-
     public JsonNode getParsedMetadata  () throws Exception {
-        String url = "/home/fabrizio/Documents/GenericProjects/fenix-reports/server/fenix-server-export/test/fmd/simpleTest/meta.json";
+        String url = "http://fenix.fao.org/demo/fmd/tests/schema4pdf.json";
+        JsonNode result = null;
+        Response response = ClientBuilder.newBuilder().build().target(url).request().get();
+        try {
+            result =  new ObjectMapper().readValue(response.readEntity(String.class), JsonNode.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+
+
+      /*  String url = "/home/fabrizio/Documents/GenericProjects/fenix-reports/server/fenix-server-export/test/fmd/simpleTest/meta.json";
         JsonNode result = null;
 
         try {
@@ -24,7 +33,7 @@ public class FMDClientMediator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return result;
+        return result;*/
     }
 
 
