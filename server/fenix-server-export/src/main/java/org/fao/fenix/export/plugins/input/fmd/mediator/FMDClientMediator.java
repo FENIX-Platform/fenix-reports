@@ -7,13 +7,18 @@ import org.fao.fenix.export.plugins.output.fmd.dto.FMDQuestions;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;
-import java.io.File;
 import java.io.IOException;
 
 
 public class FMDClientMediator {
 
+    private final String URLDATA_FIRST_PART = "http://fenixapps2.fao.org/wds_5.1/rest/crud?payload=%7B%22query%22%3A%7B%22_id%22%3A%7B%22%24oid%22%3A%22";
+    private final String URLDATA_APPEND_PART = "%22%7D%7D%0A%7D&datasource=FMD&collection=survey&outputType=object";
+
+
     public JsonNode getParsedMetadata  () throws Exception {
+
+
         String url = "http://fenix.fao.org/demo/fmd/tests/schema4pdf.json";
         JsonNode result = null;
         Response response = ClientBuilder.newBuilder().build().target(url).request().get();
@@ -24,47 +29,25 @@ public class FMDClientMediator {
         }
         return result;
 
-
-      /*  String url = "/home/fabrizio/Documents/GenericProjects/fenix-reports/server/fenix-server-export/test/fmd/simpleTest/meta.json";
-        JsonNode result = null;
-
-        try {
-            result =  new ObjectMapper().readValue(new File(url), JsonNode.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;*/
     }
 
 
-    public FMDQuestions getParsedData () {
-        String url = "/home/fabrizio/Documents/GenericProjects/fenix-reports/server/fenix-server-export/test/fmd/simpleTest/data.json";
+    public FMDQuestions getParsedData (String uid) {
+
         FMDQuestions result = new FMDQuestions();
 
-        try {
-          result = new ObjectMapper().readValue(new File(url), FMDQuestions.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        if (uid != null) {
+            String url = URLDATA_FIRST_PART + uid + URLDATA_APPEND_PART;
 
-        return result;
-    }
-
-/*
-    private void trasformObjectToBean (Object unstructuredData, FMDQuestions dataWithStructure) {
-
-        ArrayList<Object> tt = (ArrayList)unstructuredData;
-        for(int i =0; i<tt.size(); i++) {
-            switch (i){
-                case ask1_1Position :
-                    dataWithStructure.setAsk1_1((Collection<String>) tt.get(i));
-                    break;
-                case ask1_Position:
-                    dataWithStructure.setAsk1((String) tt.get(i));
-                    break;
+            Response response = ClientBuilder.newBuilder().build().target(url).request().get();
+            try {
+                result = new ObjectMapper().readValue(response.readEntity(String.class), FMDQuestions[].class)[0];
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-    }*/
+        return result;
+    }
 
 
 }

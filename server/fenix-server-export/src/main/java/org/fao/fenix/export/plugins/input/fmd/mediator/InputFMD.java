@@ -31,7 +31,7 @@ public class InputFMD extends Input {
                         mediator.trasformIteratorIntoBean(resource.getData().iterator(), questionBean);
 
              */
-            questionBean = mediator.getParsedData();
+            questionBean = mediator.getParsedData(config.get("uid").toString());
             metadata = mediator.getParsedMetadata();
         } catch (Exception e) {
             e.printStackTrace();
