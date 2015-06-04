@@ -5,6 +5,29 @@
   "description": "D3S 2nd Level Metadata",
   "type": "object",
   "properties": {
+    "contact": {
+      "title": "COMPILER INFORMATION",
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string",
+          "title": "Country Name"
+        },
+        "date": {
+          "type": "string",
+          "title": "Date",
+          "format": "date"
+        },
+        "name": {
+          "type": "string",
+          "title": "Name"
+        },
+        "contact": {
+          "type": "string",
+          "title": "Contact Information"
+        }
+      }
+    },
     "cat1": {
       "title": "GENERAL INFORMATION",
       "type": "object",
@@ -307,6 +330,5 @@
         }
       }
     }
-
   }
 }

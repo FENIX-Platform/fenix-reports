@@ -30,7 +30,7 @@ public class FMDLayoutCreator   {
     private final float OFFSET_HEIGHT_UP_TO_CENTER = 100;
     private final float OFFSET_HEIGHT_DWN_TITLE_TO_SEP = 11;
     private static int MARGIN_TO_ADD = 6;
-    private static final String IMG_PATH = "logo/newLogos/FAO_logo_Azzurro.png";
+    private static final String IMG_PATH = "images/logo/newLogos/FAO_logo_Azzurro.png";
     private static String DESCRIPTION_COVER = "QUESTIONNAIRE OVERVIEW";
     private static String TITLE_COVER = "Global Foot and Mouth Disease (FMD)";
     private static float SEPARATOR_WIDTH = (float) 0.71;
@@ -58,7 +58,7 @@ public class FMDLayoutCreator   {
 
         Paragraph titleLAbel = new Paragraph(TITLE_COVER, registrationFont.getCoverTitle());
 
-        Image logo = Image.getInstance(this.getClass().getClassLoader().getResource("../").getPath() + IMG_PATH);
+        Image logo = Image.getInstance(getClass().getClassLoader().getResource( IMG_PATH));
 
         Rectangle rect = writer.getBoxSize("art");
 

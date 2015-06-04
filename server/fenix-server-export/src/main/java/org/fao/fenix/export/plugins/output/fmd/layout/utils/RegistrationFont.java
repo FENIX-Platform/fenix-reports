@@ -4,13 +4,12 @@ package org.fao.fenix.export.plugins.output.fmd.layout.utils;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.pdf.BaseFont;
-import org.fao.fenix.export.plugins.output.md.layout.utils.*;
 import org.fao.fenix.export.plugins.output.md.layout.utils.FenixFonts;
 
 public class RegistrationFont {
 
+
     private  boolean isRegistered = false;
-    private  final String RELATIVE_PATH = this.getClass().getClassLoader().getResource("../").getPath();
     private Font coverTitle;
     private Font titleField;
     private Font titleUnderlined;
@@ -60,9 +59,9 @@ public class RegistrationFont {
 
 //(String fontname,
 // String encoding, boolean embedded, float size, int style, BaseColor color, boolean cached)
-        for(org.fao.fenix.export.plugins.output.md.layout.utils.FenixFonts f: FenixFonts.values()) {
+        for(FenixFonts f: FenixFonts.values()) {
 
-            FontFactory.register(RELATIVE_PATH + f.getUrl(), f.toString());
+            FontFactory.register(getClass().getClassLoader().getResource( f.getUrl()).toString(), f.toString());
         }
         isRegistered = true;
         return isRegistered;

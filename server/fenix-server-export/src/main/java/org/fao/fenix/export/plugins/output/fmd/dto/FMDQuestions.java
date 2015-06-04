@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.fao.fenix.export.plugins.output.fmd.dto.root.Cat1;
-import org.fao.fenix.export.plugins.output.fmd.dto.root.Cat2;
-import org.fao.fenix.export.plugins.output.fmd.dto.root.Cat3;
-import org.fao.fenix.export.plugins.output.fmd.dto.root.Cat4;
+import org.fao.fenix.export.plugins.output.fmd.dto.root.*;
 
 import java.io.Serializable;
 
@@ -21,12 +18,15 @@ public class FMDQuestions  implements Serializable {
     @JsonProperty private Cat2 cat2;
     @JsonProperty private Cat3 cat3;
     @JsonProperty private Cat4 cat4;
+    @JsonProperty private Contact contact;
 
-    public FMDQuestions(Cat1 cat1, Cat2 cat2, Cat3 cat3, Cat4 cat4) {
+
+    public FMDQuestions(Cat1 cat1, Cat2 cat2, Cat3 cat3, Cat4 cat4, Contact contact) {
         this.cat1 = cat1;
         this.cat2 = cat2;
         this.cat3 = cat3;
         this.cat4 = cat4;
+        this.contact = contact;
     }
 
     public FMDQuestions() {
@@ -62,5 +62,13 @@ public class FMDQuestions  implements Serializable {
 
     public void setCat4(Cat4 cat4) {
         this.cat4 = cat4;
+    }
+
+    public Contact getContact() {
+        return contact;
+    }
+
+    public void setContact(Contact contact) {
+        this.contact = contact;
     }
 }

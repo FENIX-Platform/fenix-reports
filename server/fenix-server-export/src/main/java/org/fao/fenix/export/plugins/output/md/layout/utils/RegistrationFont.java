@@ -8,7 +8,6 @@ import com.itextpdf.text.pdf.BaseFont;
 public class RegistrationFont {
 
     private  boolean isRegistered = false;
-    private  final String RELATIVE_PATH = this.getClass().getClassLoader().getResource("../").getPath();
     private Font coverTitle;
     private Font titleField;
     private Font titleUnderlined;
@@ -60,7 +59,7 @@ public class RegistrationFont {
 // String encoding, boolean embedded, float size, int style, BaseColor color, boolean cached)
         for(FenixFonts f: FenixFonts.values()) {
 
-            FontFactory.register(RELATIVE_PATH + f.getUrl(), f.toString());
+            FontFactory.register(getClass().getClassLoader().getResource( f.getUrl()).toString(), f.toString());
         }
         isRegistered = true;
         return isRegistered;

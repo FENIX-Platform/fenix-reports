@@ -1,7 +1,6 @@
 package org.fao.fenix.export.plugins.output.fmd;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
@@ -13,10 +12,8 @@ import org.fao.fenix.export.core.dto.CoreOutputType;
 import org.fao.fenix.export.core.dto.data.CoreData;
 import org.fao.fenix.export.core.dto.data.CoreGenericData;
 import org.fao.fenix.export.core.output.plugin.Output;
-import org.fao.fenix.export.plugins.input.metadata.mediator.MDClientMediator;
 import org.fao.fenix.export.plugins.output.fmd.layout.standard.FMDLayoutCreator;
 import org.fao.fenix.export.plugins.output.md.data.DataCreator;
-import org.fao.fenix.export.plugins.output.md.data.dto.MDSDescriptor;
 import org.fao.fenix.export.plugins.output.md.layout.utils.ColorType;
 import org.fao.fenix.export.plugins.output.md.layout.utils.MDFontTypes;
 
@@ -24,7 +21,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 public class OutputFMDExport extends Output {
@@ -32,13 +28,10 @@ public class OutputFMDExport extends Output {
     private static final Logger LOGGER = Logger.getLogger(OutputFMDExport.class);
     private Map<String, Object> config;
     private DataCreator dataCreator ;
-    private final String MDSD_URL = "http://faostat3.fao.org/d3s2/v2/mdsd";
-    private JsonNode mdsdNode;
     private ByteArrayOutputStream baos;
     private final String LANGUAGE_PROPERTY = "lang";
     private static String UPPER_TITLE = "Global Foot and Mouth Disease (FMD)";
 
-    private final String REPRESENTATION_TYPE_PROPERTY = "full";
     private final String FILENAME_PROPERTY = "fileName";
     private final String FILENAME_DEFAULT = "fmdExport.pdf";
 
@@ -66,7 +59,7 @@ public class OutputFMDExport extends Output {
 
         int pagenumber;
         String title;
-        private final static String IMAGE_PATH = "logo/FAO_logo.png";
+        private final static String IMAGE_PATH = "/images/logo/FAO_logo.png";
         Image logo;
         Phrase titlePhrase;
         Font titleHeaderFont;
@@ -80,7 +73,7 @@ public class OutputFMDExport extends Output {
         public void onOpenDocument(PdfWriter writer, Document document) {
             pagenumber = -1;
             try {
-                logo = Image.getInstance(this.getClass().getClassLoader().getResource("../").getPath() + IMAGE_PATH);
+                logo = Image.getInstance(getClass().getClassLoader().getResource(IMAGE_PATH));
             } catch (BadElementException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -136,8 +129,6 @@ public class OutputFMDExport extends Output {
 
     @Override
     public void process(CoreData resource) throws Exception {
-        if(mdsdNode == null)
-            getMdsd();
 
         String language = (config.get(LANGUAGE_PROPERTY)!= null && !config.get(LANGUAGE_PROPERTY).toString().equals(""))? config.get(LANGUAGE_PROPERTY).toString(): "EN";
 
@@ -146,8 +137,6 @@ public class OutputFMDExport extends Output {
                 MARGIN_UP, MARGIN_BOTTOM);
         baos = new ByteArrayOutputStream();
         PdfWriter contentWriter = PdfWriter.getInstance(document, baos);
-
-
 
         HeaderFooter event = new HeaderFooter(UPPER_TITLE);
         contentWriter.setBoxSize("art", new Rectangle(36, 54, 559, 788));
@@ -176,24 +165,6 @@ public class OutputFMDExport extends Output {
         baos.writeTo(outputStream);
         outputStream.close();
         outputStream.flush();
-    }
-
-
-    private void getMdsd () throws IOException {
-        mdsdNode =  new MDClientMediator().getParsedMDSD(MDSD_URL);
-    }
-
-    private String retrieveTitle (TreeMap<String, Object> mdsdStructure) {
-        String result = null ;
-        Set<String> keys = mdsdStructure.keySet();
-        for(String key: keys) {
-            MDSDescriptor  tmp= (MDSDescriptor)mdsdStructure.get(key);
-            if(tmp.getTitleBean().equals("title")){
-                result = tmp.getValue().toString();
-                break;
-            }
-        }
-        return result;
     }
 
 }

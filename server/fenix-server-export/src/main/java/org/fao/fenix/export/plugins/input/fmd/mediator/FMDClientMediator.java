@@ -19,7 +19,10 @@ public class FMDClientMediator {
     public JsonNode getParsedMetadata  () throws Exception {
 
 
+        String url = "https://raw.githubusercontent.com/FENIX-Platform-Projects/fmd-ui/master/tests/schema4pdf.json";
+/*
         String url = "http://fenix.fao.org/demo/fmd/tests/schema4pdf.json";
+*/
         JsonNode result = null;
         Response response = ClientBuilder.newBuilder().build().target(url).request().get();
         try {

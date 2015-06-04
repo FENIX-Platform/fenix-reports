@@ -31,7 +31,7 @@ public class StandardLayoutCreator extends LayoutCreator {
     private final float OFFSET_HEIGHT_UP_TO_CENTER = 100;
     private final float OFFSET_HEIGHT_DWN_TITLE_TO_SEP = 11;
     private static int MARGIN_TO_ADD = 6;
-    private static final String IMG_PATH = "logo/newLogos/FAO_logo_Azzurro.png";
+    private static final String IMG_PATH = "images/logo/newLogos/FAO_logo_Azzurro.png";
     private static String DESCRIPTION_COVER = "METADATA OVERVIEW";
     private static float SEPARATOR_WIDTH = (float) 0.71;
     private static int SIMPLE_RIGHT_MARGIN = 0;
@@ -58,7 +58,7 @@ public class StandardLayoutCreator extends LayoutCreator {
 
         Paragraph titleLAbel = new Paragraph(title, registrationFont.getCoverTitle());
 
-        Image logo = Image.getInstance(this.getClass().getClassLoader().getResource("../").getPath() + IMG_PATH);
+        Image logo = Image.getInstance(getClass().getClassLoader().getResource( IMG_PATH));
 
         Rectangle rect = writer.getBoxSize("art");
 

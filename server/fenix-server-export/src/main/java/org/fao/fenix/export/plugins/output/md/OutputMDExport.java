@@ -68,7 +68,8 @@ public class OutputMDExport extends Output {
 
         int pagenumber;
         String title;
-        private final static String IMAGE_PATH = "logo/FAO_logo.png";
+        private final static String IMAGE_PATH_RESOURCES = "/images/logo/FAO_logo.png";
+
         Image logo;
         Phrase titlePhrase;
         Font titleHeaderFont;
@@ -82,7 +83,8 @@ public class OutputMDExport extends Output {
         public void onOpenDocument(PdfWriter writer, Document document) {
             pagenumber = -1;
             try {
-                logo = Image.getInstance(this.getClass().getClassLoader().getResource("../").getPath() + IMAGE_PATH);
+                logo = Image.getInstance(getClass().getClassLoader().getResource(IMAGE_PATH_RESOURCES));
+
             } catch (BadElementException e) {
                 e.printStackTrace();
             } catch (IOException e) {
