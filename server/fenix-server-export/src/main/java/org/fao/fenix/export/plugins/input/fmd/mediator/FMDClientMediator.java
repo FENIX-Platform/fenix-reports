@@ -3,7 +3,6 @@ package org.fao.fenix.export.plugins.input.fmd.mediator;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.fao.fenix.export.plugins.output.fmd.dto.FMDQuestions;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;
@@ -16,10 +15,13 @@ public class FMDClientMediator {
     private final String URLDATA_APPEND_PART = "%22%7D%7D%0A%7D&datasource=FMD&collection=survey&outputType=object";
 
 
-    public JsonNode getParsedMetadata  () throws Exception {
+    public JsonNode getParsedMetadata  (String url) throws Exception {
+
+        if(url == "null") {
+            url = "http://cudini.device.fao.org/fmd-ui/json/jsonschema_pdf.json";
+        }
 
 
-        String url = "https://raw.githubusercontent.com/FENIX-Platform-Projects/fmd-ui/master/tests/schema4pdf.json";
 /*
         String url = "http://fenix.fao.org/demo/fmd/tests/schema4pdf.json";
 */
@@ -35,16 +37,16 @@ public class FMDClientMediator {
     }
 
 
-    public FMDQuestions getParsedData (String uid) {
+    public JsonNode getParsedData (String uid) {
 
-        FMDQuestions result = new FMDQuestions();
+        JsonNode result = null;
 
         if (uid != null) {
             String url = URLDATA_FIRST_PART + uid + URLDATA_APPEND_PART;
 
             Response response = ClientBuilder.newBuilder().build().target(url).request().get();
             try {
-                result = new ObjectMapper().readValue(response.readEntity(String.class), FMDQuestions[].class)[0];
+                result = new ObjectMapper().readValue(response.readEntity(String.class), JsonNode.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }

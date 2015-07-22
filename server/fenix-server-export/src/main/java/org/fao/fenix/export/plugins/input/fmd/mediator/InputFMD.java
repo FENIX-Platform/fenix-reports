@@ -6,7 +6,6 @@ import org.fao.fenix.export.core.dto.data.CoreData;
 import org.fao.fenix.export.core.dto.data.CoreGenericData;
 import org.fao.fenix.export.core.input.plugin.Input;
 import org.fao.fenix.export.plugins.input.fmd.dataModel.FMDDataCreator;
-import org.fao.fenix.export.plugins.output.fmd.dto.FMDQuestions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -15,7 +14,7 @@ public class InputFMD extends Input {
 
     private static FMDClientMediator mediator;
     private Resource resource;
-    private FMDQuestions questionBean;
+    private JsonNode questionBean;
     private JsonNode metadata;
     Map<String, Object> configInput ;
 
@@ -27,12 +26,8 @@ public class InputFMD extends Input {
         configInput = config;
         mediator = new FMDClientMediator();
         try {
-            /*
-                        mediator.trasformIteratorIntoBean(resource.getData().iterator(), questionBean);
-
-             */
             questionBean = mediator.getParsedData(config.get("uid").toString());
-            metadata = mediator.getParsedMetadata();
+            metadata = mediator.getParsedMetadata(String.valueOf(config.get("urlSchema")));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,7 +49,7 @@ public class InputFMD extends Input {
         return new CoreGenericData(dataModelCreator.getMetaDataCleaned());
     }
 
-    public FMDQuestions getQuestionBean() {
+    public JsonNode getQuestionBean() {
         return questionBean;
     }
 }
