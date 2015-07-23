@@ -18,13 +18,10 @@ public class FMDClientMediator {
     public JsonNode getParsedMetadata  (String url) throws Exception {
 
         if(url == "null") {
-            url = "http://cudini.device.fao.org/fmd-ui/json/jsonschema_pdf.json";
+            url = "http://fenix.fao.org/demo/fmd-ui/json/jsonschema_pdf.json";
         }
 
 
-/*
-        String url = "http://fenix.fao.org/demo/fmd/tests/schema4pdf.json";
-*/
         JsonNode result = null;
         Response response = ClientBuilder.newBuilder().build().target(url).request().get();
         try {
