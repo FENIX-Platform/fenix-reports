@@ -13,11 +13,14 @@ import java.util.Map;
 
 public class MDClientMediator {
 
+    private final String DEFAULT_URL = "http://faostat3.fao.org/d3s2/v2/msd/resources/metadata/uid/";
 
     public MeIdentification getMetadata  (Map<String, Object> config) throws Exception {
 
         MeIdentification me = null;
-        String url = "http://faostat3.fao.org/d3s2/v2/msd/resources/metadata/uid/"+config.get("uid").toString()+"@?full=true";
+        String prefix_url = (config.get("metadata_url")!= null && !config.get("metadata_url").toString().equals(""))?
+                 config.get("metadata_url").toString(): DEFAULT_URL ;
+        String url =prefix_url + config.get("uid").toString()+"@?full=true";
         if(config.get("uid")!= null) {
             url = (config.get("version") == null) ? url.replace("@", "") : url.replace("@", "/version/" + config.get("version").toString());
         }else{
