@@ -103,7 +103,7 @@ public class OutputMDExport extends Output {
 
             if (pagenumber != 0) {
                 if(titleHeaderFont == null) {
-                    titleHeaderFont = FontFactory.getFont((FONTNAME_TITLEPAGES), ((float)(6.5)), ColorType.grey.getCmykColor());
+                    titleHeaderFont = FontFactory.getFont((FONTNAME_TITLEPAGES), ((float)(7)), ColorType.grey.getCmykColor());
                 }
                 Phrase titlePhrase = new Phrase(title,titleHeaderFont);
                 Rectangle rect = writer.getBoxSize("art");
