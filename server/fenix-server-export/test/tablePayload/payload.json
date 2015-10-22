@@ -1,1 +1,1 @@
-{"resource":{"metadata":{"dsd":{}},"data":[]},"input":{"plugin":"inputTable","config":{"uid":"UNECA_Inflation","environment_url":"http://fenixservices.fao.org"}},"output":{"plugin":"outputTable","config":{"lang":"EN"}}}
+{"resource":{"metadata":{"dsd":{}},"data":[]},"input":{"plugin":"inputTable","config":{"uid":"FAOSTAT_GH","environment_url":"http://fenixservices.fao.org"}},"output":{"plugin":"outputTable","config":{"lang":"EN"}}}

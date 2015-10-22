@@ -64,9 +64,13 @@ public class OutputTableExcel extends Output {
         int result = -1;
         boolean found = false;
         for(int i = startIndex; i< this.columns.size() && !found; i++) {
-            String substring = this.columns.get(i).getId().substring(0,this.columns.get(i).getId().length()-3);
-            if(substring.equals(idToFind)){
-                result = i; found = true;
+            if(this.columns.get(i).getId().length() >3) {
+                String substring = this.columns.get(i).getId().substring(0, this.columns.get(i).getId().length() - 3);
+                if (substring.equals(idToFind)) {
+                    result = i;
+                    found = true;
+                }
+
             }
         }
 
