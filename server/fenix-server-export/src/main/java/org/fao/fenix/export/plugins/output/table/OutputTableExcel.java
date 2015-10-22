@@ -23,10 +23,12 @@ public class OutputTableExcel extends Output {
 
     private static final Logger LOGGER = Logger.getLogger(OutputTableExcel.class);
 
+    private ArrayList<Integer> columnsOrder;
     private Map<String, Object> config;
     private CoreData resource;
     SXSSFWorkbook wb;
     DatatypeFormatter formatterValue;
+    ArrayList<DSDColumn> columns;
 
     @Override
     public void init(Map<String, Object> config) {
@@ -43,7 +45,7 @@ public class OutputTableExcel extends Output {
     public CoreOutputHeader getHeader() throws Exception {
 
         CoreOutputHeader coreOutputHeader = new CoreOutputHeader();
-        coreOutputHeader.setName(((config.get("fileName") != null)? config.get("fileName").toString(): "fenixExport.xlsx"));
+        coreOutputHeader.setName(this.resource.getMetadata().getUid() + ".xlsx");
         coreOutputHeader.setSize(100);
         coreOutputHeader.setType(CoreOutputType.xlsx);
         return coreOutputHeader;
@@ -57,24 +59,119 @@ public class OutputTableExcel extends Output {
     }
 
 
+    private int getIndexVirtualColumn (String idToFind, int startIndex) {
+
+        int result = -1;
+        boolean found = false;
+        for(int i = startIndex; i< this.columns.size() && !found; i++) {
+            String substring = this.columns.get(i).getId().substring(0,this.columns.get(i).getId().length()-3);
+            if(substring.equals(idToFind)){
+                result = i; found = true;
+            }
+        }
+
+        return result;
+    }
+
+
+    private void createOrderColumn () {
+        this.columnsOrder = new ArrayList<Integer>();
+
+        for(int i =0; i< this.columns.size(); i++) {
+
+
+            if(!this.columnsOrder.contains(i)){
+                this.columnsOrder.add(i);
+            }
+
+            int possibleIndex = getIndexVirtualColumn(this.columns.get(i).getId(),i);
+            int indexTrue = possibleIndex!= -1? possibleIndex : i;
+            if(!this.columnsOrder.contains(indexTrue)){
+                this.columnsOrder.add(indexTrue);
+            }
+        }
+    }
+
 
     private SXSSFWorkbook createExcel(Collection<DSDColumn> collection, Iterator<Object[]> data) throws Exception {
+/*
 
         formatterValue = new DatatypeFormatter();
         formatterValue.init(config.get("lang"));
+*/
+
+        this.columns = (ArrayList)collection;
+
+        createOrderColumn();
 
         SXSSFWorkbook wb = new SXSSFWorkbook(100);
         String sheetName  =((String)config.get("sheetName"));
 
         Sheet sh = ( sheetName != null && sheetName!= "")? wb.createSheet(sheetName) : wb.createSheet();
         int rowCounter = 0;
-        ArrayList collectionDSD = (ArrayList)collection;
-        rowCounter = createHeaders(sh,collectionDSD,rowCounter, config.get("lang"));
-        rowCounter = createBody(sh,collectionDSD,data ,rowCounter);
+        rowCounter = createHeaderNew(sh, rowCounter, "EN");
+        rowCounter = createBodyNew(sh, data, rowCounter);
         createFooters(sh,rowCounter);
 
         return wb;
     }
+
+    private int createHeaderNew(Sheet sheet,int rowCounter, Object lang){
+
+        // title
+        Row rowTitle = sheet.createRow(rowCounter);
+        rowTitle.setHeightInPoints(26.75f);
+        rowTitle.createCell(0).setCellValue(this.resource.getMetadata().getUid());
+        rowCounter +=3;
+
+        // column headers
+        Row rowColumnHeaders = sheet.createRow(rowCounter);
+
+        for(int i=0; i<this.columnsOrder.size(); i++) {
+            Map<String, String> titles = this.columns.get(this.columnsOrder.get(i)).getTitle();
+            if (titles != null) {
+
+                if (titles.get(lang) == null) {
+                    boolean notFound = true;
+                    Iterator itTitles = titles.keySet().iterator();
+
+                    while (itTitles.hasNext() && notFound) {
+                        String titleKeyLabel = itTitles.next().toString();
+                        if (titles.get(titleKeyLabel) != null) {
+                            rowColumnHeaders.createCell(i).setCellValue(titles.get(titleKeyLabel).toUpperCase());
+                            notFound =false;
+                        }
+                    }
+                } else {
+                    rowColumnHeaders.createCell(i ).setCellValue(titles.get("EN").toUpperCase());
+                }
+            }
+        }
+        return rowCounter;
+    }
+
+
+    private int createBodyNew(Sheet sheet, Iterator<Object[]> data, int rowCounter) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+
+
+        // row
+        while (data.hasNext()){
+            Object[] rowData = (Object[])data.next();
+            rowCounter++;
+            Row row = sheet.createRow(rowCounter);
+
+            for(int i =0; i< columnsOrder.size(); i++){
+                String value = rowData[columnsOrder.get(i)]!= null? rowData[columnsOrder.get(i)].toString() : "";
+                row.createCell(i).setCellValue(value);
+            }
+        }
+
+        return rowCounter;
+    }
+
+
+
+/*
 
     private int createHeaders(Sheet sheet, ArrayList<DSDColumn> columns ,int rowCounter, Object lang){
 
@@ -160,6 +257,7 @@ public class OutputTableExcel extends Output {
 
         return result;
     }
+*/
 
 
     private void createFooters(Sheet sheet, int rowCounter){

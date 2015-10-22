@@ -6,6 +6,7 @@ public enum CoreOutputType {
     xls("application/vnd.ms-excel"),
     pdf("application/pdf"),
     rtf("application/rtf"),
+    csv("application/csv"),
     zip("application/x-gzip");
 
 
