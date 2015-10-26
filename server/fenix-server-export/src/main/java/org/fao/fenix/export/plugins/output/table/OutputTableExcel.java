@@ -29,10 +29,13 @@ public class OutputTableExcel extends Output {
     SXSSFWorkbook wb;
     DatatypeFormatter formatterValue;
     ArrayList<DSDColumn> columns;
+    ArrayList<Integer> indexesLabelColumns;
 
     @Override
     public void init(Map<String, Object> config) {
         this.config = config;
+        this.indexesLabelColumns = new ArrayList<Integer>();
+
     }
 
     @Override
@@ -67,6 +70,7 @@ public class OutputTableExcel extends Output {
             if(this.columns.get(i).getId().length() >3) {
                 String substring = this.columns.get(i).getId().substring(0, this.columns.get(i).getId().length() - 3);
                 if (substring.equals(idToFind)) {
+                    this.indexesLabelColumns.add(i);
                     result = i;
                     found = true;
                 }
@@ -115,23 +119,22 @@ public class OutputTableExcel extends Output {
         int rowCounter = 0;
         rowCounter = createHeaderNew(sh, rowCounter, "EN");
         rowCounter = createBodyNew(sh, data, rowCounter);
+/*
         createFooters(sh,rowCounter);
+*/
 
         return wb;
     }
 
     private int createHeaderNew(Sheet sheet,int rowCounter, Object lang){
 
-        // title
-        Row rowTitle = sheet.createRow(rowCounter);
-        rowTitle.setHeightInPoints(26.75f);
-        rowTitle.createCell(0).setCellValue(this.resource.getMetadata().getUid());
-        rowCounter +=3;
+       rowCounter = createMetadataHeader(sheet,rowCounter);
 
         // column headers
         Row rowColumnHeaders = sheet.createRow(rowCounter);
 
         for(int i=0; i<this.columnsOrder.size(); i++) {
+            int index = this.columnsOrder.get(i);
             Map<String, String> titles = this.columns.get(this.columnsOrder.get(i)).getTitle();
             if (titles != null) {
 
@@ -147,11 +150,37 @@ public class OutputTableExcel extends Output {
                         }
                     }
                 } else {
-                    rowColumnHeaders.createCell(i ).setCellValue(titles.get("EN").toUpperCase());
+                    String labelTitle = (this.indexesLabelColumns.contains(index))? titles.get("EN").toUpperCase()+"_LABEL": titles.get("EN").toUpperCase();
+                    rowColumnHeaders.createCell(i ).setCellValue(labelTitle);
                 }
             }
         }
         return rowCounter;
+    }
+
+
+    private int createMetadataHeader (Sheet sheet, int rowCounter) {
+        // title
+        Row rowSource = sheet.createRow(rowCounter);
+        rowSource.setHeightInPoints(26.75f);
+        rowSource.createCell(0).setCellValue("Source: ");
+        rowSource.createCell(1).setCellValue(this.resource.getMetadata().getDsd().getContextSystem());
+        rowCounter++;
+
+        Row rowDataset = sheet.createRow(rowCounter);
+        rowDataset.setHeightInPoints(26.75f);
+        rowDataset.createCell(0).setCellValue("Dataset: ");
+        rowDataset.createCell(1).setCellValue(this.resource.getMetadata().getUid());
+        rowCounter++;
+
+        Row rowCreatedOn = sheet.createRow(rowCounter);
+        rowCreatedOn.setHeightInPoints(26.75f);
+        rowCreatedOn.createCell(0).setCellValue("Downloaded on: ");
+        rowCreatedOn.createCell(1).setCellValue(new SimpleDateFormat("dd/MMM/yy").format(new Date()));
+        rowCounter+=2;
+
+        return rowCounter;
+
     }
 
 
@@ -166,7 +195,11 @@ public class OutputTableExcel extends Output {
 
             for(int i =0; i< columnsOrder.size(); i++){
                 String value = rowData[columnsOrder.get(i)]!= null? rowData[columnsOrder.get(i)].toString() : "";
-                row.createCell(i).setCellValue(value);
+                if(this.columns.get(columnsOrder.get(i)).getDataType().getLabel("EN").equals("Number") && rowData[columnsOrder.get(i)]!= null){
+                    row.createCell(i).setCellValue(Double.parseDouble(value));
+                }else {
+                    row.createCell(i).setCellValue(value);
+                }
             }
         }
 
