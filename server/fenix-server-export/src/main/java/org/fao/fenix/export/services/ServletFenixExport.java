@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 @WebServlet(urlPatterns = "/fenix/export")
@@ -28,7 +29,14 @@ public class ServletFenixExport extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        tmpFolder = new File(config.getServletContext().getInitParameter("tmp.folder"));
+        Properties properties = new Properties();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            properties.load(classLoader.getResourceAsStream("tempfiles/tempfile.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        tmpFolder = new File(properties.getProperty("tmp.folder"));
         if (!tmpFolder.exists())
             tmpFolder.mkdirs();
     }
