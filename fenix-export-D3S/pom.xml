@@ -2,9 +2,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.fao.fenix</groupId>
+    <parent>
+        <groupId>org.fao.fenix</groupId>
+        <artifactId>fenix-reports</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
     <artifactId>fenix-export-D3S</artifactId>
-    <version>1.0-SNAPSHOT</version>
 
     <build>
         <plugins>
@@ -28,15 +31,23 @@
         <!-- FENIX search commons components -->
         <dependency>
             <groupId>org.fao.fenix</groupId>
-            <artifactId>fenix-D3S-services</artifactId>
+            <artifactId>fenix-D3S-core</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
         <!-- Default plugins -->
         <dependency>
-		<groupId>org.fao.ess</groupId>
+		<groupId>org.fao.fenix</groupId>
 		<artifactId>fenix-export</artifactId>
 		<version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- J2EE -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

@@ -25,23 +25,40 @@ public class ServletFenixExport extends HttpServlet {
 
     private static Map<String, CoreOutputHeader> headers = new HashMap<>(1024);
 
-    File tmpFolder;
+    private static File tmpFolder;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         Properties properties = new Properties();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {
-            properties.load(classLoader.getResourceAsStream("tempfiles/tempfile.properties"));
+            InputStream input = classLoader.getResourceAsStream("tempfiles/tempfile.properties");
+            if (input!=null) {
+                properties.load(input);
+                init(properties);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        tmpFolder = new File(properties.getProperty("tmp.folder"));
-        if (!tmpFolder.exists())
-            tmpFolder.mkdirs();
     }
 
+    public void init(Properties properties) throws IOException {
+        init(properties.getProperty("export.tmp.folder"));
+    }
+
+    public void init(String folderPath) throws IOException {
+        tmpFolder = new File(folderPath);
+        if (!tmpFolder.exists())
+            tmpFolder.mkdirs();
+
+    }
+
+
+
+
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (tmpFolder==null)
+            throw new ServletException("Initialization error: no tmp folder");
 
         LOGGER.warn("after response header");
 
@@ -73,6 +90,9 @@ public class ServletFenixExport extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (tmpFolder==null)
+            throw new ServletException("Initialization error: no tmp folder");
+
         //Create header
         CoreOutputHeader outputHeader = headers.get(request.getParameter("id"));
 
