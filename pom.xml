@@ -12,7 +12,8 @@
 
     <modules>
         <module>fenix-export</module>
-        <module>fenix-export-D3S</module>
+        <module>md-export</module>
+        <module>table-export</module>
     </modules>
 
     <properties>
