@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+	  <groupId>org.fao.fenix</groupId>
+	  <artifactId>fenix-reports</artifactId>
+	  <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>md-export</artifactId>
+
+
+    <dependencies>
+        <!-- J2EE -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- FENIX export core -->
+        <dependency>
+            <groupId>org.fao.fenix</groupId>
+            <artifactId>fenix-export</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- FENIX metadata standards -->
+	    <dependency>
+		<groupId>org.fao.fenix</groupId>
+		<artifactId>fenix-commons-dxf</artifactId>
+		<version>1.0.1-SNAPSHOT</version>
+	    </dependency>
+        <dependency>
+            <groupId>com.orientechnologies</groupId>
+            <artifactId>orientdb-object</artifactId>
+            <version>${orient.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.orientechnologies</groupId>
+            <artifactId>orientdb-client</artifactId>
+            <version>${orient.version}</version>
+        </dependency>
+
+        <!-- GUAVA -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
+        </dependency>
+
+        <!-- ITEXT -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.5</version>
+        </dependency>
+
+    </dependencies>
+
+
+</project>
