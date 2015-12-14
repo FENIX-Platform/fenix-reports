@@ -32,7 +32,7 @@
 	    <dependency>
 		<groupId>org.fao.fenix</groupId>
 		<artifactId>fenix-commons-dxf</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
+		<version>${fenix-commons-dxf.version}</version>
 	    </dependency>
         <dependency>
             <groupId>com.orientechnologies</groupId>

@@ -13,7 +13,7 @@ class HeaderFooter extends PdfPageEventHelper {
     /** Current page number (will be reset for every chapter). */
     int pagenumber;
     String title;
-    private final static String IMAGE_PATH = "images/logo/FAO_logo.png";
+    private final static String IMAGE_PATH = "templates/fao/logos/FAO_logo.png";
     Image logo;
 
     public HeaderFooter(String title) {

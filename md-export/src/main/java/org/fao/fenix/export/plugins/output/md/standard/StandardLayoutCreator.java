@@ -31,7 +31,10 @@ public class StandardLayoutCreator extends LayoutCreator {
     private final float OFFSET_HEIGHT_UP_TO_CENTER = 100;
     private final float OFFSET_HEIGHT_DWN_TITLE_TO_SEP = 11;
     private static int MARGIN_TO_ADD = 6;
-    private static final String IMG_PATH = "images/logo/newLogos/FAO_logo_Azzurro.png";
+    private final static String IMG_PATH = "/logos/cover_logo.png";
+/*
+    private static final String IMG_PATH = "templates/fao/logos/uneca/logo_copertina.png";
+*/
     private static String DESCRIPTION_COVER = "METADATA OVERVIEW";
     private static float SEPARATOR_WIDTH = (float) 0.71;
     private static int SIMPLE_RIGHT_MARGIN = 0;
@@ -41,12 +44,14 @@ public class StandardLayoutCreator extends LayoutCreator {
     private static String ARRAY_TYPEFIELD = ArrayList.class.toString();
     private static int[] COLSPAN_TABLE = new int[]{2, 3};
     private Document document;
+    private String template;
     private RegistrationFont registrationFont;
     private TreeMap<String, Object> modelData;
 
 
-    public StandardLayoutCreator(Document document) throws DocumentException {
+    public StandardLayoutCreator(Document document, String template) throws DocumentException {
         this.document = document;
+        this.template = template;
         // register all fenix fonts and styles
         registrationFont = new RegistrationFont();
         registrationFont.registerAll();
@@ -55,10 +60,9 @@ public class StandardLayoutCreator extends LayoutCreator {
 
     public void createCover(String title, PdfWriter writer) throws DocumentException, IOException {
 
-
         Paragraph titleLAbel = new Paragraph(title, registrationFont.getCoverTitle());
 
-        Image logo = Image.getInstance(getClass().getClassLoader().getResource( IMG_PATH));
+        Image logo = Image.getInstance(getClass().getClassLoader().getResource("templates/"+ template + IMG_PATH));
 
         Rectangle rect = writer.getBoxSize("art");
 

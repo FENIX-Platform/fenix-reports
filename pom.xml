@@ -17,6 +17,8 @@
     </modules>
 
     <properties>
+        <fenix-export.version>1.0-SNAPSHOT</fenix-export.version>
+        <fenix-commons-dxf.version>1.0.1-SNAPSHOT</fenix-commons-dxf.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <resteasy.version>3.0.6.Final</resteasy.version>
         <jackson.version>2.4.3</jackson.version>

@@ -43,6 +43,9 @@ public class OutputMDExport extends Output {
     private final String REPRESENTATION_TYPE_PROPERTY = "full";
     private final String FILENAME_PROPERTY = "fileName";
     private final String FILENAME_DEFAULT = "fenixExport.pdf";
+    private final String PATH_DEFAULT_TEMPLATE = "fao";
+
+    private String template;
 
     private final String FONTNAME_TITLEPAGES = "roboto_thin";
     private final float LOGO_HEIGHT = 100;
@@ -68,7 +71,8 @@ public class OutputMDExport extends Output {
 
         int pagenumber;
         String title;
-        private final static String IMAGE_PATH_RESOURCES = "images/logo/FAO_logo.png";
+
+        private final static String IMAGE_PATH_RESOURCES = "/logos/title_logo.png";
 
         Image logo;
         Phrase titlePhrase;
@@ -83,7 +87,8 @@ public class OutputMDExport extends Output {
         public void onOpenDocument(PdfWriter writer, Document document) {
             pagenumber = -1;
             try {
-                logo = Image.getInstance(getClass().getClassLoader().getResource(IMAGE_PATH_RESOURCES));
+                template = (config.get("template")!= null)? config.get("template").toString(): PATH_DEFAULT_TEMPLATE;
+                logo = Image.getInstance(getClass().getClassLoader().getResource("templates/"+ template +IMAGE_PATH_RESOURCES));
 
             } catch (BadElementException e) {
                 e.printStackTrace();
@@ -149,8 +154,7 @@ public class OutputMDExport extends Output {
         dataCreator.initDataFromMDSD(mdsdNode,resource.getMetadata(), language);
 
         // TODO: setting configuration pagesize
-        Document document = new Document(PageSize.A4, MARGIN_LEFT, MARGIN_RIGHT,
-                MARGIN_UP, MARGIN_BOTTOM);
+        Document document = new Document(PageSize.A4, MARGIN_LEFT, MARGIN_RIGHT, MARGIN_UP, MARGIN_BOTTOM);
         baos = new ByteArrayOutputStream();
         PdfWriter contentWriter = PdfWriter.getInstance(document, baos);
         String title = retrieveTitle((TreeMap<String, Object>) dataCreator.getMetaDataCleaned());
@@ -161,7 +165,7 @@ public class OutputMDExport extends Output {
 
         document.open();
         boolean isFull = config.get(REPRESENTATION_TYPE_PROPERTY)!= null? Boolean.getBoolean(config.get(REPRESENTATION_TYPE_PROPERTY).toString()): false;
-        LayoutCreator layoutCreator = LayoutCreator.createInstance(isFull, document);
+        LayoutCreator layoutCreator = LayoutCreator.createInstance(isFull, document, template);
 
         document = layoutCreator.init((TreeMap<String, Object>) dataCreator.getMetaDataCleaned(), title, contentWriter);
         document.close();
@@ -176,6 +180,7 @@ public class OutputMDExport extends Output {
         coreOutputHeader.setType(CoreOutputType.pdf);
         return coreOutputHeader;
     }
+
 
     @Override
     public void write(OutputStream outputStream) throws Exception {

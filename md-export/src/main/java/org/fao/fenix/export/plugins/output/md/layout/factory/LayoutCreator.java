@@ -14,12 +14,12 @@ public abstract class LayoutCreator {
 
     private static LayoutCreator layoutCreator;
 
-    public static LayoutCreator createInstance(boolean isFull, Document document) throws DocumentException {
+    public static LayoutCreator createInstance(boolean isFull, Document document, String template) throws DocumentException {
 
         if( isFull) {
             layoutCreator = new FullLayoutCreator(document);
         }else {
-            layoutCreator = new StandardLayoutCreator(document);
+            layoutCreator = new StandardLayoutCreator(document, template);
         }
         return layoutCreator;
 
