@@ -108,7 +108,7 @@ public class ServletFenixExport extends HttpServlet {
             }
         }
 
-        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
     private File createTmpFile() throws IOException {
