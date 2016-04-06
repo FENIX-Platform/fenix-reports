@@ -185,7 +185,30 @@ public class DataCreator {
                                 resultObj.getTitleToVisualize(),
                                 resultObj.getDescription(),
                                 fillOjCode((ArrayList<OjCode>) returnedValue)));
-                    } else {
+                    }
+                    // ARRAY of references
+                    else if(resultObj.getType().equals(ARRAY_TYPE) && !refSplitted[refSplitted.length - 1].equals(OJCODE_TYPE)){
+
+                        for(int i=0; i<((ArrayList<Object>) returnedValue).size(); i++) {
+                            ArrayList<Object> singleComplexEntity = new ArrayList<Object>();
+                            singleComplexEntity.add((Object)(((ArrayList<Object>) returnedValue).get(i)));
+                            handleReferences(items.get(REF_FIELD).asText(),null, tempMap,  singleComplexEntity, true);
+                        }
+                       /* ArrayList<Map<String, Object>> resultArray = new ArrayList<Map<String, Object>>();
+                        Map<String, Object> arrayMap = new TreeMap<String, Object>();
+
+                        handleReferences(items.get(REF_FIELD).asText(),null, arrayMap, returnedValue, true);
+
+                        for(String key: arrayMap.keySet()){
+                            Map<String,Object> tmp = new TreeMap<String,Object>();
+                            tmp.put(key,arrayMap.get(key));
+                            resultArray.add(tmp);
+                        }
+                        tempMap.put(resultObj.getOrder(), resultArray);*/
+                        /*return tempMap;*/
+
+                    }
+                    else {
                         handleReferences(items.get(REF_FIELD).asText(),null, tempMap, returnedValue, true);
                         return tempMap;
                     }

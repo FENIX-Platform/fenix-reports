@@ -40,6 +40,9 @@ public class StandardLayoutCreator extends LayoutCreator {
     private static int SIMPLE_RIGHT_MARGIN = 0;
     private static String DATE_TYPEFIELD = Date.class.toString();
     private static String STRING_TYPEFIELD = String.class.toString();
+    private static String DOUBLE_TYPEFIELD = Double.class.toString();
+    private static String INTEGER_TYPEFIELD = Integer.class.toString();
+
     private static String RECURSIVE_TYPEFIELD = TreeMap.class.toString();
     private static String ARRAY_TYPEFIELD = ArrayList.class.toString();
     private static int[] COLSPAN_TABLE = new int[]{2, 3};
@@ -128,7 +131,7 @@ public class StandardLayoutCreator extends LayoutCreator {
 
         if (!SpecialBean.isSpecialBean(element.getTitleBean())) {
 
-            if (isAStringObject(element.getValue()) && !element.getTitleBean().equals("title") && !element.getValue().toString().equals("")) {
+            if ((isAStringObject(element.getValue()) || isANumberObject(element.getValue())) && !element.getTitleBean().equals("title") && !element.getValue().toString().equals("")) {
                 // simple case
                 writeSimpleElement(margin, isBiggerHeaderMArgin, (MDSDescriptor) dataModel.get(key), indexChapter);
             } else if (isAnArrayObject(element.getValue())) {
@@ -171,6 +174,9 @@ public class StandardLayoutCreator extends LayoutCreator {
         return object.getClass().toString().equals(STRING_TYPEFIELD) || object.getClass().toString().equals(DATE_TYPEFIELD);
     }
 
+    private boolean isANumberObject(Object object) {
+        return object.getClass().toString().equals(DOUBLE_TYPEFIELD) || object.getClass().toString().equals(INTEGER_TYPEFIELD);
+    }
 
     private void writeSimpleElement(int rightMargin, boolean isBiggerHeaderMargin, MDSDescriptor value, int indexChapter) throws DocumentException {
 
@@ -180,7 +186,9 @@ public class StandardLayoutCreator extends LayoutCreator {
         table.setWidths(COLSPAN_TABLE);
         table.setWidthPercentage(100);
 
-
+        if(value.getTitleToVisualize().toString().equals("Band Collection")){
+            System.out.println("here");
+        }
 
         PdfPCell titleCell = new PdfPCell();
         Paragraph title = new Paragraph(value.getTitleToVisualize().toString(), registrationFont.getTitleField());
@@ -231,6 +239,10 @@ public class StandardLayoutCreator extends LayoutCreator {
     private void writeRecursiveElement(int rightMargin, boolean isBiggerHeaderMargin, MDSDescriptor value, int indexChapter) throws DocumentException {
 
         String titleString = (value.getTitleToVisualize() != null) ? value.getTitleToVisualize().toString() : "title";
+
+        if(titleString.equals("Band Collection")){
+            System.out.println("here");
+        }
 
         boolean isUppercase = isAllUppercase(titleString);
         Paragraph title = new Paragraph();
@@ -291,6 +303,11 @@ public class StandardLayoutCreator extends LayoutCreator {
 
         PdfPCell titleCell = new PdfPCell();
         Phrase title = new Phrase(value.getTitleToVisualize().toString(), registrationFont.getTitleField());
+
+        if(value.getTitleToVisualize().toString().equals("Band Collection")){
+            System.out.println("here");
+        }
+
         titleCell.setVerticalAlignment(Element.ALIGN_TOP);
         titleCell.addElement(title);
         titleCell.setBorder(Rectangle.NO_BORDER);
