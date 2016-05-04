@@ -11,11 +11,11 @@ public class CoreConfig {
     private PluginConfig output;
 
 
- /*   public CoreConfig(PluginConfig input, PluginConfig output, Resource resource) {
+   public CoreConfig(PluginConfig input, PluginConfig output, Resource resource) {
         this.input = input;
         this.output = output;
         this.resource = resource;
-    }*/
+    }
 
     public Resource getResource() {
         return resource;

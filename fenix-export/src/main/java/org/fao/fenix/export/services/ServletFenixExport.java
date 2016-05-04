@@ -64,7 +64,7 @@ public class ServletFenixExport extends HttpServlet {
 
         CoreConfig config = null;
         try {
-            config = JSONParser.toObject(request.getInputStream(), CoreConfig.class);
+            config = JSONParser.createFenixCore(request.getInputStream());
         } catch (Exception e) {
             throw new ServletException("Configuration parsing exception.", e);
         }
