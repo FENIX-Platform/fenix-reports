@@ -4,20 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 import org.fao.fenix.commons.msd.dto.data.Resource;
-import org.fao.fenix.commons.msd.dto.full.Code;
-import org.fao.fenix.commons.msd.dto.full.DSDDataset;
-import org.fao.fenix.commons.msd.dto.full.DSDDocument;
-import org.fao.fenix.commons.msd.dto.full.DSDGeographic;
-import org.fao.fenix.commons.msd.dto.templates.identification.DSDCodelist;
-import org.fao.fenix.commons.msd.dto.type.RepresentationType;
-import org.fao.fenix.commons.utils.JSONUtils;
 import org.fao.fenix.export.core.dto.CoreConfig;
 import org.fao.fenix.export.core.dto.PluginConfig;
+import org.fao.fenix.export.core.utils.adapter.FenixAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
+
 
 public class JSONParser {
 
@@ -27,6 +20,8 @@ public class JSONParser {
     private static final Logger LOGGER = org.apache.log4j.Logger.getLogger(JSONParser.class);
 
     private static JSONParser jsonParser;
+
+    private static FenixAdapter fenixAdapter;
 
     private JSONParser() {
     }
@@ -65,46 +60,20 @@ public class JSONParser {
         return new ObjectMapper().readValue(content, objectClass);
     }
 
+
     public static CoreConfig createFenixCore(InputStream content) throws Exception {
-        jacksonMapper = new ObjectMapper();
+        createOrGetUtils();
         JsonNode payload = jacksonMapper.readTree(content);
-        PluginConfig inputPlugin = jacksonMapper.treeToValue(payload.get("input"), PluginConfig.class);
-        PluginConfig outputPlugin = jacksonMapper.treeToValue(payload.get("output"), PluginConfig.class);
-        Resource resource = decodeResource(payload.get("resource").toString(), getRepresentationType("metadata", payload.get("resource")));
-        return new CoreConfig(inputPlugin, outputPlugin, resource);
+        Resource resource = fenixAdapter.decodeResource(payload.get("resource").toString(), fenixAdapter.getRepresentationType("metadata", payload.get("resource")));
+        return new CoreConfig( jacksonMapper.treeToValue(payload.get("input"), PluginConfig.class),  jacksonMapper.treeToValue(payload.get("output"), PluginConfig.class), resource);
     }
 
-/*
-    public static String readContent(InputStream inputStream) {
-        try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8.name())) {
-            return scanner.hasNext() ? scanner.next() : "";
-        }
-    }*/
 
-    public  static RepresentationType getRepresentationType(String metadataField, JsonNode resourceNode) throws Exception {
-        JsonNode metadataNode = resourceNode != null && resourceNode.get(metadataField) != null ? resourceNode.get(metadataField) : null;
-        return getRepresentationType(metadataNode);
-    }
-
-    public static RepresentationType getRepresentationType(JsonNode metadataNode) throws Exception {
-
-
-        String representationTypeLabel = metadataNode != null &&  metadataNode.get("meContent")!= null &&  metadataNode.get("meContent").get("resourceRepresentationType")!= null ? metadataNode.path("meContent").path("resourceRepresentationType").textValue() : null;
-        return representationTypeLabel != null ? RepresentationType.valueOf(representationTypeLabel) : RepresentationType.dataset;
-    }
-
-    public static Resource decodeResource(String source, RepresentationType resourceType) throws Exception {
-        switch (resourceType) {
-            case codelist:
-                return JSONUtils.decode(source, Resource.class, DSDCodelist.class, Code.class);
-            case dataset:
-                return JSONUtils.decode(source, Resource.class, DSDDataset.class, Object[].class);
-            case geographic:
-                return JSONUtils.decode(source, Resource.class, DSDGeographic.class, Object.class);
-            case document:
-                return JSONUtils.decode(source, Resource.class, DSDDocument.class, Object.class);
-            default:
-                return null;
+    private static void createOrGetUtils () {
+        if(jsonParser ==null && jacksonMapper == null) {
+            fenixAdapter = new FenixAdapter();
+            jacksonMapper = new ObjectMapper();
         }
     }
+
 }
