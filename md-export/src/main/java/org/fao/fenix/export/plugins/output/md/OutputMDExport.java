@@ -12,6 +12,7 @@ import org.fao.fenix.commons.msd.dto.full.MeIdentification;
 import org.fao.fenix.export.core.dto.CoreOutputHeader;
 import org.fao.fenix.export.core.dto.CoreOutputType;
 import org.fao.fenix.export.core.dto.data.CoreData;
+import org.fao.fenix.export.core.dto.data.CoreMetaData;
 import org.fao.fenix.export.core.output.plugin.Output;
 import org.fao.fenix.export.plugins.input.metadata.mediator.MDClientMediator;
 import org.fao.fenix.export.plugins.output.md.data.DataCreator;
@@ -99,7 +100,6 @@ public class OutputMDExport extends Output {
 
 
         public void onStartPage(PdfWriter writer, Document document) {
-
             pagenumber = (pagenumber!=0)? pagenumber+1 : pagenumber+2;
         }
 
@@ -146,8 +146,7 @@ public class OutputMDExport extends Output {
     @Override
     public void process(CoreData resource) throws Exception {
         metadata = resource.getMetadata();
-        if(mdsdNode == null)
-            getMdsd();
+        mdsdNode = ((CoreMetaData)resource).getMdsd();
 
         // getting data in the right format
         String language = (config.get(LANGUAGE_PROPERTY)!= null && !config.get(LANGUAGE_PROPERTY).toString().equals(""))? config.get(LANGUAGE_PROPERTY).toString(): "EN";
@@ -189,10 +188,6 @@ public class OutputMDExport extends Output {
         outputStream.flush();
     }
 
-
-    private void getMdsd () throws IOException {
-        mdsdNode =  new MDClientMediator().getParsedMDSD(MDSD_URL);
-    }
 
     private String retrieveTitle (TreeMap<String, Object> mdsdStructure) {
         String result = null ;
