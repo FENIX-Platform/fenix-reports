@@ -159,7 +159,9 @@ public class DataCreator {
             else if (type.equals(ARRAY_TYPE)) {
 
                 ArrayList<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-                ArrayList<Object> values = (ArrayList<Object>) returnedValue;
+                ArrayList<Object> values= new ArrayList<>();
+                values = (returnedValue instanceof OTrackedMap) ? getObjects((OTrackedMap)returnedValue):(ArrayList<Object>) returnedValue;
+
 
                 JsonNode items = ((ObjectNode) resultObj.getItems()).deepCopy();
                 if (items.get(TYPE_FIELD) != null) {
@@ -191,6 +193,8 @@ public class DataCreator {
                     // ARRAY of references
                     else if (resultObj.getType().equals(ARRAY_TYPE) && !refSplitted[refSplitted.length - 1].equals(OJCODE_TYPE)) {
 
+                        if(returnedValue instanceof OTrackedMap)
+                            System.out.println("stop");
                         for (int i = 0; i < ((ArrayList<Object>) returnedValue).size(); i++) {
                             ArrayList<Object> singleComplexEntity = new ArrayList<Object>();
                             singleComplexEntity.add((Object) (((ArrayList<Object>) returnedValue).get(i)));
@@ -215,6 +219,8 @@ public class DataCreator {
     private void handleReferences(String reference, MDSDOProperty objectReference, Map<String, Object> mapToFill, Object returnedValue, boolean isArray, boolean isSpecialField) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
         JsonNode mdsdNode = getMdsdObjectFromReference(reference);
+        if(mdsdNode == null)
+            System.out.println("stop");
         if (mdsdNode.get(TYPE_FIELD) != null && mdsdNode.get(TYPE_FIELD).asText().equals(OBJECT_TYPE)) {
             if (mdsdNode.get(PROPERTIES_FIELD) != null) {
                 ArrayList<Map.Entry<String, JsonNode>> itProperties = Lists.newArrayList(mdsdNode.get(PROPERTIES_FIELD).fields());
@@ -272,10 +278,8 @@ public class DataCreator {
 
         if(!isSpecialField)
             return getValueFromFields(fieldName, instanceToUse, isMap);
-        if(isMap)
-            System.out.println("here");
 
-        return (((OTrackedMap) instanceToUse).get(fieldName));
+        return (isMap)? (((OTrackedMap) instanceToUse).get(LANG)!= null)? ((OTrackedMap) instanceToUse).get(LANG): ((OTrackedMap) instanceToUse).get(DEFAULT_LANG)  :(((OTrackedMap) instanceToUse).get(fieldName));
     }
 
 
@@ -434,8 +438,13 @@ public class DataCreator {
                             objectProperty.getItems().get(TYPE_FIELD) != null &&
                             objectProperty.getItems().get(TYPE_FIELD).asText().equals(STRING_TYPE)) {
                         ArrayList<String> values = new ArrayList<>();
-                        for (String s : (ArrayList<String>) mdsdValue) {
-                            values.add(s);
+
+                        if(!isSpecialField) {
+                            for (String s : (ArrayList<String>) mdsdValue) {
+                                values.add(s);
+                            }
+                        }else {
+                            values = getStringArray((OTrackedList) mdsdValue, titleBean);
                         }
                         mapToFill.put(orderObj, new MDSDescriptor(titleBean, objectProperty.getTitleToVisualize(), objectProperty.getDescription(), values));
                     } else {
@@ -521,6 +530,32 @@ public class DataCreator {
             return new MDSDescriptor(null, null, null, value);
         }
     }
+
+
+    private ArrayList<String> getStringArray (OTrackedList list, String titleBean) {
+        ArrayList<String> result = new ArrayList<>();
+
+        for (Object element: list) {
+            String elementString = ((OTrackedMap) element).get(((OTrackedMap) element).keySet().iterator().next()) != null ? ((OTrackedMap) element).get(((OTrackedMap) element).keySet().iterator().next()).toString(): null;
+            result.add(elementString);
+        }
+
+        return result;
+
+    }
+
+
+    private ArrayList<Object> getObjects (OTrackedMap values) {
+        ArrayList<Object> result = new ArrayList<>();
+
+        for (Object element: values.keySet())
+            result.add(values.get(element));
+
+
+        return result;
+
+    }
+
 
 
 }
