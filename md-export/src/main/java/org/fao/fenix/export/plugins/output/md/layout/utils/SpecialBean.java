@@ -22,6 +22,7 @@ public enum SpecialBean {
     typeOfCollection,
     collectionPeriodicity,
     originOfCollectedData,
+    geo,
     dataAdjustment;
 
 

@@ -186,10 +186,6 @@ public class StandardLayoutCreator extends LayoutCreator {
         table.setWidths(COLSPAN_TABLE);
         table.setWidthPercentage(100);
 
-        if(value.getTitleToVisualize().toString().equals("Band Collection")){
-            System.out.println("here");
-        }
-
         PdfPCell titleCell = new PdfPCell();
         Paragraph title = new Paragraph(value.getTitleToVisualize().toString(), registrationFont.getTitleField());
         titleCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -239,10 +235,6 @@ public class StandardLayoutCreator extends LayoutCreator {
     private void writeRecursiveElement(int rightMargin, boolean isBiggerHeaderMargin, MDSDescriptor value, int indexChapter) throws DocumentException {
 
         String titleString = (value.getTitleToVisualize() != null) ? value.getTitleToVisualize().toString() : "title";
-
-        if(titleString.equals("Band Collection")){
-            System.out.println("here");
-        }
 
         boolean isUppercase = isAllUppercase(titleString);
         Paragraph title = new Paragraph();
@@ -303,10 +295,6 @@ public class StandardLayoutCreator extends LayoutCreator {
 
         PdfPCell titleCell = new PdfPCell();
         Phrase title = new Phrase(value.getTitleToVisualize().toString(), registrationFont.getTitleField());
-
-        if(value.getTitleToVisualize().toString().equals("Band Collection")){
-            System.out.println("here");
-        }
 
         titleCell.setVerticalAlignment(Element.ALIGN_TOP);
         titleCell.addElement(title);

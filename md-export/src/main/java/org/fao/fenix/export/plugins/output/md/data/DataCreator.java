@@ -4,6 +4,7 @@ package org.fao.fenix.export.plugins.output.md.data;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
+import com.orientechnologies.orient.core.db.record.OTrackedList;
 import com.orientechnologies.orient.core.db.record.OTrackedMap;
 import org.fao.fenix.commons.msd.dto.full.MeIdentification;
 import org.fao.fenix.commons.msd.dto.full.OjCode;
@@ -271,8 +272,10 @@ public class DataCreator {
 
         if(!isSpecialField)
             return getValueFromFields(fieldName, instanceToUse, isMap);
+        if(isMap)
+            System.out.println("here");
 
-        return ((Object)((OTrackedMap) instanceToUse).get(fieldName));
+        return (((OTrackedMap) instanceToUse).get(fieldName));
     }
 
 
@@ -449,16 +452,35 @@ public class DataCreator {
 
     private ArrayList<String> fillOjCode(ArrayList<OjCode> values) {
         ArrayList<String> mapToFill = new ArrayList<>();
-        for (int h = 0; h < values.size(); h++) {
-            String value = (values.get(h).getLabel() != null) ? values.get(h).getLabel().get(LANG.toUpperCase()) : "";
 
-            if (value == null) {
-                value = (values.get(h).getLabel() != null) ? values.get(h).getLabel().get(DEFAULT_LANG.toUpperCase()) : "";
+        if(values instanceof OTrackedList) {
+            fillCodes((OTrackedList) values, mapToFill);
+        }else {
+
+            for (int h = 0; h < values.size(); h++) {
+                String value = (values.get(h).getLabel() != null) ? values.get(h).getLabel().get(LANG.toUpperCase()) : "";
+
+                if (value == null) {
+                    value = (values.get(h).getLabel() != null) ? values.get(h).getLabel().get(DEFAULT_LANG.toUpperCase()) : "";
+                }
+                mapToFill.add(values.get(h).getCode() + " - " + value);
             }
-            mapToFill.add(values.get(h).getCode() + " - " + value);
         }
         return mapToFill;
     }
+
+    private void fillCodes(OTrackedList values,ArrayList<String> mapToFill) {
+
+        System.out.println("here");
+        for(Object element: values) {
+            String value = ((OTrackedMap)element).get("label") != null? ((LinkedHashMap)((OTrackedMap)element).get("label")).get(LANG.toUpperCase()).toString() : "";
+            if (value == null)
+                value = ((OTrackedMap)element).get("label") != null? ((LinkedHashMap)((OTrackedMap)element).get("label")).get(DEFAULT_LANG.toUpperCase()).toString() : "";
+            mapToFill.add(((OTrackedMap)element).get("code").toString()+ " - " + value);
+        }
+    }
+
+
 
     private void handleEnum(Map<String, Object> mapToFill, Object returnedValue, MDSDOProperty reference) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
