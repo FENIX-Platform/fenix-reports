@@ -21,7 +21,6 @@ public class DataCreator {
     private Map<String, Object> metaDataCleaned;
 
     private JsonNode mdsd;
-
     private final static String OJCODE_TYPE = "OjCode";
     private final static String DEFAULT_LANG = "EN";
     private static String LANG;
@@ -93,7 +92,6 @@ public class DataCreator {
     }
 
 
-
     private Object handleFields(Iterator<Map.Entry<String, JsonNode>> fields, Object returnedValue, boolean isSpecialField) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
         Map<String, Object> tempMap = new TreeMap<String, Object>();
@@ -145,7 +143,7 @@ public class DataCreator {
 
                 // 3) REF PROPERTY
                 else if (resultObj.getProperties() == null && resultObj.getPatternProperties() == null && resultObj.getReference() != null) {
-                    handleReferences(resultObj.getReference(), resultObj, tempMap, returnedValue, false,isSpecialField);
+                    handleReferences(resultObj.getReference(), resultObj, tempMap, returnedValue, false, isSpecialField);
                     return tempMap;
                 }
             }
@@ -155,8 +153,8 @@ public class DataCreator {
             else if (type.equals(ARRAY_TYPE)) {
 
                 ArrayList<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
-                ArrayList<Object> values= new ArrayList<>();
-                values = (returnedValue instanceof OTrackedMap) ? getObjects((OTrackedMap)returnedValue):(ArrayList<Object>) returnedValue;
+                ArrayList<Object> values = new ArrayList<>();
+                values = (returnedValue instanceof OTrackedMap) ? getObjects((OTrackedMap) returnedValue) : (ArrayList<Object>) returnedValue;
 
 
                 JsonNode items = ((ObjectNode) resultObj.getItems()).deepCopy();
@@ -191,17 +189,17 @@ public class DataCreator {
                         for (int i = 0; i < ((ArrayList<Object>) returnedValue).size(); i++) {
                             ArrayList<Object> singleComplexEntity = new ArrayList<Object>();
                             singleComplexEntity.add((Object) (((ArrayList<Object>) returnedValue).get(i)));
-                            handleReferences(items.get(REF_FIELD).asText(), null, tempMap, singleComplexEntity, true,isSpecialField);
+                            handleReferences(items.get(REF_FIELD).asText(), null, tempMap, singleComplexEntity, true, isSpecialField);
                         }
                     } else {
-                        handleReferences(items.get(REF_FIELD).asText(), null, tempMap, returnedValue, true,isSpecialField);
+                        handleReferences(items.get(REF_FIELD).asText(), null, tempMap, returnedValue, true, isSpecialField);
                         return tempMap;
                     }
                 }
             }
         } else {
             if (resultObj.getReference() != null) {
-                handleReferences(resultObj.getReference(), resultObj, tempMap, returnedValue, false,isSpecialField);
+                handleReferences(resultObj.getReference(), resultObj, tempMap, returnedValue, false, isSpecialField);
             }
         }
 
@@ -212,7 +210,7 @@ public class DataCreator {
     private void handleReferences(String reference, MDSDOProperty objectReference, Map<String, Object> mapToFill, Object returnedValue, boolean isArray, boolean isSpecialField) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
         JsonNode mdsdNode = getMdsdObjectFromReference(reference);
-        if(mdsdNode == null)
+        if (mdsdNode == null)
             System.out.println("stop");
         if (mdsdNode.get(TYPE_FIELD) != null && mdsdNode.get(TYPE_FIELD).asText().equals(OBJECT_TYPE)) {
             if (mdsdNode.get(PROPERTIES_FIELD) != null) {
@@ -227,7 +225,7 @@ public class DataCreator {
                     if (objectReference != null) {
                         objectReference.setOrder(getOrderFromEntity(objectReference.getOrder()));
                         Map<String, Object> mapToFill2 = new TreeMap<String, Object>();
-                        handleProperties(mapToFill2, itProperties, returnedValue,isSpecialField);
+                        handleProperties(mapToFill2, itProperties, returnedValue, isSpecialField);
                         mapToFill.put(objectReference.getOrder(), new MDSDescriptor(objectReference.getTitleBean(), objectReference.getTitleToVisualize(),
                                 objectReference.getDescription(), mapToFill2));
                     }
@@ -269,10 +267,10 @@ public class DataCreator {
 
     private Object getValueFromFields(String fieldName, Object instanceToUse, boolean isMap, boolean isSpecialField) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
-        if(!isSpecialField)
+        if (!isSpecialField)
             return getValueFromFields(fieldName, instanceToUse, isMap);
 
-        return (isMap)? (((OTrackedMap) instanceToUse).get(LANG)!= null)? ((OTrackedMap) instanceToUse).get(LANG): ((OTrackedMap) instanceToUse).get(DEFAULT_LANG)  :(((OTrackedMap) instanceToUse).get(fieldName));
+        return (isMap) ? (((OTrackedMap) instanceToUse).get(LANG) != null) ? ((OTrackedMap) instanceToUse).get(LANG) : ((OTrackedMap) instanceToUse).get(DEFAULT_LANG) : (((OTrackedMap) instanceToUse).get(fieldName));
     }
 
 
@@ -388,11 +386,11 @@ public class DataCreator {
         boolean isMap = mdsdoProperty.getPatternProperties() != null;
 
         if (isMap) {
-            Object first = getValueFromFields(titleBean, value, false,isSpecialField);
-            returnedValue = (first != null) ? getValueFromFields(titleBean, first, true,isSpecialField) : first;
+            Object first = getValueFromFields(titleBean, value, false, isSpecialField);
+            returnedValue = (first != null) ? getValueFromFields(titleBean, first, true, isSpecialField) : first;
 
         } else {
-            returnedValue = getValueFromFields(titleBean, value, isMap,isSpecialField);
+            returnedValue = getValueFromFields(titleBean, value, isMap, isSpecialField);
         }
         return returnedValue;
     }
@@ -432,11 +430,11 @@ public class DataCreator {
                             objectProperty.getItems().get(TYPE_FIELD).asText().equals(STRING_TYPE)) {
                         ArrayList<String> values = new ArrayList<>();
 
-                        if(!isSpecialField) {
+                        if (!isSpecialField) {
                             for (String s : (ArrayList<String>) mdsdValue) {
                                 values.add(s);
                             }
-                        }else {
+                        } else {
                             values = getStringArray((OTrackedList) mdsdValue);
                         }
                         mapToFill.put(orderObj, new MDSDescriptor(titleBean, objectProperty.getTitleToVisualize(), objectProperty.getDescription(), values));
@@ -454,11 +452,9 @@ public class DataCreator {
 
     private ArrayList<String> fillOjCode(ArrayList<OjCode> values) {
         ArrayList<String> mapToFill = new ArrayList<>();
-
-        if(values instanceof OTrackedList) {
+        if (values instanceof OTrackedList) {
             fillCodes((OTrackedList) values, mapToFill);
-        }else {
-
+        } else {
             for (int h = 0; h < values.size(); h++) {
                 String value = (values.get(h).getLabel() != null) ? values.get(h).getLabel().get(LANG.toUpperCase()) : "";
 
@@ -471,17 +467,14 @@ public class DataCreator {
         return mapToFill;
     }
 
-    private void fillCodes(OTrackedList values,ArrayList<String> mapToFill) {
-
-        System.out.println("here");
-        for(Object element: values) {
-            String value = ((OTrackedMap)element).get("label") != null? ((LinkedHashMap)((OTrackedMap)element).get("label")).get(LANG.toUpperCase()).toString() : "";
+    private void fillCodes(OTrackedList values, ArrayList<String> mapToFill) {
+        for (Object element : values) {
+            String value = ((OTrackedMap) element).get("label") != null ? ((LinkedHashMap) ((OTrackedMap) element).get("label")).get(LANG.toUpperCase()).toString() : "";
             if (value == null)
-                value = ((OTrackedMap)element).get("label") != null? ((LinkedHashMap)((OTrackedMap)element).get("label")).get(DEFAULT_LANG.toUpperCase()).toString() : "";
-            mapToFill.add(((OTrackedMap)element).get("code").toString()+ " - " + value);
+                value = ((OTrackedMap) element).get("label") != null ? ((LinkedHashMap) ((OTrackedMap) element).get("label")).get(DEFAULT_LANG.toUpperCase()).toString() : "";
+            mapToFill.add(((OTrackedMap) element).get("code").toString() + " - " + value);
         }
     }
-
 
 
     private void handleEnum(Map<String, Object> mapToFill, Object returnedValue, MDSDOProperty reference) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -522,24 +515,23 @@ public class DataCreator {
     }
 
 
-    private ArrayList<String> getStringArray (OTrackedList list) {
+    private ArrayList<String> getStringArray(OTrackedList list) {
         ArrayList<String> result = new ArrayList<>();
-        for (Object element: list) {
-            String elementString = ((OTrackedMap) element).get(((OTrackedMap) element).keySet().iterator().next()) != null ? ((OTrackedMap) element).get(((OTrackedMap) element).keySet().iterator().next()).toString(): null;
+        for (Object element : list) {
+            String elementString = ((OTrackedMap) element).get(((OTrackedMap) element).keySet().iterator().next()) != null ? ((OTrackedMap) element).get(((OTrackedMap) element).keySet().iterator().next()).toString() : null;
             result.add(elementString);
         }
         return result;
     }
 
 
-    private ArrayList<Object> getObjects (OTrackedMap values) {
+    private ArrayList<Object> getObjects(OTrackedMap values) {
         ArrayList<Object> result = new ArrayList<>();
 
-        for (Object element: values.keySet())
+        for (Object element : values.keySet())
             result.add(values.get(element));
         return result;
     }
-
 
 
 }
