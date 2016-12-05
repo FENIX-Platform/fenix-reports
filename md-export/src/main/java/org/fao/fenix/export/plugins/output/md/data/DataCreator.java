@@ -31,7 +31,6 @@ public class DataCreator {
     private final static String TITLE_FIELD_GENERIC = "title";
     private final static String BEAN_SPECIAL_FIELD = "additions";
 
-
     private final static String DESCRIPTION_FIELD = "description_i18n";
     private final static String GET_LABEL = "getLabel";
     private final static String REF_FIELD = "$ref";
@@ -45,9 +44,6 @@ public class DataCreator {
     private final static String ARRAY_TYPE = "array";
     private final static String OBJECT_TYPE = "object";
     private final static String ITEMS_FIELD = "items";
-    private final static String DELETE_TITLE = "title";
-    private final static String DELETE_DESCRIPTION = "description";
-    private final static String DELETE_FORMAT = "format";
 
     private static int COUNTER = 1;
 
@@ -192,9 +188,6 @@ public class DataCreator {
                     }
                     // ARRAY of references
                     else if (resultObj.getType().equals(ARRAY_TYPE) && !refSplitted[refSplitted.length - 1].equals(OJCODE_TYPE)) {
-
-                        if(returnedValue instanceof OTrackedMap)
-                            System.out.println("stop");
                         for (int i = 0; i < ((ArrayList<Object>) returnedValue).size(); i++) {
                             ArrayList<Object> singleComplexEntity = new ArrayList<Object>();
                             singleComplexEntity.add((Object) (((ArrayList<Object>) returnedValue).get(i)));
@@ -444,7 +437,7 @@ public class DataCreator {
                                 values.add(s);
                             }
                         }else {
-                            values = getStringArray((OTrackedList) mdsdValue, titleBean);
+                            values = getStringArray((OTrackedList) mdsdValue);
                         }
                         mapToFill.put(orderObj, new MDSDescriptor(titleBean, objectProperty.getTitleToVisualize(), objectProperty.getDescription(), values));
                     } else {
@@ -493,7 +486,6 @@ public class DataCreator {
 
     private void handleEnum(Map<String, Object> mapToFill, Object returnedValue, MDSDOProperty reference) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
-
         String value = (String) invokeEnumByReflection(returnedValue);
         String order = (reference != null) ? getOrderFromEntity(reference.getOrder()) : "2000";
         mapToFill.put(order, createMDSDDescriptor(value, reference));
@@ -504,12 +496,10 @@ public class DataCreator {
 
         Object resultTemp = null;
         Object result = null;
-        String methodString = null;
         String methodStringMAp = null;
         Method method = instanceToUse.getClass().getMethod(GET_LABEL, null);
         resultTemp = method.invoke(instanceToUse, null);
         // now the map
-
 
         methodStringMAp = "get";
         Method methodMap = resultTemp.getClass().getMethod(methodStringMAp, Object.class);
@@ -532,16 +522,13 @@ public class DataCreator {
     }
 
 
-    private ArrayList<String> getStringArray (OTrackedList list, String titleBean) {
+    private ArrayList<String> getStringArray (OTrackedList list) {
         ArrayList<String> result = new ArrayList<>();
-
         for (Object element: list) {
             String elementString = ((OTrackedMap) element).get(((OTrackedMap) element).keySet().iterator().next()) != null ? ((OTrackedMap) element).get(((OTrackedMap) element).keySet().iterator().next()).toString(): null;
             result.add(elementString);
         }
-
         return result;
-
     }
 
 
@@ -550,10 +537,7 @@ public class DataCreator {
 
         for (Object element: values.keySet())
             result.add(values.get(element));
-
-
         return result;
-
     }
 
 

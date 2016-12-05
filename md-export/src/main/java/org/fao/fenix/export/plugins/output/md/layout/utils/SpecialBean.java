@@ -23,7 +23,32 @@ public enum SpecialBean {
     collectionPeriodicity,
     originOfCollectedData,
     geo,
-    dataAdjustment;
+    dataAdjustment,
+
+
+    //GIFT
+    ResourceType,
+    AssessmentMethod,
+    RepeatedDietary,
+    SurveyAdministrationMethod,
+    statisticalPopulation,
+    DataAlreadyCorrected,
+    FoodCoverageTotal,
+    DrinkingWater,
+    SupplementInformation,
+    QuantitiesReported,
+    MacroDietaryComponents,
+    MicroDietaryComponents,
+    Age,
+    Sex,
+    BodyWeight,
+    BodyHeight,
+    PhysicalActivityLevel,
+    InterviewDate,
+    GeographicalLocalization,
+    SocioDemographic,
+    EducationLiteracy,
+    Ethnicity;
 
 
     public static boolean isSpecialBean(String beanName) {
