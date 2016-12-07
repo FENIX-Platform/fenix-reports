@@ -9,6 +9,7 @@ import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.log4j.Logger;
 import org.fao.fenix.commons.msd.dto.full.MeIdentification;
+import org.fao.fenix.commons.msd.dto.templates.standard.combined.dataset.Metadata;
 import org.fao.fenix.export.core.dto.CoreOutputHeader;
 import org.fao.fenix.export.core.dto.CoreOutputType;
 import org.fao.fenix.export.core.dto.data.CoreData;
@@ -32,7 +33,7 @@ public class OutputMDExport extends Output {
 
     private static final Logger LOGGER = Logger.getLogger(OutputMDExport.class);
     private Map<String, Object> config;
-    private MeIdentification metadata;
+    private Metadata metadata;
     private DataCreator dataCreator ;
     private JsonNode mdsdNode;
     private ByteArrayOutputStream baos;
@@ -144,12 +145,12 @@ public class OutputMDExport extends Output {
 
     @Override
     public void process(CoreData resource) throws Exception {
-        metadata = resource.getMetadata();
+        metadata = ((CoreMetaData)resource).getMetadataTemplate();
         mdsdNode = ((CoreMetaData)resource).getMdsd();
 
         // getting data in the right format
         String language = (config.get(LANGUAGE_PROPERTY)!= null && !config.get(LANGUAGE_PROPERTY).toString().equals(""))? config.get(LANGUAGE_PROPERTY).toString(): "EN";
-        dataCreator.initDataFromMDSD(mdsdNode,resource.getMetadata(), language);
+        dataCreator.initDataFromMDSD(mdsdNode,metadata, language);
 
         // TODO: setting configuration pagesize
         Document document = new Document(PageSize.A4, MARGIN_LEFT, MARGIN_RIGHT, MARGIN_UP, MARGIN_BOTTOM);

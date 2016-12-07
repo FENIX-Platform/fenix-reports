@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import com.orientechnologies.orient.core.db.record.OTrackedList;
 import com.orientechnologies.orient.core.db.record.OTrackedMap;
-import org.fao.fenix.commons.msd.dto.full.MeIdentification;
-import org.fao.fenix.commons.msd.dto.full.OjCode;
+import org.fao.fenix.commons.msd.dto.templates.standard.combined.dataset.Metadata;
+import org.fao.fenix.commons.msd.dto.templates.standard.metadata.OjCode;
 import org.fao.fenix.export.plugins.output.md.data.dto.MDSDOProperty;
 import org.fao.fenix.export.plugins.output.md.data.dto.MDSDescriptor;
 
@@ -47,7 +47,7 @@ public class DataCreator {
     private static int COUNTER = 1;
 
 
-    public void initDataFromMDSD(JsonNode mdsdNode, MeIdentification meIdentification, String language) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void initDataFromMDSD(JsonNode mdsdNode, Metadata meIdentification, String language) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
         LANG = language;
         this.mdsd = mdsdNode;
@@ -293,7 +293,7 @@ public class DataCreator {
         if (!isSpecialField)
             return getValueFromFields(fieldName, instanceToUse, isMap);
 
-        return (isMap) ? (((OTrackedMap) instanceToUse).get(LANG) != null) ? ((OTrackedMap) instanceToUse).get(LANG) : ((OTrackedMap) instanceToUse).get(DEFAULT_LANG) : (((OTrackedMap) instanceToUse).get(fieldName));
+        return (isMap) ? (((HashMap) instanceToUse).get(LANG) != null) ? ((HashMap) instanceToUse).get(LANG) : ((HashMap) instanceToUse).get(DEFAULT_LANG) : (((HashMap) instanceToUse).get(fieldName));
     }
 
 
@@ -454,7 +454,7 @@ public class DataCreator {
                         ArrayList<String> values = new ArrayList<>();
 
                         if (!isSpecialField) {
-                            for (String s : (ArrayList<String>) mdsdValue) {
+                            for (String s : (List<String>) mdsdValue) {
                                 values.add(s);
                             }
                         } else {
