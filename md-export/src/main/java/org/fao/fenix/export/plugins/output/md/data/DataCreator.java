@@ -94,7 +94,10 @@ public class DataCreator {
 
     private Object handleFields(Iterator<Map.Entry<String, JsonNode>> fields, Object returnedValue, boolean isSpecialField) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
-        Map<String, Object> tempMap = new TreeMap<String, Object>();
+
+        if(isSpecialField)
+            System.out.println("here");
+        Map<String, Object> tempMap = new TreeMap<>();
         ListIterator<Map.Entry<String, JsonNode>> listBack = Lists.newArrayList(fields).listIterator();
         MDSDOProperty resultObj = fillObjectProperty(listBack);
         String type = resultObj.getType();
@@ -186,6 +189,8 @@ public class DataCreator {
                     }
                     // ARRAY of references
                     else if (resultObj.getType().equals(ARRAY_TYPE) && !refSplitted[refSplitted.length - 1].equals(OJCODE_TYPE)) {
+
+
                         for (int i = 0; i < ((ArrayList<Object>) returnedValue).size(); i++) {
                             ArrayList<Object> singleComplexEntity = new ArrayList<Object>();
                             singleComplexEntity.add((Object) (((ArrayList<Object>) returnedValue).get(i)));
@@ -210,8 +215,7 @@ public class DataCreator {
     private void handleReferences(String reference, MDSDOProperty objectReference, Map<String, Object> mapToFill, Object returnedValue, boolean isArray, boolean isSpecialField) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 
         JsonNode mdsdNode = getMdsdObjectFromReference(reference);
-        if (mdsdNode == null)
-            System.out.println("stop");
+
         if (mdsdNode.get(TYPE_FIELD) != null && mdsdNode.get(TYPE_FIELD).asText().equals(OBJECT_TYPE)) {
             if (mdsdNode.get(PROPERTIES_FIELD) != null) {
                 ArrayList<Map.Entry<String, JsonNode>> itProperties = Lists.newArrayList(mdsdNode.get(PROPERTIES_FIELD).fields());
@@ -233,6 +237,25 @@ public class DataCreator {
 /*
                     handleProperties(mapToFill, itProperties, returnedValue);
 */
+                }
+            }else if(isArray && isSpecialField && mdsdNode.get(PATTERN_PROPERTIES_FIELD) != null && mdsdNode.get(PATTERN_PROPERTIES_FIELD).get(FOLLOW_PATTERN_PROPERTIES)!= null && mdsdNode.get(PATTERN_PROPERTIES_FIELD).get(FOLLOW_PATTERN_PROPERTIES).get(TYPE_FIELD).asText().equals(STRING_TYPE)) {
+
+                //TODO: to check
+                if (objectReference == null)
+                    objectReference = fillObjectProperty(Lists.newArrayList(mdsdNode.fields()).listIterator());
+                String titleBean = reference.substring(2).split("/")!= null ?  reference.substring(2).split("/")[1] : null;
+                objectReference.setTitleBean(titleBean);
+                Object valueObjPatternType = getValueFromFields(objectReference.getTitleBean(), ((Map<String, Object>)((ArrayList) returnedValue).get(0)).get(titleBean), true, isSpecialField);
+                if (valueObjPatternType != null) {
+                    if (objectReference.getPatternProperties().equals(STRING_TYPE)) {
+                        String orderObj = getOrderFromEntity(objectReference.getOrder());
+                        mapToFill.put(
+                                orderObj,
+                                new MDSDescriptor(objectReference.getTitleBean(),
+                                        objectReference.getTitleToVisualize(),
+                                        objectReference.getDescription(),
+                                        valueObjPatternType));
+                    }
                 }
             }
         } else if (mdsdNode.get(ENUM_FIELD) != null) {

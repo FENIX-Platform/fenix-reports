@@ -34,7 +34,6 @@ public class OutputMDExport extends Output {
     private Map<String, Object> config;
     private MeIdentification metadata;
     private DataCreator dataCreator ;
-    private final String MDSD_URL = "http://fenix.fao.org/d3s/mdsd";
     private JsonNode mdsdNode;
     private ByteArrayOutputStream baos;
 
