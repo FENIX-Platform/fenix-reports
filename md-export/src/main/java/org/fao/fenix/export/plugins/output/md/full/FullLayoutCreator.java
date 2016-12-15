@@ -28,6 +28,8 @@ public class FullLayoutCreator extends LayoutCreator{
     private Document document;
     private RegistrationFont registrationFont;
     private TreeMap<String, Object> modelData;
+    private final static String CODE_SEPARATOR = "@@";
+
 
     public FullLayoutCreator(Document document) throws DocumentException {
         this.document = document;
@@ -199,7 +201,7 @@ public class FullLayoutCreator extends LayoutCreator{
 
 
         for (int i = 0; i < arraySize; i++) {
-            String[] codeLabel = values.get(i).toString().split("-");
+            String[] codeLabel = values.get(i).toString().split(CODE_SEPARATOR);
             PdfPTable table = new PdfPTable(codeLabel.length);
             table.setWidthPercentage(100);
 

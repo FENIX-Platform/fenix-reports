@@ -43,6 +43,7 @@ public class DataCreator {
     private final static String ARRAY_TYPE = "array";
     private final static String OBJECT_TYPE = "object";
     private final static String ITEMS_FIELD = "items";
+    private final static String CODE_SEPARATOR = "@@";
 
     private static int COUNTER = 1;
 
@@ -484,7 +485,7 @@ public class DataCreator {
                 if (value == null) {
                     value = (values.get(h).getLabel() != null) ? values.get(h).getLabel().get(DEFAULT_LANG.toUpperCase()) : "";
                 }
-                mapToFill.add(values.get(h).getCode() + " - " + value);
+                mapToFill.add(values.get(h).getCode() + " "+CODE_SEPARATOR+" " + value);
             }
         }
         return mapToFill;
@@ -495,7 +496,7 @@ public class DataCreator {
             String value = ((OTrackedMap) element).get("label") != null ? ((LinkedHashMap) ((OTrackedMap) element).get("label")).get(LANG.toUpperCase()).toString() : "";
             if (value == null)
                 value = ((OTrackedMap) element).get("label") != null ? ((LinkedHashMap) ((OTrackedMap) element).get("label")).get(DEFAULT_LANG.toUpperCase()).toString() : "";
-            mapToFill.add(((OTrackedMap) element).get("code").toString() + " - " + value);
+            mapToFill.add(((OTrackedMap) element).get("code").toString() + " "+CODE_SEPARATOR+" " + value);
         }
     }
 

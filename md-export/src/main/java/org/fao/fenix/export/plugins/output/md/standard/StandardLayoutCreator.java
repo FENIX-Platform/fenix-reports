@@ -32,6 +32,7 @@ public class StandardLayoutCreator extends LayoutCreator {
     private final float OFFSET_HEIGHT_DWN_TITLE_TO_SEP = 11;
     private static int MARGIN_TO_ADD = 6;
     private final static String IMG_PATH = "/logos/cover_logo.png";
+    private final static String CODE_SEPARATOR = "@@";
 /*
     private static final String IMG_PATH = "templates/fao/logos/uneca/logo_copertina.png";
 */
@@ -306,7 +307,7 @@ public class StandardLayoutCreator extends LayoutCreator {
         valueCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
         for (int i = 0; i < arraySize; i++) {
-            String[] codeLabel = values.get(i).toString().split("-");
+            String[] codeLabel = values.get(i).toString().split(CODE_SEPARATOR);
 
             for (int z = 0; z < codeLabel.length; z++) {
                 arrayValue += codeLabel[z];
@@ -341,7 +342,7 @@ public class StandardLayoutCreator extends LayoutCreator {
             ArrayList<Object> values = (ArrayList<Object>) element.getValue();
             for (int i = 0; i < values.size(); i++) {
                 if (isAStringObject(values.get(i))) {
-                    result += values.get(i).toString().split("-")[1];
+                    result += values.get(i).toString().split(CODE_SEPARATOR)[1];
                     if (i < values.size() - 1) {
                         result += ", ";
                     }
