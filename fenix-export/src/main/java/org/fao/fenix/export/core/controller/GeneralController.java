@@ -18,8 +18,11 @@ public class GeneralController {
     private Output outputPlugin;
 
     //INIT
+    public GeneralController() {}
     public GeneralController(CoreConfig config) throws Exception {
-
+        init(config);
+    }
+    public void init(CoreConfig config) throws Exception {
         inputPlugin = InputFactory.getInstance().getPlugin(config.getInput(), config.getResource());
         outputPlugin = OutputFactory.getInstance().getPlugin(config.getOutput());
     }
