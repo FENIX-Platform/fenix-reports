@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+@org.fao.fenix.commons.utils.annotations.export.Output("outputMD")
 public class OutputMDExport extends Output {
 
     private static final Logger LOGGER = Logger.getLogger(OutputMDExport.class);

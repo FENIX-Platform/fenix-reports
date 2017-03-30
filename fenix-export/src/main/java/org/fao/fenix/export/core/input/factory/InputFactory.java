@@ -1,26 +1,19 @@
 package org.fao.fenix.export.core.input.factory;
-
 import org.apache.log4j.Logger;
 import org.fao.fenix.commons.msd.dto.data.Resource;
 import org.fao.fenix.export.core.dto.PluginConfig;
 import org.fao.fenix.export.core.input.plugin.Input;
-import org.fao.fenix.export.core.utils.configuration.ConfiguratorURL;
-import org.fao.fenix.export.core.utils.reader.PropertiesReader;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import java.util.Iterator;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
-
+@ApplicationScoped
 public class InputFactory {
 
-
     private static final Logger LOGGER = Logger.getLogger(InputFactory.class);
-
-
     private static InputFactory inputFactory;
-
-
+    @Inject private Instance<Input> inputInstance;
     public static InputFactory getInstance() throws Exception {
 
         if (inputFactory == null)
@@ -31,30 +24,26 @@ public class InputFactory {
         return inputFactory;
     }
 
-
-    private Map<String, Class<Input>> pluginsClass = new HashMap<>();
-
-
-    private InputFactory() throws Exception {
-        String inputPluginsURL = ConfiguratorURL.getInstance().getInputProperties();
-        Properties pluginsClassName = PropertiesReader.getInstance().getProperties(inputPluginsURL);
-
-        for (Map.Entry<Object, Object> entry : pluginsClassName.entrySet())
-            pluginsClass.put((String)entry.getKey(), (Class<Input>)Class.forName((String)entry.getValue()));
-    }
-
+    private InputFactory() throws Exception {}
 
     //logic
     public Input getPlugin(PluginConfig config, Resource resource) throws Exception {
-        LOGGER.warn("start");
-        Input plugin = pluginsClass.get(config.getPlugin()).newInstance();
-        LOGGER.warn("plugin created");
-
+        Input plugin = getPlugin(config.getPlugin());
+        if(plugin==null)
+            throw new Exception("Input plugin not found");
         plugin.init(config.getConfig(), resource);
-        LOGGER.warn("plugin initialized");
-
+        LOGGER.warn("plugin input initialized");
         return plugin;
     }
 
+    public Input getPlugin(String inputName) {
+        inputName = (inputName == null)? "union":inputName;
+        for (Iterator<Input> i = inputInstance.select().iterator(); i.hasNext(); ) {
+            Input instance = i.next();
+            if (instance.getClass().getAnnotation(org.fao.fenix.commons.utils.annotations.export.Input.class).value().equals(inputName))
+                return instance;
+        }
+        return null;
+    }
 
 }

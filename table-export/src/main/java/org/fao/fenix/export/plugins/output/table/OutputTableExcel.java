@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@org.fao.fenix.commons.utils.annotations.export.Output("outputTable")
 public class OutputTableExcel extends Output {
 
     private static final Logger LOGGER = Logger.getLogger(OutputTableExcel.class);
