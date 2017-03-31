@@ -8,12 +8,16 @@ import org.fao.fenix.export.core.input.plugin.Input;
 import org.fao.fenix.export.core.output.factory.OutputFactory;
 import org.fao.fenix.export.core.output.plugin.Output;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.io.OutputStream;
-
+@ApplicationScoped
 public class GeneralController {
 
     private static final Logger LOGGER = Logger.getLogger(GeneralController.class);
 
+    @Inject private InputFactory inputFactory;
+    @Inject private OutputFactory outputFactory;
     private Input inputPlugin;
     private Output outputPlugin;
 
@@ -23,8 +27,8 @@ public class GeneralController {
         init(config);
     }
     public void init(CoreConfig config) throws Exception {
-        inputPlugin = InputFactory.getInstance().getPlugin(config.getInput(), config.getResource());
-        outputPlugin = OutputFactory.getInstance().getPlugin(config.getOutput());
+        inputPlugin = inputFactory.getPlugin(config.getInput(), config.getResource());
+        outputPlugin = outputFactory.getPlugin(config.getOutput());
     }
 
 

@@ -1,4 +1,4 @@
-package plugins.output.csv.utilsMetadata;
+package plugins.output.csv.dto;
 
 public class CSVParameter {
 

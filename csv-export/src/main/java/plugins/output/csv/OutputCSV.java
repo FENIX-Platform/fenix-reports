@@ -1,6 +1,4 @@
 package plugins.output.csv;
-
-
 import org.apache.log4j.Logger;
 import org.fao.fenix.commons.msd.dto.full.DSDColumn;
 import org.fao.fenix.commons.msd.dto.full.DSDDataset;
@@ -10,7 +8,7 @@ import org.fao.fenix.export.core.dto.CoreOutputHeader;
 import org.fao.fenix.export.core.dto.CoreOutputType;
 import org.fao.fenix.export.core.dto.data.CoreData;
 import org.fao.fenix.export.core.output.plugin.Output;
-import plugins.output.csv.utilsMetadata.CSVParameter;
+import plugins.output.csv.dto.CSVParameter;
 
 import java.io.OutputStream;
 import java.util.*;

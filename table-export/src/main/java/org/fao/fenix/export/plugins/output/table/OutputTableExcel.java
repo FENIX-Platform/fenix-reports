@@ -14,12 +14,14 @@ import org.fao.fenix.export.core.output.plugin.Output;
 import org.fao.fenix.export.plugins.output.table.utilsMetadata.DatatypeFormatter;
 import org.fao.fenix.export.plugins.output.table.utilsMetadata.Language;
 
+import javax.enterprise.inject.Default;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Default
 @org.fao.fenix.commons.utils.annotations.export.Output("outputTable")
 public class OutputTableExcel extends Output {
 

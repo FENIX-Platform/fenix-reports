@@ -10,21 +10,10 @@ import java.util.Iterator;
 
 @ApplicationScoped
 public class InputFactory {
-
     private static final Logger LOGGER = Logger.getLogger(InputFactory.class);
-    private static InputFactory inputFactory;
     @Inject private Instance<Input> inputInstance;
-    public static InputFactory getInstance() throws Exception {
 
-        if (inputFactory == null)
-        {
-            inputFactory = new InputFactory();
-        }
-
-        return inputFactory;
-    }
-
-    private InputFactory() throws Exception {}
+    public InputFactory() {}
 
     //logic
     public Input getPlugin(PluginConfig config, Resource resource) throws Exception {
@@ -37,12 +26,12 @@ public class InputFactory {
     }
 
     public Input getPlugin(String inputName) {
-        inputName = (inputName == null)? "union":inputName;
-        for (Iterator<Input> i = inputInstance.select().iterator(); i.hasNext(); ) {
-            Input instance = i.next();
-            if (instance.getClass().getAnnotation(org.fao.fenix.commons.utils.annotations.export.Input.class).value().equals(inputName))
-                return instance;
-        }
+        if(inputName!= null)
+            for (Iterator<Input> i = inputInstance.select().iterator(); i.hasNext(); ) {
+                Input instance = i.next();
+                if (instance.getClass().getAnnotation(org.fao.fenix.commons.utils.annotations.export.Input.class).value().equals(inputName))
+                    return instance;
+            }
         return null;
     }
 
