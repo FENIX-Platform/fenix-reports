@@ -11,9 +11,8 @@ import org.fao.fenix.export.core.output.plugin.Output;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.OutputStream;
-@ApplicationScoped
-public class GeneralController {
 
+public class GeneralController {
     private static final Logger LOGGER = Logger.getLogger(GeneralController.class);
 
     @Inject private InputFactory inputFactory;

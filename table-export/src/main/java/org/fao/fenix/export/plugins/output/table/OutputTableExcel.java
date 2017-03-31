@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Default
 @org.fao.fenix.commons.utils.annotations.export.Output("outputTable")
 public class OutputTableExcel extends Output {
 
