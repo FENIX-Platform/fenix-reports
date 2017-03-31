@@ -14,6 +14,7 @@
         <module>fenix-export</module>
         <module>md-export</module>
         <module>table-export</module>
+        <module>csv-export</module>
     </modules>
 
     <properties>
