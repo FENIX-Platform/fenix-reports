@@ -54,7 +54,7 @@ public class OutputTableExcel extends Output {
 
     @Override
     public void init(Map<String, Object> config) {
-        this.config = config;
+        this.config = config!=null ? config : new HashMap<String, Object>();
         this.language = this.config.get("lang")!= null && !this.config.get("lang").equals("") && Language.contains(this.config.get("lang").toString().toUpperCase())? this.config.get("lang").toString(): "EN" ;
         this.indexesLabelColumns = new ArrayList<>();
 
@@ -92,7 +92,7 @@ public class OutputTableExcel extends Output {
         formatterValue.init(config.get("lang"));
 */
 
-        this.columns = (ArrayList)collection;
+        this.columns = collection!=null ? new ArrayList(collection) : null;
 
         createOrderColumn();
 
