@@ -62,7 +62,8 @@ public class OutputCSV extends Output {
                 null,
                 this.config.getDateFormat(),
                 this.config.getNumberFormat(),
-                (String[]) this.titles.toArray());
+                (String[]) this.titles.toArray(),
+                null);
         csvWriter.write(resource.getData(), Integer.MAX_VALUE);//TODO: to fix size
 
     }
